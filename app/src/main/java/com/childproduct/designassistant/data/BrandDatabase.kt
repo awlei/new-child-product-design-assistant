@@ -450,11 +450,16 @@ object BrandDatabase {
                 keyAdvantages = brand.features.map { it.name },
                 technicalSpecs = TechnicalSpecs(
                     dimensions = ProductDimensions(
-                        length = brand.specifications.internalDimensions.seatDepth,
-                        width = brand.specifications.internalDimensions.seatWidth,
-                        height = brand.specifications.internalDimensions.backrestHeight
+                        width = brand.specifications.externalDimensions.width,
+                        height = brand.specifications.externalDimensions.height,
+                        depth = brand.specifications.externalDimensions.depth,
+                        seatWidth = brand.specifications.internalDimensions.seatWidth ?: 40.0,
+                        seatDepth = brand.specifications.internalDimensions.seatDepth ?: 45.0
                     ),
-                    weight = brand.specifications.weightLimit.max
+                    weight = brand.specifications.weightLimit.max,
+                    materials = emptyList(),
+                    certifications = brand.compliance.standards,
+                    uniqueFeatures = brand.features.map { it.name }
                 ),
                 marketPosition = "主流"
             )
