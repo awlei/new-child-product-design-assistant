@@ -16,6 +16,7 @@ import com.childproduct.designassistant.ui.MainViewModel
 import com.childproduct.designassistant.ui.screens.CreativeScreen
 import com.childproduct.designassistant.ui.screens.DocumentScreen
 import com.childproduct.designassistant.ui.screens.SafetyScreen
+import com.childproduct.designassistant.ui.screens.TechnicalRecommendationScreen
 import com.childproduct.designassistant.ui.theme.ChildProductDesignAssistantTheme
 
 class MainActivity : ComponentActivity() {
@@ -57,6 +58,12 @@ fun MainScreen() {
                     icon = { Icon(Icons.Default.Description, contentDescription = null) },
                     label = { Text("设计文档") }
                 )
+                NavigationBarItem(
+                    selected = selectedTab == 3,
+                    onClick = { viewModel.selectTab(3) },
+                    icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
+                    label = { Text("技术建议") }
+                )
             }
         },
         snackbarHost = {
@@ -72,6 +79,7 @@ fun MainScreen() {
                 0 -> CreativeScreen(viewModel = viewModel)
                 1 -> SafetyScreen(viewModel = viewModel)
                 2 -> DocumentScreen(viewModel = viewModel)
+                3 -> TechnicalRecommendationScreen(viewModel = viewModel)
             }
 
             // 显示状态消息

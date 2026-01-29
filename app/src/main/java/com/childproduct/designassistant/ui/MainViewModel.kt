@@ -14,6 +14,7 @@ class MainViewModel : ViewModel() {
     private val creativeService = CreativeService()
     private val safetyService = SafetyService()
     private val documentService = DocumentService()
+    private val technicalAnalysisEngine = TechnicalAnalysisEngine()
 
     private val _uiState = MutableStateFlow<UiState>(UiState.Initial)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
@@ -29,6 +30,9 @@ class MainViewModel : ViewModel() {
 
     private val _designDocument = MutableStateFlow<DesignDocument?>(null)
     val designDocument: StateFlow<DesignDocument?> = _designDocument.asStateFlow()
+
+    private val _technicalRecommendation = MutableStateFlow<TechnicalRecommendation?>(null)
+    val technicalRecommendation: StateFlow<TechnicalRecommendation?> = _technicalRecommendation.asStateFlow()
 
     fun selectTab(index: Int) {
         _selectedTab.value = index
@@ -80,6 +84,29 @@ class MainViewModel : ViewModel() {
                 _uiState.value = UiState.Success("文档生成成功！")
             } catch (e: Exception) {
                 _uiState.value = UiState.Error("文档生成失败：${e.message}")
+            }
+        }
+    }
+
+    fun generateTechnicalRecommendation(
+        heightRange: String,
+        weightRange: String,
+        productType: ProductType,
+        technicalQuestion: TechnicalQuestion
+    ) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            try {
+                val recommendation = technicalAnalysisEngine.generateTechnicalRecommendation(
+                    heightRange,
+                    weightRange,
+                    productType,
+                    technicalQuestion
+                )
+                _technicalRecommendation.value = recommendation
+                _uiState.value = UiState.Success("技术建议生成成功！")
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("生成失败：${e.message}")
             }
         }
     }
