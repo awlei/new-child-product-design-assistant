@@ -6,48 +6,56 @@ import com.childproduct.designassistant.model.UsageScenario
 
 /**
  * 用户输入数据 - 儿童安全座椅
+ * 支持极简输入：仅需身高或重量范围，系统自动匹配标准
  */
 data class SafetySeatInput(
-    // 基本信息
-    val standard: InternationalStandard,
+    // 基本信息（系统自动识别，用户可选）
+    val standard: InternationalStandard? = null,
     val subtype: SafetySeatSubtype? = null,
-    
-    // 核心参数
-    val heightRange: String? = null,  // 身高范围，如 "60-105cm"
+
+    // 核心参数（仅需输入其一）
+    val heightRange: String? = null,  // 身高范围，如 "60-105cm"（优先）
     val weightRange: String? = null,  // 重量范围，如 "9-18kg" 或 "22-40lb"
-    val ageGroup: AgeGroup? = null,   // 年龄组
-    
-    // 特征选择
+    val ageGroup: AgeGroup? = null,   // 年龄组（可选）
+
+    // 特征选择（可选）
     val customFeatures: List<String> = emptyList(),
-    
-    // 专项需求
+
+    // 专项需求（可选）
     val specificRequirements: List<String> = emptyList(),
-    
-    // 额外信息
-    val customNotes: String? = null
+
+    // 额外信息（可选）
+    val customNotes: String? = null,
+
+    // 极简输入标识
+    val isSimplifiedInput: Boolean = true
 )
 
 /**
  * 用户输入数据 - 婴儿推车
+ * 支持极简输入：仅需承重范围，系统自动匹配标准
  */
 data class StrollerInput(
-    // 基本信息
-    val standard: InternationalStandard,
+    // 基本信息（系统自动识别，用户可选）
+    val standard: InternationalStandard? = null,
     val subtype: StrollerSubtype? = null,
-    
+
     // 核心参数
-    val weightCapacityRange: String? = null,  // 承重范围，如 "0-15kg"
-    val foldedDimensions: String? = null,      // 折叠后尺寸限制，如 "50×30×20cm"
-    val usageScenario: UsageScenario? = null,  // 使用场景
-    
-    // 特征选择
+    val weightCapacityRange: String? = null,  // 承重范围，如 "0-15kg"（必需）
+    val foldedDimensions: String? = null,      // 折叠后尺寸限制，如 "50×30×20cm"（可选）
+    val usageScenario: UsageScenario? = null,  // 使用场景（可选）
+
+    // 特征选择（可选）
     val customFeatures: List<String> = emptyList(),
-    
-    // 专项需求
+
+    // 专项需求（可选）
     val specificRequirements: List<String> = emptyList(),
-    
-    // 额外信息
-    val customNotes: String? = null
+
+    // 额外信息（可选）
+    val customNotes: String? = null,
+
+    // 极简输入标识
+    val isSimplifiedInput: Boolean = true
 )
 
 /**
