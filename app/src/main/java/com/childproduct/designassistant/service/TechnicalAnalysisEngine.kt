@@ -490,9 +490,9 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
 
     private fun mapProductTypeToStandardCategory(productType: ProductType): StandardCategory {
         return when (productType) {
-            ProductType.TOY -> StandardCategory.SAFETY_SEAT
-            ProductType.FURNITURE -> StandardCategory.CARRIER
-            else -> StandardCategory.SAFETY_SEAT
+            ProductType.CHILD_SAFETY_SEAT -> StandardCategory.SAFETY_SEAT
+            ProductType.BABY_STROLLER -> StandardCategory.CARRIER
+            ProductType.CHILD_HOUSEHOLD_GOODS -> StandardCategory.SAFETY_SEAT
         }
     }
 

@@ -16,12 +16,9 @@ class CreativeService {
     )
 
     private val productTypeFeatures = mapOf(
-        ProductType.TOY to listOf("互动功能", "教育价值", "安全性", "耐用性"),
-        ProductType.STATIONERY to listOf("人体工学", "环保材料", "收纳功能", "个性化"),
-        ProductType.CLOTHING to listOf("舒适透气", "易穿脱", "成长设计", "安全标识"),
-        ProductType.FURNITURE to listOf("稳定结构", "圆角设计", "可调节", "环保材料"),
-        ProductType.EDUCATIONAL to listOf("循序渐进", "趣味性", "实践操作", "成果可视化"),
-        ProductType.CREATIVE to listOf("自由发挥", "材料丰富", "指导清晰", "成果展示")
+        ProductType.CHILD_SAFETY_SEAT to listOf("安全性", "舒适性", "易安装性", "材质环保"),
+        ProductType.BABY_STROLLER to listOf("折叠便携", "避震系统", "稳固性", "储物功能"),
+        ProductType.CHILD_HOUSEHOLD_GOODS to listOf("安全设计", "易清洁", "耐久性", "适龄性")
     )
 
     private val colorPalettes = mapOf(
@@ -64,10 +61,10 @@ class CreativeService {
 
     private fun generateTitle(ageGroup: AgeGroup, productType: ProductType, theme: String): String {
         return when {
-            ageGroup == AgeGroup.INFANT && productType == ProductType.TOY ->
-                "婴幼儿安抚${productType.displayName} - $theme"
-            ageGroup == AgeGroup.TODDLER && productType == ProductType.TOY ->
-                "早教互动${productType.displayName} - $theme"
+            ageGroup == AgeGroup.INFANT && productType == ProductType.CHILD_SAFETY_SEAT ->
+                "婴幼儿专用${productType.displayName} - $theme"
+            ageGroup == AgeGroup.INFANT && productType == ProductType.BABY_STROLLER ->
+                "婴幼儿${productType.displayName} - $theme"
             else ->
                 "${ageGroup.displayName}${productType.displayName} - $theme"
         }

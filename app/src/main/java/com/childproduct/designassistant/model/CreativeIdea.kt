@@ -21,10 +21,7 @@ enum class AgeGroup(val displayName: String) {
 }
 
 enum class ProductType(val displayName: String) {
-    TOY("玩具"),
-    STATIONERY("文具"),
-    CLOTHING("服装"),
-    FURNITURE("家具"),
-    EDUCATIONAL("教育用品"),
-    CREATIVE("创意手工")
+    CHILD_SAFETY_SEAT("儿童安全座椅"),
+    BABY_STROLLER("婴儿推车"),
+    CHILD_HOUSEHOLD_GOODS("儿童家庭用品")
 }

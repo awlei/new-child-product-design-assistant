@@ -25,7 +25,7 @@ fun CreativeScreen(
     val creativeIdea by viewModel.creativeIdea.collectAsState()
 
     var selectedAgeGroup by remember { mutableStateOf(AgeGroup.PRESCHOOL) }
-    var selectedProductType by remember { mutableStateOf(ProductType.TOY) }
+    var selectedProductType by remember { mutableStateOf(ProductType.CHILD_SAFETY_SEAT) }
     var theme by remember { mutableStateOf("") }
 
     Column(

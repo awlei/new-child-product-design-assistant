@@ -27,7 +27,7 @@ fun TechnicalRecommendationScreen(
 
     var heightRange by remember { mutableStateOf("") }
     var weightRange by remember { mutableStateOf("") }
-    var selectedProductType by remember { mutableStateOf(ProductType.TOY) }
+    var selectedProductType by remember { mutableStateOf(ProductType.CHILD_SAFETY_SEAT) }
     var selectedQuestionCategory by remember { mutableStateOf(QuestionCategory.HEADREST_ADJUSTMENT) }
     var questionInput by remember { mutableStateOf("") }
 
