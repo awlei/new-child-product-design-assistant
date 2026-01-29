@@ -246,27 +246,22 @@ app/
 ## 🚀 当前构建状态
 
 ### 最新推送
-- **提交**：29318d6 feat: 完成APK说明书编写与代码优化
-- **时间**：2026-01-29
+- **提交**：9ee0a63 (docs: 添加构建监控和故障排查文档)
+- **时间**：2026-01-29 16:50
 - **状态**：✅ 已推送到GitHub
 
 ### GitHub Actions构建
 - **Workflow**：AI Auto Build APK
 - **状态**：⏳ 自动触发中
 - **预计时间**：10-15分钟
+- **查看链接**：https://github.com/awlei/new-child-product-design-assistant/actions
 
-### 查看构建状态
+### 构建监控文档
 
-**方式1：GitHub网站**
-1. 访问：https://github.com/awlei/new-child-product-design-assistant/actions
-2. 查看最新的workflow运行状态
-
-**方式2：等待构建完成后下载**
-1. 构建成功后，在Actions页面找到成功的构建
-2. 点击"Artifacts"下载APK文件
-3. APK文件名：app-debug-v{run_number}.apk
-
-详细构建状态请查看：[BUILD_STATUS.md](BUILD_STATUS.md)
+如果需要监控构建状态或解决构建问题，请查看：
+- [BUILD_MONITOR.md](BUILD_MONITOR.md) - 构建监控和故障排查指南
+- [BUILD_ADJUSTMENT_GUIDE.md](BUILD_ADJUSTMENT_GUIDE.md) - 构建调整流程
+- [BUILD_MONITOR_SUMMARY.md](BUILD_MONITOR_SUMMARY.md) - 构建监控总结
 
 ---
 
