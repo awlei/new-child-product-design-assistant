@@ -14,6 +14,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.*
 import com.childproduct.designassistant.ui.MainViewModel
+import com.childproduct.designassistant.ui.UiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,11 +117,11 @@ fun TechnicalRecommendationScreen(
                         )
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = uiState !is MainViewModel.UiState.Loading &&
+                    enabled = uiState !is UiState.Loading &&
                               heightRange.isNotBlank() &&
                               weightRange.isNotBlank()
                 ) {
-                    if (uiState is MainViewModel.UiState.Loading) {
+                    if (uiState is UiState.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
                             color = MaterialTheme.colorScheme.onPrimary
@@ -177,29 +178,6 @@ fun TechnicalRecommendationScreen(
                     }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun ProductTypeSelector(
-    selectedProductType: ProductType,
-    onProductTypeSelected: (ProductType) -> Unit
-) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        listOf(
-            ProductType.TOY to "安全座椅",
-            ProductType.FURNITURE to "婴儿提篮",
-            ProductType.STATIONERY to "推车"
-        ).forEach { (type, label) ->
-            FilterChip(
-                selected = selectedProductType == type,
-                onClick = { onProductTypeSelected(type) },
-                label = { Text(label) }
-            )
         }
     }
 }

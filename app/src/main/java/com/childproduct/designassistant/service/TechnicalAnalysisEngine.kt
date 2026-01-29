@@ -13,8 +13,8 @@ import java.util.*
  */
 class TechnicalAnalysisEngine {
 
-    private val standardDatabase = StandardDatabase()
-    private val brandDatabase = BrandDatabase()
+    private val standardDatabase = StandardDatabase
+    private val brandDatabase = BrandDatabase
 
     suspend fun generateTechnicalRecommendation(
         heightRange: String,

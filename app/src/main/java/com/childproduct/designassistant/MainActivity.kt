@@ -11,8 +11,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.childproduct.designassistant.ui.MainViewModel
+import com.childproduct.designassistant.ui.UiState
 import com.childproduct.designassistant.ui.screens.CreativeScreen
 import com.childproduct.designassistant.ui.screens.DocumentScreen
 import com.childproduct.designassistant.ui.screens.SafetyScreen
@@ -84,14 +86,14 @@ fun MainScreen() {
 
             // 显示状态消息
             when (uiState) {
-                is MainViewModel.UiState.Loading -> {
+                is UiState.Loading -> {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(16.dp)
                     )
                 }
-                is MainViewModel.UiState.Success -> {
+                is UiState.Success -> {
                     LaunchedEffect(Unit) {
                         kotlinx.coroutines.delay(2000)
                         viewModel.resetState()

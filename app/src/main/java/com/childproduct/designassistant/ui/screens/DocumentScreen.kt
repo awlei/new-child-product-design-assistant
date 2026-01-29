@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.DesignDocument
 import com.childproduct.designassistant.ui.MainViewModel
+import com.childproduct.designassistant.ui.UiState
 
 @Composable
 fun DocumentScreen(
@@ -74,9 +75,9 @@ fun DocumentScreen(
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = uiState !is MainViewModel.UiState.Loading && productName.isNotBlank()
+                    enabled = uiState !is UiState.Loading && productName.isNotBlank()
                 ) {
-                    if (uiState is MainViewModel.UiState.Loading) {
+                    if (uiState is UiState.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
                             color = MaterialTheme.colorScheme.onPrimary

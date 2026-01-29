@@ -7,11 +7,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.AgeGroup
 import com.childproduct.designassistant.model.CreativeIdea
 import com.childproduct.designassistant.model.ProductType
 import com.childproduct.designassistant.ui.MainViewModel
+import com.childproduct.designassistant.ui.UiState
 
 @Composable
 fun CreativeScreen(
@@ -87,9 +90,9 @@ fun CreativeScreen(
                         viewModel.generateCreativeIdea(selectedAgeGroup, selectedProductType, theme)
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = uiState !is MainViewModel.UiState.Loading
+                    enabled = uiState !is UiState.Loading
                 ) {
-                    if (uiState is MainViewModel.UiState.Loading) {
+                    if (uiState is UiState.Loading) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
                             color = MaterialTheme.colorScheme.onPrimary
@@ -221,7 +224,7 @@ fun CreativeIdeaCard(
                     ) {
                         Text(
                             text = "●",
-                            color = android.graphics.Color.parseColor(color),
+                            color = Color(android.graphics.Color.parseColor(color)),
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
