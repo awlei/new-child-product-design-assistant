@@ -447,9 +447,15 @@ object BrandDatabase {
             BrandBenchmark(
                 brandName = brand.brandName,
                 productName = brand.productName,
-                dimensions = brand.specifications.internalDimensions,
-                weight = WeightInfo(brand.specifications.weightLimit.min, brand.specifications.weightLimit.max),
                 keyAdvantages = brand.features.map { it.name },
+                technicalSpecs = TechnicalSpecs(
+                    dimensions = ProductDimensions(
+                        length = brand.specifications.internalDimensions.seatDepth,
+                        width = brand.specifications.internalDimensions.seatWidth,
+                        height = brand.specifications.internalDimensions.backrestHeight
+                    ),
+                    weight = brand.specifications.weightLimit.max
+                ),
                 marketPosition = "主流"
             )
         }

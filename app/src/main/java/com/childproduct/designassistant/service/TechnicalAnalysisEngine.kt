@@ -169,7 +169,23 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
         brandComparison: BrandComparison,
         productType: ProductType
     ): SuggestedSpecifications {
-        val avgSpecs = brandComparison.averageSpecs
+        val avgSpecs = brandComparison.averageSpecs ?: return SuggestedSpecifications(
+            internalDimensions = InternalDimensions(
+                seatWidth = 38.0,
+                seatDepth = 42.0,
+                backrestHeight = 60.0,
+                headrestWidth = 35.0,
+                shoulderWidth = 33.0
+            ),
+            externalDimensions = ExternalDimensions(
+                width = 44.0,
+                height = 75.0,
+                depth = 65.0
+            ),
+            weight = 13.0,
+            features = emptyList(),
+            recommendedStandards = matchedStandards.map { it.standard.code }.distinct()
+        )
 
         // 基于品牌平均值，考虑标准要求进行微调
         val internalWidth = (avgSpecs.avgInternalWidth * 1.1).coerceAtMost(50.0) // 增加10%余量
@@ -179,7 +195,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
         val externalDepth = internalDepth + 5.0
 
         // 提取常用功能
-        val features = generateRecommendedFeatures(matchedStandards, avgSpecs.commonFeatures)
+        val features = generateRecommendedFeatures(matchedStandards, emptyList())
 
         // 推荐标准
         val recommendedStandards = matchedStandards.map { it.standard.code }.distinct()
@@ -387,7 +403,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
                 testCases.add(
                     TestCase(
                         id = "TC-CUSTOM-001",
-                        category = TestCategory.FUNCTIONAL_TESTING,
+                        category = DVPTestCategory.FUNCTIONAL_TESTING,
                         testItem = "头托调节功能测试",
                         testMethod = "手动调节测试",
                         acceptanceCriteria = "所有档位正常调节，无卡顿",
@@ -398,7 +414,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
                             equipment = "测力计、量具"
                         ),
                         responsibility = "研发部",
-                        priority = Priority.HIGH,
+                        priority = DVPPriority.HIGH,
                         status = TestStatus.NOT_STARTED
                     )
                 )
@@ -407,7 +423,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
                 testCases.add(
                     TestCase(
                         id = "TC-CUSTOM-002",
-                        category = TestCategory.IMPACT_TESTING,
+                        category = DVPTestCategory.IMPACT_TESTING,
                         testItem = "增强碰撞测试",
                         testMethod = "高于标准要求的碰撞测试",
                         acceptanceCriteria = "满足超出标准20%的冲击要求",
@@ -418,7 +434,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
                             equipment = "碰撞测试设备、高速摄像机"
                         ),
                         responsibility = "测试部",
-                        priority = Priority.CRITICAL,
+                        priority = DVPPriority.CRITICAL,
                         status = TestStatus.NOT_STARTED
                     )
                 )

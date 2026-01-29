@@ -351,17 +351,17 @@ fun BrandComparisonCard(
                 modifier = Modifier.padding(bottom = 12.dp)
             )
 
-            if (comparison.brands.isEmpty()) {
+            if (comparison.comparedBrands.isEmpty()) {
                 Text("未找到匹配的品牌数据")
             } else {
                 // 品牌列表
                 Text(
-                    text = "参考品牌 (${comparison.brands.size}):",
+                    text = "参考品牌 (${comparison.comparedBrands.size}):",
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
-                comparison.brands.take(3).forEach { brand ->
+                comparison.comparedBrands.take(3).forEach { brand ->
                     Text(
                         text = "• ${brand.brandName} - ${brand.productName}",
                         style = MaterialTheme.typography.bodySmall,
@@ -378,16 +378,18 @@ fun BrandComparisonCard(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
-                Text(
-                    text = "内部宽度: ${String.format("%.1f", comparison.averageSpecs.avgInternalWidth)} cm",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-                Text(
-                    text = "内部深度: ${String.format("%.1f", comparison.averageSpecs.avgInternalDepth)} cm",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
+                comparison.averageSpecs?.let { specs ->
+                    Text(
+                        text = "内部宽度: ${String.format("%.1f", specs.avgInternalWidth)} cm",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                    Text(
+                        text = "内部深度: ${String.format("%.1f", specs.avgInternalDepth)} cm",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -398,7 +400,7 @@ fun BrandComparisonCard(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )
-                comparison.recommendations.forEach { rec ->
+                comparison.differentiatingSuggestions.forEach { rec ->
                     Text(
                         text = "• $rec",
                         style = MaterialTheme.typography.bodySmall,
@@ -590,10 +592,10 @@ fun TestCaseItem(
     testCase: TestCase
 ) {
     val priorityColor = when (testCase.priority) {
-        Priority.CRITICAL -> Color(0xFFF44336)
-        Priority.HIGH -> Color(0xFFFF9800)
-        Priority.MEDIUM -> Color(0xFFFFC107)
-        Priority.LOW -> Color(0xFF4CAF50)
+        DVPPriority.CRITICAL -> Color(0xFFF44336)
+        DVPPriority.HIGH -> Color(0xFFFF9800)
+        DVPPriority.MEDIUM -> Color(0xFFFFC107)
+        DVPPriority.LOW -> Color(0xFF4CAF50)
     }
 
     Card(
