@@ -143,7 +143,8 @@ data class BrandComparison(
     val targetProductType: ProductType,
     val comparedBrands: List<BrandBenchmark>,
     val summaryAnalysis: String,
-    var differentiatingSuggestions: List<String>
+    var differentiatingSuggestions: List<String>,
+    val averageSpecs: AverageSpecs? = null
 )
 
 /**

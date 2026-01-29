@@ -312,7 +312,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
 
         val summary = DVPSummary(
             totalTests = testCases.size,
-            criticalTests = testCases.count { it.priority == Priority.CRITICAL },
+            criticalTests = testCases.count { it.priority == DVPPriority.CRITICAL },
             estimatedTimeline = estimateTimeline(testCases),
             resourceRequirements = estimateResources(testCases),
             keyRisks = identifyKeyRisks(testCases)
@@ -496,14 +496,14 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
         }
     }
 
-    private fun mapRequirementCategory(reqCategory: RequirementCategory): TestCategory {
+    private fun mapRequirementCategory(reqCategory: RequirementCategory): DVPTestCategory {
         return when (reqCategory) {
-            RequirementCategory.IMPACT_TEST -> TestCategory.IMPACT_TESTING
-            RequirementCategory.MATERIAL_SAFETY -> TestCategory.MATERIAL_TESTING
-            RequirementCategory.STRUCTURAL_INTEGRITY -> TestCategory.DURABILITY_TESTING
-            RequirementCategory.FLAMMABILITY -> TestCategory.MATERIAL_TESTING
-            RequirementCategory.CHEMICAL_SAFETY -> TestCategory.CHEMICAL_TESTING
-            else -> TestCategory.FUNCTIONAL_TESTING
+            RequirementCategory.IMPACT_TEST -> DVPTestCategory.IMPACT_TESTING
+            RequirementCategory.MATERIAL_SAFETY -> DVPTestCategory.MATERIAL_TESTING
+            RequirementCategory.STRUCTURAL_INTEGRITY -> DVPTestCategory.DURABILITY_TESTING
+            RequirementCategory.FLAMMABILITY -> DVPTestCategory.MATERIAL_TESTING
+            RequirementCategory.CHEMICAL_SAFETY -> DVPTestCategory.CHEMICAL_TESTING
+            else -> DVPTestCategory.FUNCTIONAL_TESTING
         }
     }
 
@@ -541,19 +541,19 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
         }
     }
 
-    private fun getTestPriority(category: RequirementCategory): Priority {
+    private fun getTestPriority(category: RequirementCategory): DVPPriority {
         return when (category) {
             RequirementCategory.IMPACT_TEST,
-            RequirementCategory.STRUCTURAL_INTEGRITY -> Priority.CRITICAL
+            RequirementCategory.STRUCTURAL_INTEGRITY -> DVPPriority.CRITICAL
             RequirementCategory.MATERIAL_SAFETY,
-            RequirementCategory.CHEMICAL_SAFETY -> Priority.HIGH
-            else -> Priority.MEDIUM
+            RequirementCategory.CHEMICAL_SAFETY -> DVPPriority.HIGH
+            else -> DVPPriority.MEDIUM
         }
     }
 
     private fun estimateTimeline(testCases: List<TestCase>): String {
-        val criticalCount = testCases.count { it.priority == Priority.CRITICAL }
-        val highCount = testCases.count { it.priority == Priority.HIGH }
+        val criticalCount = testCases.count { it.priority == DVPPriority.CRITICAL }
+        val highCount = testCases.count { it.priority == DVPPriority.HIGH }
         val estimatedWeeks = (criticalCount * 2 + highCount) / 5.0
         return "${String.format("%.1f", estimatedWeeks)} 周"
     }
@@ -562,7 +562,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
         val resources = mutableListOf<String>()
         resources.add("测试工程师: 2-3人")
         resources.add("测试设备: 碰撞测试仪、耐久测试设备等")
-        if (testCases.any { it.category == TestCategory.CHEMICAL_TESTING }) {
+        if (testCases.any { it.category == DVPTestCategory.CHEMICAL_TESTING }) {
             resources.add("化学实验室")
         }
         return resources
@@ -570,7 +570,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
 
     private fun identifyKeyRisks(testCases: List<TestCase>): List<String> {
         val risks = mutableListOf<String>()
-        val impactTests = testCases.filter { it.category == TestCategory.IMPACT_TESTING }
+        val impactTests = testCases.filter { it.category == DVPTestCategory.IMPACT_TESTING }
         if (impactTests.isNotEmpty()) {
             risks.add("碰撞测试可能需要多次迭代")
         }

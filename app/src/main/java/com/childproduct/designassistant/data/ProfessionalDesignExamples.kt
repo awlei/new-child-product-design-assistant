@@ -676,7 +676,7 @@ object ProfessionalDesignExamples {
                 )
             ),
             overallCompliance = ComplianceStatus.FULLY_COMPLIANT,
-            recommendations = listOf("建议通过完整的EN 1888认证测试", "准备CE标志申请"]
+            recommendations = listOf("建议通过完整的EN 1888认证测试", "准备CE标志申请")
         )
     )
 }

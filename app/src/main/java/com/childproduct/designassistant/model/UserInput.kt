@@ -189,16 +189,6 @@ val COMMON_SAFETY_SEAT_REQUIREMENTS = listOf(
 /**
  * 常见专项需求 - 婴儿推车
  */
-val COMMON_STROLLER_REQUIREMENTS = listOf(
-    "提升避震性能适配崎岖路面",
-    "优化折叠机构实现一键收纳",
-    "提升折叠后的便携性",
-    "增强储物篮容量",
-    "优化转向灵活性",
-    "提升座椅舒适性",
-    "适配多种安全座椅",
-    "优化遮阳篷防护性能"
-)
 
 /**
  * 输入校验工具类

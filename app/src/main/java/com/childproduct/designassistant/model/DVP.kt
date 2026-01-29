@@ -80,7 +80,7 @@ data class TechnicalRecommendation(
     val id: String,
     val inputParameters: InputParameters,
     val matchedStandards: List<StandardMatch>,
-    val brandComparison: DVPBrandComparison,
+    val brandComparison: BrandComparison,
     val suggestedSpecifications: SuggestedSpecifications,
     val dvp: DVP,
     val additionalNotes: List<String>
@@ -98,12 +98,6 @@ data class StandardMatch(
     val matchingGroup: StandardGroup,
     val matchScore: Double,        // 匹配分数 0-1
     val notes: String
-)
-
-data class DVPBrandComparison(
-    val brands: List<BrandParameters>,
-    val averageSpecs: AverageSpecs,
-    val recommendations: List<String>
 )
 
 data class AverageSpecs(

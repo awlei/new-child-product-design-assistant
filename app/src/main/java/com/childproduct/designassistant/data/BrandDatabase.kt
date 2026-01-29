@@ -443,7 +443,24 @@ object BrandDatabase {
             }
         }
 
-        return BrandComparison(filteredBrands, avgSpecs, recommendations)
+        val brandBenchmarks = filteredBrands.map { brand ->
+            BrandBenchmark(
+                brandName = brand.brandName,
+                productName = brand.productName,
+                dimensions = brand.specifications.internalDimensions,
+                weight = WeightInfo(brand.specifications.weightLimit.min, brand.specifications.weightLimit.max),
+                keyAdvantages = brand.features.map { it.name },
+                marketPosition = "主流"
+            )
+        }
+
+        return BrandComparison(
+            targetProductType = ProductType.CHILD_SAFETY_SEAT,
+            comparedBrands = brandBenchmarks,
+            summaryAnalysis = "基于${filteredBrands.size}个品牌的分析",
+            differentiatingSuggestions = recommendations,
+            averageSpecs = avgSpecs
+        )
     }
 
     /**

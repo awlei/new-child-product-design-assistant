@@ -93,7 +93,7 @@ class AIAnalysisService(private val context: Context) {
         sb.appendLine("## 用户需求")
         when (val input = request.userInput) {
             is ProductInput.SafetySeat -> {
-                sb.appendLine("- 标准选择: ${input.data.standard.displayName}")
+                sb.appendLine("- 标准选择: ${input.data.standard?.displayName}")
                 input.data.subtype?.let { sb.appendLine("- 产品细分: ${it.displayName}") }
                 input.data.heightRange?.let { sb.appendLine("- 身高范围: ${it}") }
                 input.data.weightRange?.let { sb.appendLine("- 重量范围: ${it}") }
@@ -106,7 +106,7 @@ class AIAnalysisService(private val context: Context) {
                 }
             }
             is ProductInput.Stroller -> {
-                sb.appendLine("- 标准选择: ${input.data.standard.displayName}")
+                sb.appendLine("- 标准选择: ${input.data.standard?.displayName}")
                 input.data.subtype?.let { sb.appendLine("- 产品细分: ${it.displayName}") }
                 input.data.weightCapacityRange?.let { sb.appendLine("- 承重范围: ${it}") }
                 input.data.foldedDimensions?.let { sb.appendLine("- 折叠尺寸: ${it}") }
@@ -445,34 +445,13 @@ class AIAnalysisService(private val context: Context) {
                     Priority.HIGH
                 )
             )
-        ),
-        brandComparison = BrandComparison(
-            targetProductType = request.productType,
-            comparedBrands = emptyList(),
-            summaryAnalysis = "建议结合Britax的吸能技术和Cybex的侧面防护系统",
-            differentiatingSuggestions = listOf(
-                "采用Britax SafeCell吸能技术底座",
-                "集成Cybex SensorSafe智能监测功能",
-                "参考UPPAbaby的模块化设计理念"
-            )
-        ),
-        dvpTestMatrix = DVPTestMatrix(
-            productType = request.productType,
-            standard = request.standard,
-            testItems = generateDefaultDVPTestItems(request.productType, request.standard)
-        ),
-        standardCompliance = StandardCompliance(
-            standard = request.standard,
-            complianceItems = emptyList(),
-            overallCompliance = ComplianceStatus.FULLY_COMPLIANT,
-            recommendations = listOf("建议通过完整的ECE R129认证测试")
         )
         
         return ParsedSuggestions(
             designSuggestions = suggestions,
             brandComparison = null,
-            dvpTestMatrix = suggestions.dvpTestMatrix,
-            standardCompliance = null
+            dvpTestMatrix = generateDefaultDVPTestMatrix(request.productType, request.standard),
+            standardCompliance = generateDefaultStandardCompliance(request.standard)
         )
     }
     
@@ -625,4 +604,26 @@ class AIAnalysisService(private val context: Context) {
         val dvpTestMatrix: DVPTestMatrix,
         val standardCompliance: StandardCompliance?
     )
+    
+    private fun generateDefaultDVPTestMatrix(
+        productType: ProductType,
+        standard: InternationalStandard
+    ): DVPTestMatrix {
+        return DVPTestMatrix(
+            productType = productType,
+            standard = standard,
+            testItems = generateDefaultDVPTestItems(productType, standard)
+        )
+    }
+    
+    private fun generateDefaultStandardCompliance(
+        standard: InternationalStandard
+    ): StandardCompliance {
+        return StandardCompliance(
+            standard = standard,
+            complianceItems = emptyList(),
+            overallCompliance = ComplianceStatus.FULLY_COMPLIANT,
+            recommendations = listOf("建议通过完整的认证测试")
+        )
+    }
 }
