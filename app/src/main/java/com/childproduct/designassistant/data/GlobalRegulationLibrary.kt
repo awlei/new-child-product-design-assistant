@@ -114,15 +114,6 @@ object GlobalRegulationLibrary {
         val relatedTestItems: List<String>
     )
 
-    // ========== 所有法规 ==========
-    private val allRegulations = listOf(
-        *euRegulations.toTypedArray(),
-        *usRegulations.toTypedArray(),
-        *chinaRegulations.toTypedArray(),
-        *japanRegulations.toTypedArray(),
-        *australiaRegulations.toTypedArray()
-    )
-
     // ========== 欧盟法规 ==========
     private val euRegulations = listOf(
         RegulationDetail(
@@ -502,6 +493,15 @@ object GlobalRegulationLibrary {
             ),
             url = "https://www.standards.org.au/"
         )
+    )
+
+    // ========== 所有法规 ==========
+    private val allRegulations = listOf(
+        *euRegulations.toTypedArray(),
+        *usRegulations.toTypedArray(),
+        *chinaRegulations.toTypedArray(),
+        *japanRegulations.toTypedArray(),
+        *australiaRegulations.toTypedArray()
     )
 
     // ========== 按产品类型分类 ==========

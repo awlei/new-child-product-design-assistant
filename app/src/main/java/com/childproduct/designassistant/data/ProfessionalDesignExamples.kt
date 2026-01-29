@@ -567,7 +567,7 @@ object ProfessionalDesignExamples {
                         weight = 11.4,
                         materials = listOf("钢制车架", "空气胎", "防晒面料"),
                         certifications = listOf("EN 1888", "ASTM F833"),
-                        uniqueFeatures = listOf("永久锁定折叠", "四轮避震", "遮阳篷SPF 50+"]
+                        uniqueFeatures = listOf("永久锁定折叠", "四轮避震", "遮阳篷SPF 50+")
                     ),
                     marketPosition = "中端市场，以性能和性价比著称"
                 )

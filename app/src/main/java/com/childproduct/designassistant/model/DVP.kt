@@ -19,13 +19,13 @@ data class DVP(
  */
 data class TestCase(
     val id: String,
-    val category: TestCategory,
+    val category: DVPTestCategory,
     val testItem: String,           // 测试项目
     val testMethod: String,         // 测试方法
     val acceptanceCriteria: String, // 接受标准
     val testSpec: TestSpecification, // 测试规格
     val responsibility: String,     // 负责部门
-    val priority: Priority,         // 优先级
+    val priority: DVPPriority,         // 优先级
     val status: TestStatus = TestStatus.NOT_STARTED
 )
 
@@ -36,7 +36,7 @@ data class TestSpecification(
     val equipment: String? = null   // 所需设备
 )
 
-enum class TestCategory(val displayName: String) {
+enum class DVPTestCategory(val displayName: String) {
     IMPACT_TESTING("碰撞测试"),
     DURABILITY_TESTING("耐久性测试"),
     MATERIAL_TESTING("材料测试"),
@@ -47,7 +47,7 @@ enum class TestCategory(val displayName: String) {
     ELECTRICAL_TESTING("电气测试")
 }
 
-enum class Priority(val level: Int) {
+enum class DVPPriority(val level: Int) {
     CRITICAL(1),    // 关键（必须通过）
     HIGH(2),        // 高优先级
     MEDIUM(3),      // 中优先级
@@ -80,7 +80,7 @@ data class TechnicalRecommendation(
     val id: String,
     val inputParameters: InputParameters,
     val matchedStandards: List<StandardMatch>,
-    val brandComparison: BrandComparison,
+    val brandComparison: DVPBrandComparison,
     val suggestedSpecifications: SuggestedSpecifications,
     val dvp: DVP,
     val additionalNotes: List<String>
@@ -100,7 +100,7 @@ data class StandardMatch(
     val notes: String
 )
 
-data class BrandComparison(
+data class DVPBrandComparison(
     val brands: List<BrandParameters>,
     val averageSpecs: AverageSpecs,
     val recommendations: List<String>

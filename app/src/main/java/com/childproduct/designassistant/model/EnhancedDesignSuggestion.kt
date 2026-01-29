@@ -486,7 +486,7 @@ object BrandDatabase {
                 headrestAdjustment = "可调节头托（15-30cm）",
                 backrestAdjustment = "3档调节（105°-140°）",
                 uniqueFeatures = listOf("专利折叠", "全尺寸轮"),
-                safetyTechnologies = listOf("五点式安全带", "手刹"]
+                safetyTechnologies = listOf("五点式安全带", "手刹")
             ),
             keyAdvantages = listOf(
                 "专利折叠，单秒折叠",
