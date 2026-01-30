@@ -181,12 +181,12 @@ fun SchemeDetailTab(
                         )
                     }
                     Text(
-                        text = "• 点击标准条款（如ECE R129 §5.4.2）可跳转到"文档学习"查看完整标准文档",
+                        text = "• 点击标准条款（如ECE R129 §5.4.2）可跳转到「文档学习」查看完整标准文档",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                     )
                     Text(
-                        text = "• 点击参数名称（如头托调节范围）可唤起"智能问答"询问设计逻辑",
+                        text = "• 点击参数名称（如头托调节范围）可唤起「智能问答」询问设计逻辑",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                     )

@@ -133,7 +133,7 @@ fun OneClickGenerationScreen(
                         )
                     }
                     Text(
-                        text = "输入产品信息后，点击"一键生成全维度方案"按钮，系统将自动生成包含方案详情、测试矩阵、设计建议、竞品参考的完整报告。",
+                        text = "输入产品信息后，点击「一键生成全维度方案」按钮，系统将自动生成包含方案详情、测试矩阵、设计建议、竞品参考的完整报告。",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
                     )

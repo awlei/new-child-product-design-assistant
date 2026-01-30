@@ -505,8 +505,8 @@ class EceR129StandardDatabase {
     )
 
     private fun getStrollerDimensionalThresholds(): List<DimensionalThreshold> = listOf(
-        DimensionalThreshold("推车宽度", "≤50cm", "EN 1888", "通过标准门洞（80cm）"),
-        DimensionalThreshold("折叠尺寸", "≤50×30×80cm", "EN 1888", "便于携带存放")
+        DimensionalThreshold("推车宽度", "≤50", "cm", "EN 1888", "通过标准门洞（80cm）"),
+        DimensionalThreshold("折叠尺寸", "≤50×30×80", "cm", "EN 1888", "便于携带存放")
     )
 
     private fun getStrollerConfigurations(): List<ProductConfigurationInfo> = listOf(
@@ -533,8 +533,8 @@ class EceR129StandardDatabase {
     )
 
     private fun getHighChairDimensionalThresholds(): List<DimensionalThreshold> = listOf(
-        DimensionalThreshold("座面高度", "45-65cm", "GB 28007-2011", "适配标准餐桌高度75cm"),
-        DimensionalThreshold("整体高度", "≤95cm", "ISO 8124-3", "避免重心过高")
+        DimensionalThreshold("座面高度", "45-65", "cm", "GB 28007-2011", "适配标准餐桌高度75cm"),
+        DimensionalThreshold("整体高度", "≤95", "cm", "ISO 8124-3", "避免重心过高")
     )
 
     private fun getHighChairConfigurations(): List<ProductConfigurationInfo> = listOf(
