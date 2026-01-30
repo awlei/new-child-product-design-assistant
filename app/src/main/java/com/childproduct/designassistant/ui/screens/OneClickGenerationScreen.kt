@@ -15,6 +15,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.ProductType
 import com.childproduct.designassistant.ui.MainViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
 
 /**
  * 一键生成全维度方案界面
@@ -28,6 +31,7 @@ fun OneClickGenerationScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
 
     // 输入状态
     var minHeight by remember { mutableStateOf("") }
@@ -61,8 +65,8 @@ fun OneClickGenerationScreen(
             )
             
             // 延迟后显示结果
-            kotlinx.coroutines.GlobalScope.launch(kotlinx.coroutines.Dispatchers.Main) {
-                kotlinx.coroutines.delay(1500)
+            coroutineScope.launch {
+                delay(1500)
                 isGenerating = false
                 showResult = true
                 onGenerateComplete()
@@ -154,7 +158,7 @@ fun OneClickGenerationScreen(
                     // 产品类型选择器
                     val productTypes = listOf(
                         ProductType.CHILD_SAFETY_SEAT to "儿童安全座椅",
-                        ProductType.CHILD_STROLLER to "婴儿推车",
+                        ProductType.BABY_STROLLER to "婴儿推车",
                         ProductType.CHILD_HIGH_CHAIR to "儿童高脚椅",
                         ProductType.CHILD_HOUSEHOLD_GOODS to "儿童家庭用品"
                     )

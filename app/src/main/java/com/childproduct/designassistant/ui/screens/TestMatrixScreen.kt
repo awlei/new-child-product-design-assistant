@@ -129,7 +129,7 @@ fun TestMatrixScreen(
 
         // 测试矩阵列表
         items(17) { index ->
-            TestMatrixItemCard(testIndex = index + 1)
+            TestMatrixScreenTestMatrixItemCard(testIndex = index + 1)
         }
     }
 }
@@ -138,7 +138,7 @@ fun TestMatrixScreen(
  * 测试矩阵项卡片
  */
 @Composable
-fun TestMatrixItemCard(testIndex: Int) {
+fun TestMatrixScreenTestMatrixItemCard(testIndex: Int) {
     var expanded by remember { mutableStateOf(false) }
 
     Card(

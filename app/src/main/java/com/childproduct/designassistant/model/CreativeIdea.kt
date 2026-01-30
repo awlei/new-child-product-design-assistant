@@ -14,6 +14,7 @@ data class CreativeIdea(
 )
 
 enum class AgeGroup(val displayName: String) {
+    ALL("全年龄段"),
     INFANT("0-3岁"),
     TODDLER("3-6岁"),
     PRESCHOOL("6-9岁"),

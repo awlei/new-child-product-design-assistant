@@ -551,7 +551,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
                     "ECE R129标准适配主题（$standardCode）"
                 }
             }
-            ProductType.CHILD_STROLLER -> {
+            ProductType.BABY_STROLLER -> {
                 "EN 1888便携避震合规主题"
             }
             ProductType.CHILD_HIGH_CHAIR -> {

@@ -74,7 +74,7 @@ fun DesignSuggestionScreen(
 
         // 产品核心设计方向
         item {
-            ProductDesignThemeCard()
+            DesignSuggestionProductDesignThemeCard()
         }
 
         // 落地设计细节
@@ -143,7 +143,7 @@ fun DesignPrinciplesCard() {
  * 产品设计主题卡片
  */
 @Composable
-fun ProductDesignThemeCard() {
+fun DesignSuggestionProductDesignThemeCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -181,8 +181,8 @@ fun ProductDesignThemeCard() {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            InfoRow("覆盖年龄段", "0-12岁")
-            InfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
+            DesignSuggestionInfoRow("覆盖年龄段", "0-12岁")
+            DesignSuggestionInfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -374,7 +374,7 @@ fun DesignPrincipleItem(
  * 信息行组件
  */
 @Composable
-fun InfoRow(label: String, value: String) {
+fun DesignSuggestionDesignSuggestionInfoRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

@@ -102,7 +102,7 @@ class HeightAgeGroupMapper {
 
         return when (productType) {
             ProductType.CHILD_SAFETY_SEAT -> matchSafetySeatHeight(minHeight, maxHeight)
-            ProductType.CHILD_STROLLER -> matchStrollerHeight(minHeight, maxHeight)
+            ProductType.BABY_STROLLER -> matchStrollerHeight(minHeight, maxHeight)
             ProductType.CHILD_HIGH_CHAIR -> matchHighChairHeight(minHeight, maxHeight)
             ProductType.CHILD_HOUSEHOLD_GOODS -> matchHouseholdGoodsHeight(minHeight, maxHeight)
         }

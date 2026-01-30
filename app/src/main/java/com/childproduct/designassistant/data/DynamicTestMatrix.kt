@@ -174,6 +174,31 @@ enum class TestStatus {
 class DynamicTestMatrixGenerator {
 
     companion object {
+        /**
+         * 生成ECE R129测试矩阵数据（参考ROADMATE 360）
+         */
+        private fun generateECE_R129TestMatrix(): DynamicTestMatrix {
+            // 这里可以预定义完整的测试矩阵
+            return DynamicTestMatrix(
+                productName = "ECE R129 Standard Test Matrix",
+                productId = "ECE_R129",
+                version = "1.0",
+                testCases = emptyList()
+            )
+        }
+
+        /**
+         * 生成GB 27887测试矩阵数据
+         */
+        private fun generateGB_27887TestMatrix(): DynamicTestMatrix {
+            return DynamicTestMatrix(
+                productName = "GB 27887 Standard Test Matrix",
+                productId = "GB_27887",
+                version = "1.0",
+                testCases = emptyList()
+            )
+        }
+
         // ECE R129 标准测试矩阵
         private val ECE_R129_TEST_MATRIX = generateECE_R129TestMatrix()
         
@@ -485,31 +510,6 @@ class DynamicTestMatrixGenerator {
             id = id,
             input = input,
             output = output
-        )
-    }
-
-    /**
-     * 生成ECE R129测试矩阵数据（参考ROADMATE 360）
-     */
-    private fun generateECE_R129TestMatrix(): DynamicTestMatrix {
-        // 这里可以预定义完整的测试矩阵
-        return DynamicTestMatrix(
-            productName = "ECE R129 Standard Test Matrix",
-            productId = "ECE_R129",
-            version = "1.0",
-            testCases = emptyList()
-        )
-    }
-
-    /**
-     * 生成GB 27887测试矩阵数据
-     */
-    private fun generateGB_27887TestMatrix(): DynamicTestMatrix {
-        return DynamicTestMatrix(
-            productName = "GB 27887 Standard Test Matrix",
-            productId = "GB_27887",
-            version = "1.0",
-            testCases = emptyList()
         )
     }
 }

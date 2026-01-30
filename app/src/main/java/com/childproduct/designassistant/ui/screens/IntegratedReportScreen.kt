@@ -248,7 +248,7 @@ fun TestMatrixTab(
         
         // 测试矩阵列表
         items(17) { index ->
-            TestMatrixItemCard(testIndex = index + 1)
+            IntegratedReportTestMatrixItemCard(testIndex = index + 1)
         }
     }
 }
@@ -305,7 +305,7 @@ fun DesignSuggestionTab(
         
         // 产品核心设计方向
         item {
-            ProductDesignThemeCard()
+            IntegratedReportProductDesignThemeCard()
         }
         
         // 落地设计细节示例
@@ -404,11 +404,11 @@ fun HeightMatchAnalysisCard() {
             Divider()
             
             // 匹配信息
-            InfoRow("输入身高", "40-150 cm")
-            InfoRow("对应年龄", "0-12岁")
-            InfoRow("标准分组", "Group 0+/1/2/3（全分组）")
-            InfoRow("覆盖范围", "✅ 全范围（40-150cm，0-12岁）")
-            InfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
+            IntegratedReportInfoRow("输入身高", "40-150 cm")
+            IntegratedReportInfoRow("对应年龄", "0-12岁")
+            IntegratedReportInfoRow("标准分组", "Group 0+/1/2/3（全分组）")
+            IntegratedReportInfoRow("覆盖范围", "✅ 全范围（40-150cm，0-12岁）")
+            IntegratedReportInfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
         }
     }
 }
@@ -582,7 +582,7 @@ fun ProductConfigurationCard() {
  * 测试矩阵项卡片
  */
 @Composable
-fun TestMatrixItemCard(testIndex: Int) {
+fun IntegratedReportTestMatrixItemCard(testIndex: Int) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
@@ -645,7 +645,7 @@ fun TestMatrixItemCard(testIndex: Int) {
  * 产品设计主题卡片
  */
 @Composable
-fun ProductDesignThemeCard() {
+fun IntegratedReportProductDesignThemeCard() {
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
@@ -832,7 +832,7 @@ fun CompetitorProductCard(brandName: String) {
  * 信息行组件
  */
 @Composable
-fun InfoRow(label: String, value: String) {
+fun IntegratedReportIntegratedReportInfoRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

@@ -50,7 +50,7 @@ data class DimensionalThreshold(
 /**
  * 产品配置信息
  */
-data class ProductConfiguration(
+data class ProductConfigurationInfoInfo(
     val configType: String,          // 配置类型
     val description: String,         // 配置描述
     val standardClause: String?,     // 标准条款（可选）
@@ -385,43 +385,43 @@ class EceR129StandardDatabase {
 
         // 产品配置
         val PRODUCT_CONFIGURATIONS = listOf(
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "ISOFIX接口",
                 description = "ISOFIX硬连接接口，提供稳固的车辆固定",
                 standardClause = "ECE R129 §5.5.1 / §5.5.3",
                 installationRequirement = "适配带ISOFIX锚点的乘用车（2006年后欧盟车辆，2012年后中国车辆）"
             ),
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "可伸缩支撑腿",
                 description = "地面支撑结构，提高座椅稳定性",
                 standardClause = "ECE R129 §5.5.3",
                 installationRequirement = "适配地板间隙≥5cm的车辆，支撑腿长度可调280-450mm"
             ),
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "顶部系带挂钩",
                 description = "上拉带连接车辆顶部系带点",
                 standardClause = "ECE R129 §5.5.1",
                 installationRequirement = "适配车辆后排座椅顶部有系带锚点的车型"
             ),
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "侧撞防护装置（SIP）",
                 description = "可调节的侧面碰撞保护块",
                 standardClause = "ECE R129 §5.3.3",
                 installationRequirement = "需根据车门间隙调整侧翼展开角度，避免影响车门关闭"
             ),
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "360°旋转机构",
                 description = "座椅可360度旋转，方便抱娃进出",
                 standardClause = "ECE R129 §5.2（需通过动态测试）",
                 installationRequirement = "需确保旋转机构的锁止强度≥5kN"
             ),
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "头托高度调节",
                 description = "多档位头托高度调节，适应不同身高儿童",
                 standardClause = "ECE R129 §5.4.2",
                 installationRequirement = "调节范围10-30cm，建议分12-15档"
             ),
-            ProductConfiguration(
+            ProductConfigurationInfo(
                 configType = "靠背角度调节",
                 description = "座椅靠背角度可调（后向135-150°，前向15-30°）",
                 standardClause = "ECE R129 §5.4.1",
@@ -481,7 +481,7 @@ class EceR129StandardDatabase {
     /**
      * 根据产品类型获取产品配置
      */
-    fun getProductConfigurations(productType: String): List<ProductConfiguration> {
+    fun getProductConfigurationInfos(productType: String): List<ProductConfigurationInfo> {
         return when (productType) {
             "儿童安全座椅" -> PRODUCT_CONFIGURATIONS
             "婴儿推车" -> getStrollerConfigurations()
@@ -514,9 +514,9 @@ class EceR129StandardDatabase {
         DimensionalThreshold("折叠尺寸", "≤50×30×80", "cm", "EN 1888", "便于携带存放")
     )
 
-    private fun getStrollerConfigurations(): List<ProductConfiguration> = listOf(
-        ProductConfiguration("四轮避震", "四轮独立避震系统", null, "减震行程≥20mm"),
-        ProductConfiguration("一键折叠", "单手折叠机构", null, "折叠操作力≤50N")
+    private fun getStrollerConfigurations(): List<ProductConfigurationInfo> = listOf(
+        ProductConfigurationInfo("四轮避震", "四轮独立避震系统", null, "减震行程≥20mm"),
+        ProductConfigurationInfo("一键折叠", "单手折叠机构", null, "折叠操作力≤50N")
     )
 
     // ===== 儿童高脚椅专用数据 =====
@@ -542,8 +542,8 @@ class EceR129StandardDatabase {
         DimensionalThreshold("整体高度", "≤95", "cm", "ISO 8124-3", "避免重心过高")
     )
 
-    private fun getHighChairConfigurations(): List<ProductConfiguration> = listOf(
-        ProductConfiguration("五点式安全带", "防止儿童滑落", "ISO 8124-3", "肩带、腰带、跨带五点固定"),
-        ProductConfiguration("高度调节", "多档位高度调节", null, "调节范围20cm，至少5档")
+    private fun getHighChairConfigurations(): List<ProductConfigurationInfo> = listOf(
+        ProductConfigurationInfo("五点式安全带", "防止儿童滑落", "ISO 8124-3", "肩带、腰带、跨带五点固定"),
+        ProductConfigurationInfo("高度调节", "多档位高度调节", null, "调节范围20cm，至少5档")
     )
 }
