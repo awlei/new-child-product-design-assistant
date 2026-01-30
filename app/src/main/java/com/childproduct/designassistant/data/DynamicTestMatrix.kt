@@ -16,7 +16,7 @@ data class TestInputParameter(
     val position: SeatPosition,            // 座椅方向
     val installation: InstallationType,    // 安装方式
     val specificInstallation: String?,     // 特殊安装要求
-    val productConfiguration: ProductConfiguration,  // 产品配置
+    val productConfiguration: SeatConfiguration,  // 产品配置
     val isofixAnchors: Boolean,            // ISOFIX锚点
     val floorPosition: FloorPosition,      // 地板位置
     val harness: Boolean,                  // 安全带
@@ -141,9 +141,9 @@ enum class InstallationType {
 }
 
 /**
- * 产品配置
+ * 座椅配置
  */
-enum class ProductConfiguration {
+enum class SeatConfiguration {
     UPRIGHT,            // 直立
     RECLINED,           // 倾斜
     ADJUSTABLE          // 可调节
@@ -263,7 +263,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q0,
                 position = SeatPosition.REARWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
             
@@ -275,7 +275,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q0,
                 position = SeatPosition.REARWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.RECLINED,
+                productConfig = SeatConfiguration.RECLINED,
                 speedKmh = 50.0
             ))
 
@@ -287,7 +287,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q0,
                 position = SeatPosition.REARWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 30.0
             ))
         }
@@ -302,7 +302,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q1_5,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
             
@@ -314,7 +314,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q1_5,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
         }
@@ -329,7 +329,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q3,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
             
@@ -341,7 +341,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q3,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.RECLINED,
+                productConfig = SeatConfiguration.RECLINED,
                 speedKmh = 50.0
             ))
 
@@ -353,7 +353,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q3,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
 
@@ -365,7 +365,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q3,
                 position = SeatPosition.REARWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
         }
@@ -380,7 +380,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q6,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
             
@@ -392,7 +392,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q6,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
         }
@@ -407,7 +407,7 @@ class DynamicTestMatrixGenerator {
                 dummy = DummyType.Q10,
                 position = SeatPosition.FORWARD_FACING,
                 installation = InstallationType.ISOFIX_3_PTS,
-                productConfig = ProductConfiguration.UPRIGHT,
+                productConfig = SeatConfiguration.UPRIGHT,
                 speedKmh = 50.0
             ))
         }
@@ -451,7 +451,7 @@ class DynamicTestMatrixGenerator {
         dummy: DummyType,
         position: SeatPosition,
         installation: InstallationType,
-        productConfig: ProductConfiguration,
+        productConfig: SeatConfiguration,
         speedKmh: Double
     ): DynamicTestCase {
         val input = TestInputParameter(
