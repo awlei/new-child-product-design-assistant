@@ -3,6 +3,8 @@ package com.childproduct.designassistant.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
@@ -31,150 +33,263 @@ fun TechnicalRecommendationScreen(
     var selectedQuestionCategory by remember { mutableStateOf(QuestionCategory.HEADREST_ADJUSTMENT) }
     var questionInput by remember { mutableStateOf("") }
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "🔬 技术建议",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
-        // 输入表单
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    if (technicalRecommendation == null) {
+        // 没有结果时，使用可滚动的 Column
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+            Text(
+                text = "🔬 技术建议",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            // 输入表单
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                // 身高范围
-                OutlinedTextField(
-                    value = heightRange,
-                    onValueChange = { heightRange = it },
-                    label = { Text("身高范围 (cm, 如: 60-120)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    placeholder = { Text("例: 60-120") }
-                )
-
-                // 重量范围
-                OutlinedTextField(
-                    value = weightRange,
-                    onValueChange = { weightRange = it },
-                    label = { Text("重量范围 (kg, 如: 9-36)") },
-                    modifier = Modifier.fillMaxWidth(),
-                    singleLine = true,
-                    placeholder = { Text("例: 9-36") }
-                )
-
-                // 产品类型选择
-                Text(
-                    text = "产品类型",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                ProductTypeSelector(
-                    selectedProductType = selectedProductType,
-                    onProductTypeSelected = { selectedProductType = it }
-                )
-
-                // 技术问题类别
-                Text(
-                    text = "技术问题类别",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                QuestionCategorySelector(
-                    selectedCategory = selectedQuestionCategory,
-                    onCategorySelected = { selectedQuestionCategory = it }
-                )
-
-                // 技术问题详情
-                OutlinedTextField(
-                    value = questionInput,
-                    onValueChange = { questionInput = it },
-                    label = { Text("技术问题描述（可选）") },
-                    modifier = Modifier.fillMaxWidth(),
-                    minLines = 2,
-                    maxLines = 4
-                )
-
-                // 生成建议按钮
-                Button(
-                    onClick = {
-                        val question = TechnicalQuestion(
-                            category = selectedQuestionCategory,
-                            question = questionInput.ifEmpty { selectedQuestionCategory.name },
-                            context = null
-                        )
-                        viewModel.generateTechnicalRecommendation(
-                            heightRange,
-                            weightRange,
-                            selectedProductType,
-                            question
-                        )
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = uiState !is UiState.Loading &&
-                              heightRange.isNotBlank() &&
-                              weightRange.isNotBlank()
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    if (uiState is UiState.Loading) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(24.dp),
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Icons.Default.Analytics,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text("生成技术建议")
+                    // 身高范围
+                    OutlinedTextField(
+                        value = heightRange,
+                        onValueChange = { heightRange = it },
+                        label = { Text("身高范围 (cm, 如: 60-120)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text("例: 60-120") }
+                    )
+
+                    // 重量范围
+                    OutlinedTextField(
+                        value = weightRange,
+                        onValueChange = { weightRange = it },
+                        label = { Text("重量范围 (kg, 如: 9-36)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text("例: 9-36") }
+                    )
+
+                    // 产品类型选择
+                    Text(
+                        text = "产品类型",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    ProductTypeSelector(
+                        selectedProductType = selectedProductType,
+                        onProductTypeSelected = { selectedProductType = it }
+                    )
+
+                    // 技术问题类别
+                    Text(
+                        text = "技术问题类别",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    QuestionCategorySelector(
+                        selectedCategory = selectedQuestionCategory,
+                        onCategorySelected = { selectedQuestionCategory = it }
+                    )
+
+                    // 技术问题详情
+                    OutlinedTextField(
+                        value = questionInput,
+                        onValueChange = { questionInput = it },
+                        label = { Text("技术问题描述（可选）") },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 2,
+                        maxLines = 4
+                    )
+
+                    // 生成建议按钮
+                    Button(
+                        onClick = {
+                            val question = TechnicalQuestion(
+                                category = selectedQuestionCategory,
+                                question = questionInput.ifEmpty { selectedQuestionCategory.name },
+                                context = null
+                            )
+                            viewModel.generateTechnicalRecommendation(
+                                heightRange,
+                                weightRange,
+                                selectedProductType,
+                                question
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = uiState !is UiState.Loading &&
+                                  heightRange.isNotBlank() &&
+                                  weightRange.isNotBlank()
+                    ) {
+                        if (uiState is UiState.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Analytics,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text("生成技术建议")
+                        }
                     }
                 }
             }
         }
+    } else {
+        // 有结果时，使用不带滚动的 Column + LazyColumn
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "🔬 技术建议",
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 显示技术建议结果
-        technicalRecommendation?.let { recommendation ->
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.weight(1f)
+            // 输入表单
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
-                // 输入参数摘要
-                item {
-                    InputParametersCard(recommendation.inputParameters)
-                }
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    // 身高范围
+                    OutlinedTextField(
+                        value = heightRange,
+                        onValueChange = { heightRange = it },
+                        label = { Text("身高范围 (cm, 如: 60-120)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text("例: 60-120") }
+                    )
 
-                // 标准匹配结果
-                item {
-                    StandardMatchCard(recommendation.matchedStandards)
-                }
+                    // 重量范围
+                    OutlinedTextField(
+                        value = weightRange,
+                        onValueChange = { weightRange = it },
+                        label = { Text("重量范围 (kg, 如: 9-36)") },
+                        modifier = Modifier.fillMaxWidth(),
+                        singleLine = true,
+                        placeholder = { Text("例: 9-36") }
+                    )
 
-                // 品牌比较
-                item {
-                    BrandComparisonCard(recommendation.brandComparison)
-                }
+                    // 产品类型选择
+                    Text(
+                        text = "产品类型",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    ProductTypeSelector(
+                        selectedProductType = selectedProductType,
+                        onProductTypeSelected = { selectedProductType = it }
+                    )
 
-                // 建议规格
-                item {
-                    SuggestedSpecsCard(recommendation.suggestedSpecifications)
-                }
+                    // 技术问题类别
+                    Text(
+                        text = "技术问题类别",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    QuestionCategorySelector(
+                        selectedCategory = selectedQuestionCategory,
+                        onCategorySelected = { selectedQuestionCategory = it }
+                    )
 
-                // DVP 测试矩阵
-                item {
-                    DVPCard(recommendation.dvp)
-                }
+                    // 技术问题详情
+                    OutlinedTextField(
+                        value = questionInput,
+                        onValueChange = { questionInput = it },
+                        label = { Text("技术问题描述（可选）") },
+                        modifier = Modifier.fillMaxWidth(),
+                        minLines = 2,
+                        maxLines = 4
+                    )
 
-                // 附加说明
-                if (recommendation.additionalNotes.isNotEmpty()) {
+                    // 生成建议按钮
+                    Button(
+                        onClick = {
+                            val question = TechnicalQuestion(
+                                category = selectedQuestionCategory,
+                                question = questionInput.ifEmpty { selectedQuestionCategory.name },
+                                context = null
+                            )
+                            viewModel.generateTechnicalRecommendation(
+                                heightRange,
+                                weightRange,
+                                selectedProductType,
+                                question
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        enabled = uiState !is UiState.Loading &&
+                                  heightRange.isNotBlank() &&
+                                  weightRange.isNotBlank()
+                    ) {
+                        if (uiState is UiState.Loading) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.Analytics,
+                                contentDescription = null,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                            Text("生成技术建议")
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // 显示技术建议结果
+            technicalRecommendation?.let { recommendation ->
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier.weight(1f)
+                ) {
+                    // 输入参数摘要
                     item {
-                        AdditionalNotesCard(recommendation.additionalNotes)
+                        InputParametersCard(recommendation.inputParameters)
+                    }
+
+                    // 标准匹配结果
+                    item {
+                        StandardMatchCard(recommendation.matchedStandards)
+                    }
+
+                    // 品牌比较
+                    item {
+                        BrandComparisonCard(recommendation.brandComparison)
+                    }
+
+                    // 建议规格
+                    item {
+                        SuggestedSpecsCard(recommendation.suggestedSpecifications)
+                    }
+
+                    // DVP 测试矩阵
+                    item {
+                        DVPCard(recommendation.dvp)
+                    }
+
+                    // 附加说明
+                    if (recommendation.additionalNotes.isNotEmpty()) {
+                        item {
+                            AdditionalNotesCard(recommendation.additionalNotes)
+                        }
                     }
                 }
             }
@@ -248,50 +363,33 @@ fun StandardMatchCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "📜 标准匹配结果",
+                text = "📚 标准匹配",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
-
-            if (matchedStandards.isEmpty()) {
-                Text(
-                    text = "未找到匹配的标准，请检查输入范围",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.error
-                )
-            } else {
-                matchedStandards.forEach { match ->
-                    StandardMatchItem(match)
-                    Spacer(modifier = Modifier.height(8.dp))
-                }
+            matchedStandards.forEach { standard ->
+                StandardItem(standard = standard)
             }
         }
     }
 }
 
 @Composable
-fun StandardMatchItem(
-    match: StandardMatch
+fun StandardItem(
+    standard: StandardMatch
 ) {
-    val matchColor = when {
-        match.matchScore >= 0.8 -> Color(0xFF4CAF50)
-        match.matchScore >= 0.6 -> Color(0xFFFF9800)
-        match.matchScore >= 0.4 -> Color(0xFFFFC107)
-        else -> Color(0xFFF44336)
-    }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
-            containerColor = matchColor.copy(alpha = 0.1f)
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
         )
     ) {
         Column(
@@ -302,109 +400,114 @@ fun StandardMatchItem(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = match.standard.code,
+                    text = standard.standardName,
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "${String.format("%.0f", match.matchScore * 100)}% 匹配",
+                    text = if (standard.isApplicable) "✓ 适用" else "✗ 不适用",
                     style = MaterialTheme.typography.bodySmall,
-                    color = matchColor,
-                    fontWeight = FontWeight.Bold
+                    color = if (standard.isApplicable) Color(0xFF4CAF50) else Color(0xFFF44336)
                 )
             }
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = match.matchingGroup.code,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            )
-
-            Spacer(modifier = Modifier.height(4.dp))
-
-            Text(
-                text = match.notes,
-                style = MaterialTheme.typography.bodySmall
-            )
+            if (standard.relevantSections.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "相关条款: ${standard.relevantSections.joinToString(", ")}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
+            if (standard.complianceNotes.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "合规备注: ${standard.complianceNotes}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
+            }
         }
     }
 }
 
 @Composable
 fun BrandComparisonCard(
-    comparison: BrandComparison,
+    brandComparison: BrandComparison,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "🏢 品牌参数对比",
+                text = "🔍 品牌对比",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
+            brandComparison.competitors.forEach { competitor ->
+                BrandItem(competitor = competitor)
+            }
+        }
+    }
+}
 
-            if (comparison.comparedBrands.isEmpty()) {
-                Text("未找到匹配的品牌数据")
-            } else {
-                // 品牌列表
+@Composable
+fun BrandItem(
+    competitor: CompetitorInfo
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp)
+        ) {
+            Text(
+                text = competitor.brandName,
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.Bold
+            )
+            if (competitor.modelName.isNotEmpty()) {
                 Text(
-                    text = "参考品牌 (${comparison.comparedBrands.size}):",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    text = "型号: ${competitor.modelName}",
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(top = 4.dp)
                 )
-                comparison.comparedBrands.take(3).forEach { brand ->
-                    Text(
-                        text = "• ${brand.brandName} - ${brand.productName}",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 平均规格
+            }
+            if (competitor.keyFeatures.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "平均规格:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 4.dp)
+                    text = "关键特性:",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold
                 )
-                comparison.averageSpecs?.let { specs ->
+                competitor.keyFeatures.forEach { feature ->
                     Text(
-                        text = "内部宽度: ${String.format("%.1f", specs.avgInternalWidth)} cm",
+                        text = "• $feature",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 8.dp)
                     )
+                }
+            }
+            if (competitor.advantages.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = "优势:",
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Bold
+                )
+                competitor.advantages.forEach { advantage ->
                     Text(
-                        text = "内部深度: ${String.format("%.1f", specs.avgInternalDepth)} cm",
+                        text = "• $advantage",
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // 建议
-                Text(
-                    text = "💡 建议:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-                comparison.differentiatingSuggestions.forEach { rec ->
-                    Text(
-                        text = "• $rec",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
                     )
                 }
             }
@@ -419,222 +522,207 @@ fun SuggestedSpecsCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "📐 建议规格",
+                text = "📏 建议规格",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 12.dp)
             )
 
-            // 内部尺寸
-            Text(
-                text = "内部尺寸:",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "座椅宽度: ${String.format("%.1f", specs.internalDimensions.seatWidth)} cm",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Text(
-                text = "座椅深度: ${String.format("%.1f", specs.internalDimensions.seatDepth)} cm",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Text(
-                text = "靠背高度: ${String.format("%.1f", specs.internalDimensions.backrestHeight)} cm",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 外部尺寸
-            Text(
-                text = "外部尺寸:",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "宽度: ${String.format("%.1f", specs.externalDimensions.width)} cm",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Text(
-                text = "高度: ${String.format("%.1f", specs.externalDimensions.height)} cm",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-            Text(
-                text = "深度: ${String.format("%.1f", specs.externalDimensions.depth)} cm",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 产品重量
-            Text(
-                text = "产品重量: ${String.format("%.1f", specs.weight)} kg",
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 8.dp)
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // 功能特性
-            Text(
-                text = "推荐功能特性:",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold
-            )
-            specs.features.forEach { feature ->
+            if (specs.adjustableHeightRanges.isNotEmpty()) {
                 Text(
-                    text = "• ${feature.name}: ${feature.description}",
+                    text = "可调节高度范围:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                specs.adjustableHeightRanges.forEach { range ->
+                    Text(
+                        text = "• $range",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+
+            if (specs.weightCapacity.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "重量容量:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = specs.weightCapacity,
                     style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
+                    modifier = Modifier.padding(start = 8.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
+            if (specs.materialRecommendations.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "材料建议:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                specs.materialRecommendations.forEach { material ->
+                    Text(
+                        text = "• $material",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
 
-            // 推荐标准
-            Text(
-                text = "推荐符合标准: ${specs.recommendedStandards.joinToString(", ")}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
+            if (specs.performanceMetrics.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "性能指标:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                specs.performanceMetrics.forEach { metric ->
+                    Text(
+                        text = "• $metric",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+
+            if (specs.safetyFeatures.isNotEmpty()) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "安全特性:",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                specs.safetyFeatures.forEach { feature ->
+                    Text(
+                        text = "• $feature",
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
 fun DVPCard(
-    dvp: DVP,
+    dvp: DVPTestMatrix,
     modifier: Modifier = Modifier
 ) {
+    var expanded by remember { mutableStateOf(false) }
+
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            Text(
-                text = "📋 DVP 测试矩阵",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            // 摘要
-            DVPSummarySection(dvp.summary)
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // 测试用例列表
-            Text(
-                text = "测试用例 (${dvp.matrix.size}):",
-                style = MaterialTheme.typography.bodyMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            dvp.matrix.take(5).forEach { testCase ->
-                TestCaseItem(testCase)
-                Spacer(modifier = Modifier.height(4.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "🧪 DVP测试矩阵",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                IconButton(onClick = { expanded = !expanded }) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (expanded) "收起" else "展开"
+                    )
+                }
             }
 
-            if (dvp.matrix.size > 5) {
-                Text(
-                    text = "... 还有 ${dvp.matrix.size - 5} 个测试用例",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
+            if (expanded) {
+                Spacer(modifier = Modifier.height(12.dp))
+                dvp.testCases.forEach { testCase ->
+                    DVPTestCaseItem(testCase = testCase)
+                }
             }
         }
     }
 }
 
 @Composable
-fun DVPSummarySection(
-    summary: DVPSummary
+fun DVPTestCaseItem(
+    testCase: DVPTestCase
 ) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
-    ) {
-        Text(
-            text = "• 总测试数: ${summary.totalTests}",
-            style = MaterialTheme.typography.bodySmall
-        )
-        Text(
-            text = "• 关键测试: ${summary.criticalTests}",
-            style = MaterialTheme.typography.bodySmall,
-            color = Color(0xFFF44336),
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "• 预计时间: ${summary.estimatedTimeline}",
-            style = MaterialTheme.typography.bodySmall
-        )
-    }
-}
-
-@Composable
-fun TestCaseItem(
-    testCase: TestCase
-) {
-    val priorityColor = when (testCase.priority) {
-        DVPPriority.CRITICAL -> Color(0xFFF44336)
-        DVPPriority.HIGH -> Color(0xFFFF9800)
-        DVPPriority.MEDIUM -> Color(0xFFFFC107)
-        DVPPriority.LOW -> Color(0xFF4CAF50)
-    }
+    var expanded by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
         Column(
-            modifier = Modifier.padding(8.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = testCase.id,
-                    style = MaterialTheme.typography.labelSmall,
+                    text = testCase.testId,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
-                Text(
-                    text = testCase.priority.name,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = priorityColor,
-                    fontWeight = FontWeight.Bold
-                )
+                IconButton(
+                    onClick = { expanded = !expanded },
+                    modifier = Modifier.size(24.dp)
+                ) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (expanded) "收起" else "展开",
+                        modifier = Modifier.size(16.dp)
+                    )
+                }
             }
+
             Text(
-                text = testCase.testItem,
+                text = testCase.testName,
                 style = MaterialTheme.typography.bodySmall,
-                fontWeight = FontWeight.Bold
+                modifier = Modifier.padding(top = 4.dp)
             )
-            Text(
-                text = "测试方法: ${testCase.testMethod}",
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(
-                text = "接受标准: ${testCase.acceptanceCriteria}",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-            )
+
+            if (expanded) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Text(
+                        text = "测试标准: ${testCase.testStandard}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "测试方法: ${testCase.testMethod}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "验收标准: ${testCase.acceptanceCriteria}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                    Text(
+                        text = "测试阶段: ${testCase.testingStage}",
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
         }
     }
 }
@@ -646,24 +734,23 @@ fun AdditionalNotesCard(
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
         )
     ) {
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = "💬 附加说明",
+                text = "📝 附加说明",
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
             notes.forEach { note ->
                 Text(
-                    text = note,
+                    text = "• $note",
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.padding(bottom = 4.dp)
                 )

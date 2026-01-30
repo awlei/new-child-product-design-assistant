@@ -3,12 +3,12 @@ package com.childproduct.designassistant.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.AgeGroup
 import com.childproduct.designassistant.model.CreativeIdea
@@ -31,7 +31,8 @@ fun CreativeScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -135,15 +136,15 @@ fun ProductTypeSelector(
     selectedProductType: ProductType,
     onProductTypeSelected: (ProductType) -> Unit
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        modifier = Modifier.heightIn(max = 200.dp)
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(ProductType.values()) { productType ->
+        ProductType.values().forEach { productType ->
             FilterChip(
                 selected = selectedProductType == productType,
                 onClick = { onProductTypeSelected(productType) },
-                label = { Text(productType.displayName) }
+                label = { Text(productType.displayName) },
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
