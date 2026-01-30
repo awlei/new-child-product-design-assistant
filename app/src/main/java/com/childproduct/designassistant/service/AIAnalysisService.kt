@@ -613,6 +613,49 @@ class AIAnalysisService(private val context: Context) {
                     )
                 ))
             }
+            ProductType.CHILD_HIGH_CHAIR -> {
+                testItems.addAll(listOf(
+                    DVPTestItem(
+                        testId = "STB-001",
+                        testCategory = TestCategory.SAFETY_TESTING,
+                        testName = "稳定性测试",
+                        standardReference = "ISO 8124-3",
+                        testMethod = "倾斜测试，检查倾倒角度",
+                        acceptanceCriteria = "倾斜角度 < 10°",
+                        testEquipment = "倾斜测试台",
+                        sampleSize = 3,
+                        estimatedDuration = "1小时",
+                        priority = TestPriority.MANDATORY,
+                        notes = "必须测试"
+                    ),
+                    DVPTestItem(
+                        testId = "STR-001",
+                        testCategory = TestCategory.DURABILITY_TESTING,
+                        testName = "强度测试",
+                        standardReference = "GB 28007",
+                        testMethod = "静载测试，施加100kg负荷",
+                        acceptanceCriteria = "无明显变形，结构完好",
+                        testEquipment = "强度测试机",
+                        sampleSize = 3,
+                        estimatedDuration = "2小时",
+                        priority = TestPriority.CRITICAL,
+                        notes = "关键测试"
+                    ),
+                    DVPTestItem(
+                        testId = "HLT-001",
+                        testCategory = TestCategory.FUNCTIONAL_TESTING,
+                        testName = "高度调节测试",
+                        standardReference = "ISO 8124-3",
+                        testMethod = "测试高度调节机构的可靠性",
+                        acceptanceCriteria = "调节顺畅，无卡滞，锁定可靠",
+                        testEquipment = "高度测试机",
+                        sampleSize = 5,
+                        estimatedDuration = "1小时",
+                        priority = TestPriority.IMPORTANT,
+                        notes = "推荐测试"
+                    )
+                ))
+            }
         }
         
         return testItems

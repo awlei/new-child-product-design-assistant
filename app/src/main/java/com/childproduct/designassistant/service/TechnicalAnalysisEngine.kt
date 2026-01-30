@@ -509,6 +509,7 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
             ProductType.CHILD_SAFETY_SEAT -> StandardCategory.SAFETY_SEAT
             ProductType.BABY_STROLLER -> StandardCategory.CARRIER
             ProductType.CHILD_HOUSEHOLD_GOODS -> StandardCategory.SAFETY_SEAT
+            ProductType.CHILD_HIGH_CHAIR -> StandardCategory.SAFETY_SEAT
         }
     }
 

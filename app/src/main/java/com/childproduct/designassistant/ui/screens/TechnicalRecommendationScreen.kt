@@ -210,7 +210,7 @@ fun TechnicalRecommendationScreen(
 
                     // 标准适配提示
                     if (standardMatchResult != null) {
-                        StandardComplianceHintCard(
+                        TechnicalStandardComplianceHintCard(
                             productType = selectedProductType,
                             ageRange = getAgeRangeHint(minHeight.toIntOrNull() ?: 0, maxHeight.toIntOrNull() ?: 0) ?: ""
                         )
@@ -468,7 +468,7 @@ fun TechnicalProductTypeWithStandardSelector(
  * 标准适配提示卡片
  */
 @Composable
-fun StandardComplianceHintCard(
+fun TechnicalStandardComplianceHintCard(
     productType: ProductType,
     ageRange: String
 ) {
@@ -1089,7 +1089,7 @@ fun InfoRow(
  * 产品类型选择器（简化版）
  */
 @Composable
-fun ProductTypeSelector(
+fun TechnicalProductTypeSelector(
     selectedProductType: ProductType,
     onProductTypeSelected: (ProductType) -> Unit
 ) {
