@@ -38,6 +38,20 @@
 - 整合创意生成和安全检查结果
 - 导出格式化的专业文档
 
+### 5. 📚 文档学习（全新功能）
+- 上传专业文档到知识库（PDF、Word、Excel、文本）
+- 支持 ECE R129、GB 27887、ISO 8124 等标准文档学习
+- 实时学习进度跟踪
+- 文档分类和标签管理
+- 批量学习功能
+
+### 6. 💬 智能问答（全新功能）
+- 基于已学习文档的智能问答
+- 支持自然语言对话交互
+- 自动引用相关标准条款
+- 实时搜索和匹配知识库
+- 聊天历史记录
+
 ## 📋 系统要求
 
 - **最低 Android 版本**: Android 7.0 (API 24)
@@ -125,6 +139,22 @@ chmod +x gradlew
 3. 点击「生成设计文档」
 4. 查看生成的完整设计文档（包含之前的创意和安全检查结果）
 
+### 文档学习流程
+1. 切换到「文档学习」标签
+2. 查看已学习的文档列表和统计信息
+3. 点击「上传文档」按钮
+4. 选择文档类型（PDF、Word、Excel、文本）
+5. 输入文档名称并选择文件
+6. 点击「开始上传」开始学习
+7. 查看学习进度和状态
+
+### 智能问答流程
+1. 切换到「智能问答」标签
+2. 在输入框中输入你的专业问题
+3. 点击发送按钮或按回车键
+4. AI 会基于已学习的文档回答问题
+5. 查看回答内容和相关标准引用
+
 ## 🔧 配置正式签名（可选）
 
 如需构建签名的 Release APK，需要在 GitHub 仓库中配置 Secrets：
@@ -164,18 +194,27 @@ app/
 │   ├── model/                          # 数据模型
 │   │   ├── CreativeIdea.kt
 │   │   ├── SafetyCheck.kt
-│   │   └── DesignDocument.kt
+│   │   ├── DesignDocument.kt
+│   │   └── LearnedDocument.kt          # 文档学习模型
 │   ├── service/                        # 业务逻辑
 │   │   ├── CreativeService.kt
 │   │   ├── SafetyService.kt
-│   │   └── DocumentService.kt
+│   │   ├── DocumentService.kt
+│   │   ├── KnowledgeBaseService.kt     # 知识库服务
+│   │   └── TechnicalAnalysisEngine.kt
 │   └── ui/                             # UI 层
 │       ├── MainViewModel.kt
 │       ├── screens/                    # 页面组件
 │       │   ├── CreativeScreen.kt
 │       │   ├── SafetyScreen.kt
-│       │   └── DocumentScreen.kt
+│       │   ├── DocumentScreen.kt
+│       │   ├── TechnicalRecommendationScreen.kt
+│       │   ├── DocumentLearningScreen.kt    # 文档学习界面
+│       │   └── ChatQAScreen.kt             # 智能问答界面
 │       └── theme/                      # 主题配置
+├── src/test/java/com/childproduct/designassistant/
+│   └── service/
+│       └── KnowledgeBaseServiceTest.kt     # 知识库服务测试
 └── .github/workflows/
     └── build-apk.yml                   # GitHub Actions 配置
 ```
@@ -189,11 +228,50 @@ app/
 
 ## 📝 版本信息
 
-- **当前版本**: v1.1.0 (2026-01-29)
-- **发布日期**: 2026-01-29
+- **当前版本**: v1.2.0 (2026-01-30)
+- **发布日期**: 2026-01-30
 - **许可证**: MIT
 
-### 🎉 最新更新（v1.1.0）
+### 🎉 最新更新（v1.2.0）
+
+#### ✨ 新增功能
+
+**1. 文档学习模块**
+- ✅ 支持上传专业文档（PDF、Word、Excel、文本）
+- ✅ 文档学习进度跟踪
+- ✅ 学习状态管理（待学习、学习中、已完成）
+- ✅ 文档分类和标签系统
+- ✅ 批量学习功能
+- ✅ 文档统计信息展示
+
+**2. 智能问答模块**
+- ✅ 基于已学习文档的智能问答
+- ✅ 自然语言对话交互
+- ✅ 自动引用相关标准条款
+- ✅ 实时搜索和匹配知识库
+- ✅ 聊天历史记录
+- ✅ 支持标准参数查询（头托调节、侧撞防护、ISOFIX等）
+
+**3. 知识库服务**
+- ✅ 本地模拟知识库功能
+- ✅ 文档分块和向量化（模拟）
+- ✅ 语义搜索能力
+- ✅ 相关性评分
+- ✅ 高亮显示搜索结果
+
+#### 🔧 改进
+
+- 新增底部导航栏入口（文档学习、智能问答）
+- 优化界面交互体验
+- 完善数据模型（LearnedDocument、ChatMessage等）
+
+#### 🧪 测试
+
+- 添加 KnowledgeBaseService 单元测试
+- 测试覆盖文档添加、搜索、删除等功能
+- 所有测试用例通过
+
+### 🎉 历史更新（v1.1.0）
 
 #### ✨ 新增功能
 
