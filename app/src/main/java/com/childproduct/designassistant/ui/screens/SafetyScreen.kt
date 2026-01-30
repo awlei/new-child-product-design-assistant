@@ -323,13 +323,13 @@ fun SafetyCheckItem(
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = checkItem.name,
+                    text = checkItem.itemName,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                 )
-                if (checkItem.description.isNotEmpty()) {
+                if (checkItem.notes.isNotEmpty()) {
                     Text(
-                        text = checkItem.description,
+                        text = checkItem.notes,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
