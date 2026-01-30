@@ -51,6 +51,14 @@ enum class DummyType(
         weightRangeKg = "13-18",
         standard = "ECE R129"
     ),
+    Q3S(
+        displayName = "Q3s (3岁-美标侧面碰撞)",
+        code = "Q3s",
+        ageMonths = 36,
+        heightRangeCm = "87-105",
+        weightRangeKg = "13-18",
+        standard = "FMVSS 213a (侧面碰撞)"
+    ),
     Q6(
         displayName = "Q6 (6岁)",
         code = "Q6",
@@ -171,6 +179,13 @@ enum class DummyType(
          */
         fun getQSeries(): List<DummyType> {
             return values().filter { it.code.startsWith("Q") }
+        }
+
+        /**
+         * 获取FMVSS 213a专用的Q3s假人
+         */
+        fun getQ3s(): DummyType {
+            return Q3S
         }
 
         /**
@@ -309,6 +324,7 @@ object DummyDatabase {
             DummyType.Q1 -> createQ1Data()
             DummyType.Q1_5 -> createQ1_5Data()
             DummyType.Q3 -> createQ3Data()
+            DummyType.Q3S -> createQ3sData()
             DummyType.Q6 -> createQ6Data()
             DummyType.Q10 -> createQ10Data()
             DummyType.CRABI_6 -> createCRABI6Data()
@@ -427,6 +443,36 @@ object DummyDatabase {
         hpcLimit = 800.0, headAcceleration3msLimit = 80.0,
         chestAcceleration3msLimit = 55.0, neckForceLimit = 1800.0,
         neckMomentLimit = 30.0, chestDeflectionLimit = 45.0
+    )
+
+    // Q3s数据（3岁-美标侧面碰撞专用）
+    // Q3s与Q3基本类似，但损伤评估限值符合FMVSS 213a标准
+    private fun createQ3sData() = DummyAnthropometry(
+        dummyType = DummyType.Q3S,
+        totalWeight = 15.5, totalHeight = 96.0, sittingHeight = 60.0,
+        shoulderHeight = 52.0, hipHeight = 32.0, kneeHeight = 45.0,
+        headLength = 17.5, headBreadth = 13.5, headCircumference = 50.0,
+        headWeight = 2.0, headCenterOfGravity = 5.0,
+        neckLength = 5.5, neckCircumference = 22.0, neckWeight = 0.5,
+        chestDepth = 15.0, chestWidth = 20.0, chestCircumference = 56.0,
+        chestWeight = 2.5, chestDeflectionMax = 50.0,
+        abdominalDepth = 13.5, abdominalWidth = 19.0, abdominalCircumference = 55.0,
+        abdominalWeight = 1.8, abdominalPressureMax = 1.0,
+        shoulderWidth = 24.0, shoulderCircumference = 50.0, acromionHeight = 11.0,
+        hipWidth = 22.0, hipCircumference = 60.0, hipWeight = 2.0,
+        upperArmLength = 14.0, upperArmCircumference = 18.0,
+        forearmLength = 12.0, forearmCircumference = 15.0,
+        handLength = 8.5, handWidth = 6.0, armWeight = 1.4,
+        thighLength = 18.0, thighCircumference = 22.0,
+        lowerLegLength = 16.0, lowerLegCircumference = 18.0,
+        footLength = 12.0, footWidth = 8.0, legWeight = 2.2,
+        // FMVSS 213a侧面碰撞专用限值
+        hpcLimit = 800.0,
+        headAcceleration3msLimit = 80.0,
+        chestAcceleration3msLimit = 55.0,
+        neckForceLimit = 1800.0,
+        neckMomentLimit = 30.0,
+        chestDeflectionLimit = 45.0
     )
 
     // Q6数据（6岁）
