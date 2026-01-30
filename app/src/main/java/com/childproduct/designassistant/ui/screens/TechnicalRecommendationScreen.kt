@@ -203,7 +203,7 @@ fun TechnicalRecommendationScreen(
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold
                     )
-                    ProductTypeWithStandardSelector(
+                    TechnicalProductTypeWithStandardSelector(
                         selectedProductType = selectedProductType,
                         onProductTypeSelected = { selectedProductType = it }
                     )
@@ -401,7 +401,7 @@ fun TechnicalRecommendationScreen(
  * 产品类型选择器（带标准信息）
  */
 @Composable
-fun ProductTypeWithStandardSelector(
+fun TechnicalProductTypeWithStandardSelector(
     selectedProductType: ProductType,
     onProductTypeSelected: (ProductType) -> Unit
 ) {

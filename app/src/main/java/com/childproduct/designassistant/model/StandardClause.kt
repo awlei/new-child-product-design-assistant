@@ -124,7 +124,7 @@ data class WeightRangeInput(
         return min != null && max != null && min <= max
     }
 
-    fun getRangeString(): String = "$minWeight-$maxWeight ${unit.displayName}"
+    fun getRangeString(): String = "$minWeight-$maxWeight ${unit.symbol}"
 
     fun getKgRange(): String {
         if (unit == WeightUnit.KG) {
@@ -137,10 +137,4 @@ data class WeightRangeInput(
     }
 }
 
-/**
- * 重量单位枚举
- */
-enum class WeightUnit(val displayName: String) {
-    KG("kg"),
-    LB("lbs")
-}
+

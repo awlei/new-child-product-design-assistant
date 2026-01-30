@@ -85,7 +85,6 @@ data class ChatMessage(
     val sender: MessageSender,             // 发送者
     val timestamp: Long,                   // 时间戳
     val referencedDocuments: List<String> = emptyList(), // 引用的文档ID列表
-    val isSystemMessage: Boolean = false,  // 是否为系统消息
     val metadata: Map<String, Any> = emptyMap() // 额外元数据
 ) {
     /**
@@ -104,7 +103,7 @@ data class ChatMessage(
      * 是否为系统消息
      */
     val isSystemMessage: Boolean
-        get() = sender == MessageSender.SYSTEM || isSystemMessage
+        get() = sender == MessageSender.SYSTEM
 }
 
 /**
