@@ -26,7 +26,12 @@ enum class ClauseType {
     RECOMMENDATION,        // 推荐要求
     TESTING_METHOD,        // 测试方法
     ACCEPTANCE_CRITERIA,   // 验收标准
-    DIMENSIONAL_SPEC       // 尺寸规格
+    DIMENSIONAL_SPEC,      // 尺寸规格
+    MATERIAL_SPEC,         // 材料标准
+    QUALITY_CONTROL,       // 质量控制
+    USER_INFORMATION,      // 用户信息
+    CERTIFICATION,         // 认证要求
+    INSTALLATION           // 安装要求
 }
 
 /**

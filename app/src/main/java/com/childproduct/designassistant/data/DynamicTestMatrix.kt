@@ -107,20 +107,6 @@ enum class ImpactType {
 }
 
 /**
- * 假人类型
- */
-enum class DummyType {
-    Q0,        // 新生儿（0-6个月）
-    Q1,        // 12个月
-    Q1_5,      // 18个月
-    Q3,        // 3岁
-    Q6,        // 6岁
-    Q10,       // 10岁
-    HYBRID_III_3Y,  // Hybrid III 3岁
-    CRABI_12M       // CRABI 12个月
-}
-
-/**
  * 座椅方向
  */
 enum class SeatPosition {

@@ -343,21 +343,7 @@ object ECE_R129_Clauses {
             ENVIRONMENTAL_TEST
         )
     }
-        standardName = "ECE R129 Rev.4",
-        clauseId = "§6.1.2.7",
-        clauseTitle = "年龄和身高限制要求",
-        clauseContent = "15个月以下儿童必须使用后向或侧向儿童约束系统。后向座椅应能容纳身高至83cm的儿童。前向座椅不应设计用于容纳身高低于76cm的儿童。可转换座椅在其后向配置下应能容纳身高至83cm的儿童。非整体式儿童约束系统不得批准低于100cm的身高，上限不能低于105cm，头部保护应覆盖至135cm。",
-        clauseType = ClauseType.REQUIREMENT,
-        relatedSections = listOf("§6", "§6.1", "§6.1.2")
-    )
-
-    fun getAllClauses(): List<StandardClause> {
-        return listOf(
-            HEADREST_ADJUSTMENT,
-            SEAT_ANGLE_FORWARD,
-            RECLINE_ANGLE_REAR,
-            ISOFIX_INTERFACE,
-            SUPPORT_LEG,
+}
             FRONT_IMPACT_TEST,
             SIDE_IMPACT_TEST,
             ISOFIX_STRENGTH_TEST,

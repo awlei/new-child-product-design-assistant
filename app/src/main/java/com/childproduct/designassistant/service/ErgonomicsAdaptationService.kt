@@ -579,11 +579,11 @@ class ErgonomicsAdaptationService {
             corrosionResistance.score
         )
         
-        val overallRating = when (scores.average()) {
-            >= 4.5 -> ResistanceRating.OUTSTANDING
-            >= 3.5 -> ResistanceRating.EXCELLENT
-            >= 2.5 -> ResistanceRating.GOOD
-            >= 1.5 -> ResistanceRating.FAIR
+        val overallRating = when {
+            scores.average() >= 4.5 -> ResistanceRating.OUTSTANDING
+            scores.average() >= 3.5 -> ResistanceRating.EXCELLENT
+            scores.average() >= 2.5 -> ResistanceRating.GOOD
+            scores.average() >= 1.5 -> ResistanceRating.FAIR
             else -> ResistanceRating.POOR
         }
         
