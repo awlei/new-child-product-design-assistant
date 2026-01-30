@@ -106,6 +106,251 @@ object ECE_R129_Clauses {
         relatedSections = listOf("§6", "§6.1", "§6.1.2")
     )
 
+    // ===== 新增R129r4e详细条款 =====
+
+    // 材料毒性要求
+    val MATERIAL_TOXICITY = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.1.1.1",
+        clauseTitle = "材料毒性要求",
+        clauseContent = "儿童可接触材料需符合EN 71-3:2013+A1:2014（III类）毒性要求。非整体式ECRS（身高≥100cm）除外。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.1", "§6.1.1")
+    )
+
+    // 材料燃烧性能(非内置式)
+    val FLAMMABILITY_NON_BUILTIN = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "Annex 4, §6.1.1.2",
+        clauseTitle = "材料燃烧性能(非内置式ECRS)",
+        clauseContent = "非内置式ECRS需符合EN 71-2:2011+A1:2014标准。合格标准：火焰蔓延速率≤30mm/s。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.1", "Annex 4")
+    )
+
+    // 材料燃烧性能(内置式)
+    val FLAMMABILITY_BUILTIN = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "Annex 22",
+        clauseTitle = "材料燃烧性能(内置式ECRS)",
+        clauseContent = "内置式ECRS需通过Annex 22测试方法。合格标准：火焰蔓延速率≤100mm/min；或60秒内熄灭且燃烧距离≤51mm。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.1", "Annex 22")
+    )
+
+    // 织带要求
+    val WEBBING_REQUIREMENT = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.2.2",
+        clauseTitle = "织带强度与性能要求",
+        clauseContent = "最小宽度≥25mm（儿童接触部位）；断裂强度≥3.6kN（i-Size系统）；耐磨后强度保留率≥75%；耐光后强度保留率≥60%；低温（-30℃）无断裂。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.2", "Annex 16")
+    )
+
+    // 卡扣要求
+    val BUCKLE_REQUIREMENT = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.2.3",
+        clauseTitle = "卡扣性能要求",
+        clauseContent = "释放力：无载时40-80N，碰撞后≤80N；强度：适配≤13kg儿童的≥4kN，＞13kg的≥10kN；释放按钮：封闭型面积≥4.5cm²，非封闭型≥2.5cm²，红色标识；耐久性：5000次循环测试。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.2", "Annex 15")
+    )
+
+    // 调节装置
+    val ADJUSTMENT_DEVICE = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.2.4",
+        clauseTitle = "快速调节装置要求",
+        clauseContent = "类型需为'快速调节器'（Quick adjuster），单手可操作；操作力≤50N；循环测试5000次后无失效；织带滑移量：单个调节器≤25mm，总滑移≤40mm。",
+        clauseType = ClauseType.REQUIREMENT,
+        relatedSections = listOf("§6", "§6.2", "Annex 17")
+    )
+
+    // 自动锁止卷收器
+    val AUTO_LOCKING_RETRACTOR = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.2.5.1",
+        clauseTitle = "自动锁止卷收器要求",
+        clauseContent = "锁定间隙≤30mm；卷收力：腰带≥7N，胸带2-7N；耐久性：10000次循环测试。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.2", "Annex 13")
+    )
+
+    // 紧急锁止卷收器
+    val EMERGENCY_LOCKING_RETRACTOR = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.2.5.2",
+        clauseTitle = "紧急锁止卷收器要求",
+        clauseContent = "车辆减速≥0.45g时锁定，strap加速度≥0.8g时锁定，倾斜＞27°时锁定；耐久性：40000次循环测试。",
+        clauseType = ClauseType.MATERIAL_SPEC,
+        relatedSections = listOf("§6", "§6.2", "Annex 13")
+    )
+
+    // 防旋转装置(支撑腿)
+    val SUPPORT_LEG_DEVICE = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.1.2.1, Annex 19",
+        clauseTitle = "支撑腿防旋转装置要求",
+        clauseContent = "接触面积≥2500mm²，边缘半径≥3.2mm；长度可调，步距≤20mm；几何要求：X'轴585-695mm，Y'轴±100mm；强度测试：承受2.5kN垂直载荷无变形。",
+        clauseType = ClauseType.DIMENSIONAL_SPEC,
+        relatedSections = listOf("§6", "§6.1", "Annex 19")
+    )
+
+    // 防旋转装置(上拉带)
+    val TOP_TETHER_DEVICE = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.1.2.1",
+        clauseTitle = "上拉带防旋转装置要求",
+        clauseContent = "最小长度≥2000mm；张力50±5N；需有无松弛指示器；安装要求：与车辆顶部系带点连接。",
+        clauseType = ClauseType.DIMENSIONAL_SPEC,
+        relatedSections = listOf("§6", "§6.1")
+    )
+
+    // 内部几何尺寸
+    val INTERNAL_GEOMETRY = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.1.3, Annex 18",
+        clauseTitle = "内部几何尺寸要求",
+        clauseContent = "需满足对应身高范围儿童的：坐姿高度、肩宽、髋宽（95百分位最小值）；肩高（5百分位最小值、95百分位最大值）；测量装置质量10kg，接触力50N；坐姿高度公差：≤87cm时-5%，＞87cm时-10%。",
+        clauseType = ClauseType.DIMENSIONAL_SPEC,
+        relatedSections = listOf("§6", "§6.1", "Annex 18")
+    )
+
+    // 外部尺寸包络
+    val EXTERNAL_ENVELOPE = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.1.4",
+        clauseTitle = "外部尺寸包络要求",
+        clauseContent = "i-Size前向：需纳入ISO/F2x尺寸包络（宽600mm，高800mm，深650mm）；i-Size后向：需纳入ISO/R2尺寸包络（宽600mm，高900mm，深700mm）；i-Size增高座：需纳入ISO/B2尺寸包络（宽550mm，高750mm，深500mm）。",
+        clauseType = ClauseType.DIMENSIONAL_SPEC,
+        relatedSections = listOf("§6", "§6.1", "Annex 18")
+    )
+
+    // 后向碰撞测试
+    val REAR_IMPACT_TEST = StandardClause(
+        standardName = "ECE R129 Rev.4",
+        clauseId = "§7.1.3.2",
+        clauseTitle = "后向碰撞测试要求",
+        clauseContent = "适用后向/侧向ECRS；速度30±2km/h，加速度走廊符合附件7附录2；合格标准：头部HPC≤600（Q0-Q1.5）/≤800（Q3-Q10）；假人加速度≤25g；座椅无结构性变形。",
+        clauseType = ClauseType.TESTING_METHOD,
+        relatedSections = listOf("§7", "§7.1", "Annex 7 Appendix 2")
+    )
+
+    // 侧面碰撞测试
+    val SIDE_IMPACT_TEST_R129 = StandardClause(
+        standardName = "ECE R129 Rev.4",
+        clauseId = "§7.1.3.3, §6.6.4.5.1",
+        clauseTitle = "侧面碰撞测试要求",
+        clauseContent = "相对速度6.375-7.25m/s；最大侵入250±50mm；合格标准：头部无车门接触；头部3ms累计加速度≤75g（Q0-Q6）；头部偏移量≤150mm；侧面防护结构无破裂。",
+        clauseType = ClauseType.TESTING_METHOD,
+        relatedSections = listOf("§7", "§7.1", "Annex 7 Appendix 3")
+    )
+
+    // 测试安装要求
+    val TEST_INSTALLATION = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "Annex 7",
+        clauseTitle = "测试安装要求",
+        clauseContent = "整体式ISOFIX型：施加135±15N预紧力，上拉带张力50±5N；安全带固定型：预紧力50±5N，卷收器残留织带≥150mm；Dummy定位：用垫片隔离座椅靠背；安装后10分钟内完成测试。",
+        clauseType = ClauseType.TESTING_METHOD,
+        relatedSections = listOf("§7", "§7.1", "Annex 6", "Annex 7")
+    )
+
+    // 生产一致性控制
+    val PRODUCTION_CONFORMITY = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§9, Annex 12",
+        clauseTitle = "生产一致性控制要求",
+        clauseContent = "批量控制：首批量50-5000件，抽取5件动态测试；抽检频率：无ISO体系每半年1次，有ISO体系每年1次；合格标准：头部位移≤1.05倍限值，均值+标准差≤限值；测试项目：卷收器、织带、微滑移、能量吸收、动态碰撞。",
+        clauseType = ClauseType.QUALITY_CONTROL,
+        relatedSections = listOf("§9", "Annex 12")
+    )
+
+    // 用户说明书要求
+    val USER_MANUAL = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§10",
+        clauseTitle = "用户说明书要求",
+        clauseContent = "语言：销售国官方语言，含多语言可选；核心内容：安装步骤（图文）、适配车型、身高/体重范围、调节方法、清洁说明、碰撞后更换提示；警告信息：后向约束禁用前排气囊位、不可改装、超期禁用（通常5-7年）；需保留至ECRS使用寿命结束。",
+        clauseType = ClauseType.USER_INFORMATION,
+        relatedSections = listOf("§10", "§10.1", "§10.2")
+    )
+
+    // 标识要求
+    val MARKING_REQUIREMENT = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§11",
+        clauseTitle = "标识要求",
+        clauseContent = "基础信息标签：制造商、生产日期、朝向、身高范围、最大体重；后向约束警告标签：最小60×120mm，儿童头部区域；i-Size标识：最小25×25mm，安装时可见；织带路径标识：绿色标识，区分腰带/肩带路径。",
+        clauseType = ClauseType.USER_INFORMATION,
+        relatedSections = listOf("§11", "§11.1", "§11.2", "Annex 2")
+    )
+
+    // 认证申请材料
+    val APPLICATION_DOCUMENTS = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§13, Annex 20",
+        clauseTitle = "认证申请材料要求",
+        clauseContent = "核心材料：申请表、技术描述（材料/结构/载荷限制）、毒性/燃烧声明、安装说明书、产品图纸、样品（含10米织带）；特定车型型额外提供：车辆适配列表、车辆结构图纸、安装示意图；样品数量：按技术服务机构要求。",
+        clauseType = ClauseType.CERTIFICATION,
+        relatedSections = listOf("§13", "Annex 20")
+    )
+
+    // 环境与耐久性测试
+    val ENVIRONMENTAL_TEST = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.3",
+        clauseTitle = "环境与耐久性测试要求",
+        clauseContent = "温度测试：80℃×24h + 3个循环（100℃×6h→0℃×6h→23℃）；腐蚀测试：50小时盐雾测试，无明显腐蚀；粉尘测试：5小时石英粉尘测试；能量吸收：头部冲击区域峰值加速度＜60g（附件13测试方法）。",
+        clauseType = ClauseType.TESTING_METHOD,
+        relatedSections = listOf("§6", "§6.3", "Annex 3", "Annex 4")
+    )
+
+    fun getAllClauses(): List<StandardClause> {
+        return listOf(
+            HEADREST_ADJUSTMENT,
+            SEAT_ANGLE_FORWARD,
+            RECLINE_ANGLE_REAR,
+            ISOFIX_INTERFACE,
+            SUPPORT_LEG,
+            FRONT_IMPACT_TEST,
+            SIDE_IMPACT_TEST,
+            ISOFIX_STRENGTH_TEST,
+            SUPPORT_LEG_STABILITY_TEST,
+            PRODUCT_CLASSIFICATION,
+            // 新增R129r4e详细条款
+            MATERIAL_TOXICITY,
+            FLAMMABILITY_NON_BUILTIN,
+            FLAMMABILITY_BUILTIN,
+            WEBBING_REQUIREMENT,
+            BUCKLE_REQUIREMENT,
+            ADJUSTMENT_DEVICE,
+            AUTO_LOCKING_RETRACTOR,
+            EMERGENCY_LOCKING_RETRACTOR,
+            SUPPORT_LEG_DEVICE,
+            TOP_TETHER_DEVICE,
+            INTERNAL_GEOMETRY,
+            EXTERNAL_ENVELOPE,
+            REAR_IMPACT_TEST,
+            SIDE_IMPACT_TEST_R129,
+            TEST_INSTALLATION,
+            PRODUCTION_CONFORMITY,
+            USER_MANUAL,
+            MARKING_REQUIREMENT,
+            APPLICATION_DOCUMENTS,
+            ENVIRONMENTAL_TEST
+        )
+    }
+        standardName = "ECE R129 Rev.4",
+        clauseId = "§6.1.2.7",
+        clauseTitle = "年龄和身高限制要求",
+        clauseContent = "15个月以下儿童必须使用后向或侧向儿童约束系统。后向座椅应能容纳身高至83cm的儿童。前向座椅不应设计用于容纳身高低于76cm的儿童。可转换座椅在其后向配置下应能容纳身高至83cm的儿童。非整体式儿童约束系统不得批准低于100cm的身高，上限不能低于105cm，头部保护应覆盖至135cm。",
+        clauseType = ClauseType.REQUIREMENT,
+        relatedSections = listOf("§6", "§6.1", "§6.1.2")
+    )
+
     fun getAllClauses(): List<StandardClause> {
         return listOf(
             HEADREST_ADJUSTMENT,
