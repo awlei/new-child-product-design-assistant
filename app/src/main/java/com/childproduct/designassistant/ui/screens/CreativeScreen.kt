@@ -134,7 +134,7 @@ fun CreativeScreen(
                 )
                 ProductTypeWithStandardSelector(
                     selectedProductType = selectedProductType,
-                    onProductTypeSelected = { selectedProductType = it }
+                    onProductTypeSelected = { type -> selectedProductType = type }
                 )
 
                 // 标准适配提示

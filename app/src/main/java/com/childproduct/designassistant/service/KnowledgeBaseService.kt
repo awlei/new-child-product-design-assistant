@@ -277,7 +277,7 @@ class KnowledgeBaseService {
         val baseScore = matches.toFloat() / queryWords.size
         
         // 调整分数：根据匹配位置给予额外分数
-        val firstMatchIndex = contentLower.indexOfAny(queryWords.toTypedArray())
+        val firstMatchIndex = queryWords.mapNotNull { word -> contentLower.indexOf(word).takeIf { it >= 0 } }.minOrNull() ?: -1
         val positionBonus = if (firstMatchIndex >= 0 && firstMatchIndex < 100) 0.2f else 0f
         
         return (baseScore + positionBonus).coerceAtMost(1.0f)
