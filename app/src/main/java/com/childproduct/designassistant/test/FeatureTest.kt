@@ -125,10 +125,10 @@ class FeatureTest {
 
         assertTrue(eceR129!!.sections.isNotEmpty(), "应该有章节")
 
-        val正面碰撞测试 = eceR129.sections.find { it.sectionId == "§5.3.2" }
-        assertNotNull(正面碰撞测试, "应该有正面碰撞测试章节")
-        assertTrue(正面碰撞测试!!.isMandatory, "正面碰撞测试应该是强制的")
-        assertTrue(正面碰撞测试.sectionContent.contains("Hybrid III 3岁假人"), "应该包含假人信息")
+        val frontCollisionTest = eceR129.sections.find { it.sectionId == "§5.3.2" }
+        assertNotNull(frontCollisionTest, "应该有正面碰撞测试章节")
+        assertTrue(frontCollisionTest!!.isMandatory, "正面碰撞测试应该是强制的")
+        assertTrue(frontCollisionTest.sectionContent.contains("Hybrid III 3岁假人"), "应该包含假人信息")
     }
 
     /**
