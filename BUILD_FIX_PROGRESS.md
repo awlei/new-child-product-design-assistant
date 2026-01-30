@@ -108,6 +108,53 @@ commit f265c86: fix: 修复未解析引用和函数调用参数错误
 
 ## 构建监控
 
-当前状态：已推送代码，等待 GitHub Actions 构建完成
+当前状态：第4轮修复已推送代码，等待 GitHub Actions 构建完成
 
 查看构建状态：https://github.com/awlei/new-child-product-design-assistant/actions
+
+---
+
+## 修复轮次记录
+
+### 第3轮修复 ✅ (commit e89ff61)
+**问题**:
+1. KnowledgeBaseService.kt 中缺少 `materialSuggestions` 映射
+2. CreativeIdea.kt 中缺少 `materials` 字段
+
+**修复内容**:
+- 在 `KnowledgeBaseService.kt` 中添加了 `materialSuggestions` 的完整映射
+- 在 `CreativeIdea.kt` 中添加了 `materials: List<String> = emptyList()` 字段
+
+### 第2轮修复 ✅ (commit f265c86)
+**问题**:
+1. DocumentLearningScreen.kt 中 `LearningStatus` 未解析
+2. CreativeScreen.kt 中 lambda 参数 `it` 歧义
+3. KnowledgeBaseService.kt 中 `indexOfAny` 调用错误
+4. SafetyScreen.kt 中缺少 `FontWeight` 导入
+
+**修复内容**:
+- 显式导入 `LearningStatus`
+- 重命名 lambda 参数避免歧义
+- 重写 `indexOfAny` 调用逻辑
+- 添加 `FontWeight` 导入
+
+### 第1轮修复 ✅ (commit dd25ab7)
+**问题**:
+1. WeightUnit 重复声明
+2. ProductTypeWithStandardSelector 重复声明
+3. ChatMessage 中 isSystemMessage 重复声明
+4. when 表达式缺少分支
+
+**修复内容**:
+- 删除重复的 `WeightUnit` 定义
+- 重命名冲突函数避免重载冲突
+- 修复 when 表达式完整分支
+
+### 第4轮修复 ✅ (commit ff79b53)
+**问题**:
+1. SafetyScreen.kt 字段名引用错误（name → itemName, description → notes）
+2. TechnicalRecommendationScreen.kt onClick 参数错误
+
+**修复内容**:
+- 修复 SafetyItem 字段引用
+- 将 Row(onClick) 改为 Row(modifier = clickable)
