@@ -182,52 +182,147 @@ class EceR129StandardDatabase {
             )
         )
 
-        // 测试矩阵
+        // 动态测试矩阵（参考ROADMATE 360）
+        // 基于输入参数和输出参数的详细测试用例
+        fun getDynamicTestMatrix(heightRange: String): List<TestMatrixDisplayItem> {
+            val mapper = HeightAgeGroupMapper()
+            val heightMatch = mapper.matchHeightRange(heightRange,
+                com.childproduct.designassistant.model.ProductType.CHILD_SAFETY_SEAT)
+            
+            val generator = DynamicTestMatrixGenerator()
+            val testMatrix = generator.generateTestMatrix(
+                productName = "儿童安全座椅",
+                productId = "CHILD_SAFETY_SEAT",
+                standard = "ECE R129",
+                heightRange = heightRange,
+                productType = "CHILD_SAFETY_SEAT"
+            )
+            
+            return testMatrix.testCases.map { it.toDisplayItem() }
+        }
+        
+        // 测试矩阵（简化版，用于显示）
         val TEST_MATRIX = listOf(
             TestMatrixItem(
-                testName = "正面撞击测试",
+                testName = "正面撞击测试（Q0 + 后向 + 直立）",
                 standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物",
-                dummyType = "Q0, Q1.5, Q3, Q6, Q10",
-                acceptanceCriteria = "头部伤害指标HIC≤324，胸部加速度≤55g"
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
+                dummyType = "Q0（新生儿）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
             ),
             TestMatrixItem(
-                testName = "侧面碰撞测试",
-                standardClause = "ECE R129 §5.3.3",
-                testMethod = "50km/h 侧面撞击可变形障碍物",
-                dummyType = "Q1.5, Q3, Q6",
-                acceptanceCriteria = "头部偏移量≤150mm，颈部力≤2.5kN"
+                testName = "正面撞击测试（Q0 + 后向 + 倾斜）",
+                standardClause = "ECE R129 §5.3.2",
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿，靠背倾斜",
+                dummyType = "Q0（新生儿）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
             ),
             TestMatrixItem(
-                testName = "后向翻滚测试",
+                testName = "后向翻滚测试（Q0）",
                 standardClause = "ECE R129 §5.3.4",
-                testMethod = "30km/h 后向翻滚",
-                dummyType = "Q0, Q1.5",
-                acceptanceCriteria = "假人加速度≤25g，座椅无结构性变形"
+                testMethod = "30km/h 后向翻滚，ISOFIX 3点，带支撑腿",
+                dummyType = "Q0（新生儿）",
+                acceptanceCriteria = "假人加速度 ≤ 25g，座椅无结构性变形"
+            ),
+            TestMatrixItem(
+                testName = "正面撞击测试（Q1.5 + 前向）",
+                standardClause = "ECE R129 §5.3.2",
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
+                dummyType = "Q1.5（18个月）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+            ),
+            TestMatrixItem(
+                testName = "侧面碰撞测试（Q1.5）",
+                standardClause = "ECE R129 §5.3.3",
+                testMethod = "50km/h 侧面撞击可变形障碍物，ISOFIX 3点",
+                dummyType = "Q1.5（18个月）",
+                acceptanceCriteria = "头部偏移量 ≤ 150mm，颈部力 ≤ 2.5kN"
+            ),
+            TestMatrixItem(
+                testName = "正面撞击测试（Q3 + 前向 + 直立）",
+                standardClause = "ECE R129 §5.3.2",
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
+                dummyType = "Q3（3岁）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+            ),
+            TestMatrixItem(
+                testName = "正面撞击测试（Q3 + 前向 + 倾斜）",
+                standardClause = "ECE R129 §5.3.2",
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿，靠背倾斜",
+                dummyType = "Q3（3岁）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+            ),
+            TestMatrixItem(
+                testName = "侧面碰撞测试（Q3）",
+                standardClause = "ECE R129 §5.3.3",
+                testMethod = "50km/h 侧面撞击可变形障碍物，ISOFIX 3点",
+                dummyType = "Q3（3岁）",
+                acceptanceCriteria = "头部偏移量 ≤ 150mm，颈部力 ≤ 2.5kN"
+            ),
+            TestMatrixItem(
+                testName = "正面撞击测试（Q6 + 前向）",
+                standardClause = "ECE R129 §5.3.2",
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
+                dummyType = "Q6（6岁）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+            ),
+            TestMatrixItem(
+                testName = "侧面碰撞测试（Q6）",
+                standardClause = "ECE R129 §5.3.3",
+                testMethod = "50km/h 侧面撞击可变形障碍物，ISOFIX 3点",
+                dummyType = "Q6（6岁）",
+                acceptanceCriteria = "头部偏移量 ≤ 150mm，颈部力 ≤ 2.5kN"
+            ),
+            TestMatrixItem(
+                testName = "正面撞击测试（Q10 + 前向）",
+                standardClause = "ECE R129 §5.3.2",
+                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点",
+                dummyType = "Q10（10岁）",
+                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
             ),
             TestMatrixItem(
                 testName = "ISOFIX强度测试",
                 standardClause = "GB 27887-2024 §6.2",
                 testMethod = "施加10kN拉力至ISOFIX锚点",
                 dummyType = "无",
-                acceptanceCriteria = "ISOFIX连接件无变形，位移≤15mm"
+                acceptanceCriteria = "ISOFIX连接件无变形，位移 ≤ 15mm"
             ),
             TestMatrixItem(
                 testName = "支撑腿强度测试",
                 standardClause = "ECE R129 §5.5.3",
                 testMethod = "施加2.5kN垂直载荷至支撑腿",
                 dummyType = "无",
-                acceptanceCriteria = "支撑腿无断裂，偏转≤10mm"
+                acceptanceCriteria = "支撑腿无断裂，偏转 ≤ 10mm"
             ),
             TestMatrixItem(
                 testName = "安全带锁止测试",
                 standardClause = "GB 6095-2021 §5.2",
                 testMethod = "施加5kN拉力至安全带",
                 dummyType = "无",
-                acceptanceCriteria = "锁止机构无解锁，延伸率≤10%"
+                acceptanceCriteria = "锁止机构无解锁，延伸率 ≤ 10%"
             ),
             TestMatrixItem(
                 testName = "头托调节耐久性测试",
+                standardClause = "ECE R129 §5.4.2",
+                testMethod = "反复调节头托10000次",
+                dummyType = "无",
+                acceptanceCriteria = "调节机构无卡滞，档位准确"
+            ),
+            TestMatrixItem(
+                testName = "材料燃烧性测试",
+                standardClause = "GB 6675.3-2014 §5.3",
+                testMethod = "垂直燃烧测试",
+                dummyType = "无",
+                acceptanceCriteria = "燃烧速率 ≤ 100mm/min"
+            ),
+            TestMatrixItem(
+                testName = "可迁移元素测试",
+                standardClause = "GB 6675.4-2014 §4",
+                testMethod = "ICP-MS 检测",
+                dummyType = "无",
+                acceptanceCriteria = "符合GB 6675限值要求"
+            )
+        )
                 standardClause = "ECE R129 §5.4.2",
                 testMethod = "反复调节头托10000次",
                 dummyType = "无",
