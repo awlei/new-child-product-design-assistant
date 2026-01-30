@@ -885,7 +885,7 @@ fun MaterialRow(name: String, standard: String) {
  * 测试参数行组件
  */
 @Composable
-fun TestParameterRow(label: String, value: String) {
+fun IntegratedReportTestParameterRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

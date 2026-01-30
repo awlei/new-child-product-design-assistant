@@ -139,7 +139,11 @@ class MainViewModel : ViewModel() {
                     heightRange,
                     "根据身高范围自动确定",
                     productType,
-                    TechnicalQuestion.STRUCTURAL_DESIGN
+                    TechnicalQuestion(
+                        category = QuestionCategory.STRUCTURAL_DESIGN,
+                        question = "如何进行结构设计优化？",
+                        context = "基于ECE R129/GB 27887标准"
+                    )
                 )
                 _technicalRecommendation.value = recommendation
 

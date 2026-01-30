@@ -121,12 +121,12 @@ fun DesignPrinciplesCard() {
                 description = "所有设计决策必须首先符合ECE R129/GB 27887标准要求，确保儿童乘坐安全"
             )
             DesignPrincipleItem(
-                icon = Icons.Default.Comfort,
+                icon = Icons.Default.SentimentSatisfied,
                 title = "舒适体验",
                 description = "在确保安全的前提下，优化座椅舒适性，提升儿童乘坐体验"
             )
             DesignPrincipleItem(
-                icon = Icons.Default.Ease,
+                icon = Icons.Default.CheckCircle,
                 title = "易于使用",
                 description = "简化安装和使用流程，确保家长能够正确、快速地安装和使用"
             )

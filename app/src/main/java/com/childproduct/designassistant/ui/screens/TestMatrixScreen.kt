@@ -297,7 +297,7 @@ fun ParameterItem(name: String, description: String) {
  * 测试参数行组件
  */
 @Composable
-fun TestParameterRow(label: String, value: String) {
+fun TestMatrixScreenTestParameterRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

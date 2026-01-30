@@ -50,7 +50,7 @@ data class DimensionalThreshold(
 /**
  * 产品配置信息
  */
-data class ProductConfigurationInfoInfo(
+data class ProductConfigurationInfo(
     val configType: String,          // 配置类型
     val description: String,         // 配置描述
     val standardClause: String?,     // 标准条款（可选）
@@ -322,11 +322,6 @@ class EceR129StandardDatabase {
                 dummyType = "无",
                 acceptanceCriteria = "符合GB 6675限值要求"
             )
-        )
-                standardClause = "ECE R129 §5.4.2",
-                testMethod = "反复调节头托10000次",
-                dummyType = "无",
-                acceptanceCriteria = "调节机构无卡滞，档位准确"
             ),
             TestMatrixItem(
                 testName = "材料燃烧性测试",
@@ -510,8 +505,8 @@ class EceR129StandardDatabase {
     )
 
     private fun getStrollerDimensionalThresholds(): List<DimensionalThreshold> = listOf(
-        DimensionalThreshold("推车宽度", "≤50", "cm", "EN 1888", "通过标准门洞（80cm）"),
-        DimensionalThreshold("折叠尺寸", "≤50×30×80", "cm", "EN 1888", "便于携带存放")
+        DimensionalThreshold("推车宽度", "≤50cm", "EN 1888", "通过标准门洞（80cm）"),
+        DimensionalThreshold("折叠尺寸", "≤50×30×80cm", "EN 1888", "便于携带存放")
     )
 
     private fun getStrollerConfigurations(): List<ProductConfigurationInfo> = listOf(
@@ -538,8 +533,8 @@ class EceR129StandardDatabase {
     )
 
     private fun getHighChairDimensionalThresholds(): List<DimensionalThreshold> = listOf(
-        DimensionalThreshold("座面高度", "45-65", "cm", "GB 28007-2011", "适配标准餐桌高度75cm"),
-        DimensionalThreshold("整体高度", "≤95", "cm", "ISO 8124-3", "避免重心过高")
+        DimensionalThreshold("座面高度", "45-65cm", "GB 28007-2011", "适配标准餐桌高度75cm"),
+        DimensionalThreshold("整体高度", "≤95cm", "ISO 8124-3", "避免重心过高")
     )
 
     private fun getHighChairConfigurations(): List<ProductConfigurationInfo> = listOf(
