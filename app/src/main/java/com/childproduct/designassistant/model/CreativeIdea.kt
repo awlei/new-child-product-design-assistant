@@ -8,6 +8,7 @@ data class CreativeIdea(
     val productType: ProductType,
     val theme: String,
     val features: List<String>,
+    val materials: List<String>,
     val colorPalette: List<String>,
     val safetyNotes: List<String>
 )

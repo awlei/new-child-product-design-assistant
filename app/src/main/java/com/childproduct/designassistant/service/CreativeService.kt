@@ -29,6 +29,13 @@ class CreativeService {
         AgeGroup.TEEN to listOf("#000000", "#FFFFFF", "#808080", "#C0C0C0", "#FF1493")
     )
 
+    private val materialSuggestions = mapOf(
+        ProductType.CHILD_SAFETY_SEAT to listOf("食品级PP塑料", "高回弹海绵", "安全带织带", "铝合金支架"),
+        ProductType.BABY_STROLLER to listOf("铝合金框架", "耐磨牛津布", "EVA发泡轮子", "不锈钢车轴"),
+        ProductType.CHILD_HOUSEHOLD_GOODS to listOf("ABS环保塑料", "实木（榉木/桦木）", "食品级硅胶", "不锈钢配件"),
+        ProductType.CHILD_HIGH_CHAIR to listOf("实木（榉木）", "食品级PP塑料", "不锈钢螺丝", "环保涂层")
+    )
+
     suspend fun generateCreativeIdea(
         ageGroup: AgeGroup,
         productType: ProductType,
@@ -37,6 +44,7 @@ class CreativeService {
         val themes = ageGroupThemes[ageGroup] ?: emptyList()
         val features = productTypeFeatures[productType] ?: emptyList()
         val colors = colorPalettes[ageGroup] ?: emptyList()
+        val materials = materialSuggestions[productType] ?: listOf("塑料", "木质", "金属", "布料")
 
         val finalTheme = if (customTheme.isNotEmpty()) customTheme else themes.random()
         val selectedFeatures = features.shuffled().take(4)
@@ -54,6 +62,7 @@ class CreativeService {
             productType = productType,
             theme = finalTheme,
             features = selectedFeatures,
+            materials = materials,
             colorPalette = selectedColors,
             safetyNotes = safetyNotes
         )
