@@ -58,12 +58,12 @@ object ECE_R129_Clauses {
 
     // 正向撞击测试
     val FRONT_IMPACT_TEST = StandardClause(
-        standardName = "ECE R129:2013",
-        clauseId = "§6.2",
-        clauseTitle = "正向碰撞测试要求",
-        clauseContent = "使用Q0、Q1.5、Q3假人进行正向碰撞测试，碰撞速度50km/h，加速度50g。合格标准：头部位移＜25cm；HIC＜700；胸部加速度＜55g。",
+        standardName = "ECE R129 Rev.4",
+        clauseId = "§6.6.4.3.1",
+        clauseTitle = "正向碰撞测试要求（Table 4）",
+        clauseContent = "使用Q0、Q1.5、Q3、Q6、Q10假人进行正向碰撞测试，碰撞速度50km/h。合格标准：头部位移符合平面限制；HPC≤600(Q0,Q1,Q1.5,Q3)或≤800(Q6,Q10)；头部加速度3ms≤75g(Q0,Q1,Q1.5,Q3)或≤80g(Q6,Q10)；胸部加速度3ms≤55g；腹部压力≤1.2bar(Q1.5,Q10)或≤1.0bar(Q3,Q6)。",
         clauseType = ClauseType.TESTING_METHOD,
-        relatedSections = listOf("§6", "§6.1", "§6.3")
+        relatedSections = listOf("§6", "§6.6.4", "§6.6.4.3", "§7.1.3")
     )
 
     // 侧面撞击测试
@@ -98,12 +98,12 @@ object ECE_R129_Clauses {
 
     // 产品分类
     val PRODUCT_CLASSIFICATION = StandardClause(
-        standardName = "ECE R129:2013",
-        clauseId = "§4.2.2",
-        clauseTitle = "产品分类定义",
-        clauseContent = "Forward facing – Class B1：适用于身高100-105cm的儿童，正向安装，需配备ISOFIX接口和支撑腿等安全装置。",
+        standardName = "ECE R129 Rev.4",
+        clauseId = "§6.1.2.7",
+        clauseTitle = "年龄和身高限制要求",
+        clauseContent = "15个月以下儿童必须使用后向或侧向儿童约束系统。后向座椅应能容纳身高至83cm的儿童。前向座椅不应设计用于容纳身高低于76cm的儿童。可转换座椅在其后向配置下应能容纳身高至83cm的儿童。非整体式儿童约束系统不得批准低于100cm的身高，上限不能低于105cm，头部保护应覆盖至135cm。",
         clauseType = ClauseType.REQUIREMENT,
-        relatedSections = listOf("§4", "§4.2")
+        relatedSections = listOf("§6", "§6.1", "§6.1.2")
     )
 
     fun getAllClauses(): List<StandardClause> {
@@ -211,33 +211,65 @@ class StandardMatchingService {
         minHeightCm: Int,
         maxHeightCm: Int
     ): StandardMatchResult {
-        val standardName = "ECE R129:2013"
+        val standardName = "ECE R129 Rev.4"
         var productClassification = ""
         var ageRange = ""
         var configurationRequirements = mutableListOf<String>()
         val relevantClauses = mutableListOf<StandardClause>()
 
-        // 根据身高范围确定分组
-        if (minHeightCm < 75) {
-            productClassification = "Group 0+ / Group 1"
-            ageRange = "新生儿 - 18个月"
-            configurationRequirements.add("后向安装（ECE R129 §5.1）")
-            relevantClauses.add(ECE_R129_Clauses.RECLINE_ANGLE_REAR)
-        } else if (maxHeightCm <= 105) {
-            productClassification = "Forward facing – Class B1"
-            ageRange = "15个月 - 4岁"
-            configurationRequirements.add("ISOFIX接口（ECE R129 §5.5.1）")
-            configurationRequirements.add("支撑腿（ECE R129 §5.5.3）")
-            relevantClauses.addAll(listOf(
-                ECE_R129_Clauses.PRODUCT_CLASSIFICATION,
-                ECE_R129_Clauses.ISOFIX_INTERFACE,
-                ECE_R129_Clauses.SUPPORT_LEG
-            ))
-        } else {
-            productClassification = "Forward facing – Class B2"
-            ageRange = "4岁 - 12岁"
-            configurationRequirements.add("ISOFIX接口（ECE R129 §5.5.1）")
-            relevantClauses.add(ECE_R129_Clauses.ISOFIX_INTERFACE)
+        // 根据身高范围确定分组（基于R129r4e §6.1.2.7要求）
+        when {
+            // 新生儿到15个月（40-83cm）- 必须后向
+            maxHeightCm <= 83 -> {
+                productClassification = "后向安装 / i-Size"
+                ageRange = "新生儿 - 15个月"
+                configurationRequirements.add("后向安装（ECE R129 §6.1.2.7）")
+                configurationRequirements.add("ISOFIX接口（ECE R129 §6.1.2.1）")
+                configurationRequirements.add("支撑腿或顶部系带（ECE R129 §6.1.2.1）")
+                relevantClauses.addAll(listOf(
+                    ECE_R129_Clauses.PRODUCT_CLASSIFICATION,
+                    ECE_R129_Clauses.RECLINE_ANGLE_REAR,
+                    ECE_R129_Clauses.ISOFIX_INTERFACE,
+                    ECE_R129_Clauses.SUPPORT_LEG
+                ))
+            }
+            // 15个月以上，76-105cm - 可以前向
+            minHeightCm >= 76 && maxHeightCm <= 105 -> {
+                productClassification = "前向安装 / i-Size"
+                ageRange = "15个月 - 4岁"
+                configurationRequirements.add("ISOFIX接口（ECE R129 §6.1.2.1）")
+                configurationRequirements.add("支撑腿或顶部系带（ECE R129 §6.1.2.1）")
+                relevantClauses.addAll(listOf(
+                    ECE_R129_Clauses.PRODUCT_CLASSIFICATION,
+                    ECE_R129_Clauses.ISOFIX_INTERFACE,
+                    ECE_R129_Clauses.SUPPORT_LEG
+                ))
+            }
+            // 增高垫（100cm以上）- 非整体式
+            minHeightCm >= 100 && maxHeightCm >= 105 -> {
+                productClassification = "非整体式 / i-Size booster seat"
+                ageRange = "4岁 - 12岁"
+                configurationRequirements.add("侧面碰撞保护至135cm（ECE R129 §6.1.3.3）")
+                configurationRequirements.add("ISOFIX接口（可选）")
+                relevantClauses.addAll(listOf(
+                    ECE_R129_Clauses.PRODUCT_CLASSIFICATION,
+                    ECE_R129_Clauses.SIDE_IMPACT_TEST
+                ))
+            }
+            else -> {
+                // 可转换座椅（覆盖多个分组）
+                productClassification = "可转换座椅 / i-Size"
+                ageRange = "新生儿 - 12岁"
+                configurationRequirements.add("后向前向可转换（ECE R129 §6.1.2.7）")
+                configurationRequirements.add("ISOFIX接口（ECE R129 §6.1.2.1）")
+                configurationRequirements.add("支撑腿或顶部系带（ECE R129 §6.1.2.1）")
+                relevantClauses.addAll(listOf(
+                    ECE_R129_Clauses.PRODUCT_CLASSIFICATION,
+                    ECE_R129_Clauses.RECLINE_ANGLE_REAR,
+                    ECE_R129_Clauses.ISOFIX_INTERFACE,
+                    ECE_R129_Clauses.SUPPORT_LEG
+                ))
+            }
         }
 
         // 添加通用相关条款
@@ -333,12 +365,30 @@ class StandardMatchingService {
             ProductType.CHILD_SAFETY_SEAT -> {
                 // 正向撞击测试
                 tests.add(ComplianceTestItem(
-                    testName = "正向撞击测试",
-                    testDummy = "Q0、Q1.5、Q3",
-                    testConditions = "碰撞速度50km/h，加速度50g",
-                    acceptanceCriteria = "头部位移＜25cm；HIC＜700",
+                    testName = "正向撞击测试（Q0, Q1, Q1.5）",
+                    testDummy = "Q0, Q1, Q1.5",
+                    testConditions = "碰撞速度50km/h，ΔV=52km/h",
+                    acceptanceCriteria = "HPC≤600；头部加速度3ms≤75g；胸部加速度3ms≤55g；腹部压力≤1.2bar(Q1.5)",
                     relatedClause = ECE_R129_Clauses.FRONT_IMPACT_TEST,
-                    testStandard = "ECE R129 §6.2"
+                    testStandard = "ECE R129 §7.1.3, §6.6.4.3.1"
+                ))
+
+                tests.add(ComplianceTestItem(
+                    testName = "正向撞击测试（Q3）",
+                    testDummy = "Q3",
+                    testConditions = "碰撞速度50km/h，ΔV=52km/h",
+                    acceptanceCriteria = "HPC≤800；头部加速度3ms≤80g；胸部加速度3ms≤55g；腹部压力≤1.0bar",
+                    relatedClause = ECE_R129_Clauses.FRONT_IMPACT_TEST,
+                    testStandard = "ECE R129 §7.1.3, §6.6.4.3.1"
+                ))
+
+                tests.add(ComplianceTestItem(
+                    testName = "正向撞击测试（Q6, Q10）",
+                    testDummy = "Q6, Q10",
+                    testConditions = "碰撞速度50km/h，ΔV=52km/h",
+                    acceptanceCriteria = "HPC≤800；头部加速度3ms≤80g；胸部加速度3ms≤55g；腹部压力≤1.0bar(Q6), 1.2bar(Q10)",
+                    relatedClause = ECE_R129_Clauses.FRONT_IMPACT_TEST,
+                    testStandard = "ECE R129 §7.1.3, §6.6.4.3.1"
                 ))
 
                 // 侧面撞击测试

@@ -202,84 +202,84 @@ class EceR129StandardDatabase {
             return testMatrix.testCases.map { it.toDisplayItem() }
         }
         
-        // 测试矩阵（简化版，用于显示）
+        // 测试矩阵（简化版，用于显示，基于R129r4e §6.6.4.3.1 Table 4）
         val TEST_MATRIX = listOf(
             TestMatrixItem(
                 testName = "正面撞击测试（Q0 + 后向 + 直立）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
-                dummyType = "Q0（新生儿）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点，带支撑腿",
+                dummyType = "Q0（新生儿，≤60cm）",
+                acceptanceCriteria = "HPC≤600，头部加速度3ms≤75g，胸部加速度3ms≤55g"
             ),
             TestMatrixItem(
                 testName = "正面撞击测试（Q0 + 后向 + 倾斜）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿，靠背倾斜",
-                dummyType = "Q0（新生儿）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点，带支撑腿，靠背倾斜",
+                dummyType = "Q0（新生儿，≤60cm）",
+                acceptanceCriteria = "HPC≤600，头部加速度3ms≤75g，胸部加速度3ms≤55g"
             ),
             TestMatrixItem(
                 testName = "后向翻滚测试（Q0）",
-                standardClause = "ECE R129 §5.3.4",
-                testMethod = "30km/h 后向翻滚，ISOFIX 3点，带支撑腿",
-                dummyType = "Q0（新生儿）",
-                acceptanceCriteria = "假人加速度 ≤ 25g，座椅无结构性变形"
+                standardClause = "ECE R129 Rev.4 §7.1.3.2",
+                testMethod = "30km/h 后向撞击，ΔV=32km/h，ISOFIX 3点，带支撑腿",
+                dummyType = "Q0（新生儿，≤60cm）",
+                acceptanceCriteria = "假人加速度≤25g，座椅无结构性变形"
             ),
             TestMatrixItem(
                 testName = "正面撞击测试（Q1.5 + 前向）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
-                dummyType = "Q1.5（18个月）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点，带支撑腿",
+                dummyType = "Q1.5（18个月，75-87cm）",
+                acceptanceCriteria = "HPC≤600，头部加速度3ms≤75g，胸部加速度3ms≤55g，腹部压力≤1.2bar"
             ),
             TestMatrixItem(
                 testName = "侧面碰撞测试（Q1.5）",
-                standardClause = "ECE R129 §5.3.3",
-                testMethod = "50km/h 侧面撞击可变形障碍物，ISOFIX 3点",
-                dummyType = "Q1.5（18个月）",
-                acceptanceCriteria = "头部偏移量 ≤ 150mm，颈部力 ≤ 2.5kN"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.5.1",
+                testMethod = "32km/h 侧面撞击可变形障碍物，门侵入深度，ISOFIX 3点",
+                dummyType = "Q1.5（18个月，75-87cm）",
+                acceptanceCriteria = "头部偏移量≤150mm，头部加速度3ms≤75g，头部无接触车门"
             ),
             TestMatrixItem(
                 testName = "正面撞击测试（Q3 + 前向 + 直立）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
-                dummyType = "Q3（3岁）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点，带支撑腿",
+                dummyType = "Q3（3岁，87-105cm）",
+                acceptanceCriteria = "HPC≤800，头部加速度3ms≤80g，胸部加速度3ms≤55g，腹部压力≤1.0bar"
             ),
             TestMatrixItem(
                 testName = "正面撞击测试（Q3 + 前向 + 倾斜）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿，靠背倾斜",
-                dummyType = "Q3（3岁）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点，带支撑腿，靠背倾斜",
+                dummyType = "Q3（3岁，87-105cm）",
+                acceptanceCriteria = "HPC≤800，头部加速度3ms≤80g，胸部加速度3ms≤55g，腹部压力≤1.0bar"
             ),
             TestMatrixItem(
                 testName = "侧面碰撞测试（Q3）",
-                standardClause = "ECE R129 §5.3.3",
-                testMethod = "50km/h 侧面撞击可变形障碍物，ISOFIX 3点",
-                dummyType = "Q3（3岁）",
-                acceptanceCriteria = "头部偏移量 ≤ 150mm，颈部力 ≤ 2.5kN"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.5.1",
+                testMethod = "32km/h 侧面撞击可变形障碍物，门侵入深度，ISOFIX 3点",
+                dummyType = "Q3（3岁，87-105cm）",
+                acceptanceCriteria = "头部偏移量≤150mm，头部加速度3ms≤80g，头部无接触车门"
             ),
             TestMatrixItem(
                 testName = "正面撞击测试（Q6 + 前向）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点，带支撑腿",
-                dummyType = "Q6（6岁）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点，带支撑腿",
+                dummyType = "Q6（6岁，105-125cm）",
+                acceptanceCriteria = "HPC≤800，头部加速度3ms≤80g，胸部加速度3ms≤55g，腹部压力≤1.0bar"
             ),
             TestMatrixItem(
                 testName = "侧面碰撞测试（Q6）",
-                standardClause = "ECE R129 §5.3.3",
-                testMethod = "50km/h 侧面撞击可变形障碍物，ISOFIX 3点",
-                dummyType = "Q6（6岁）",
-                acceptanceCriteria = "头部偏移量 ≤ 150mm，颈部力 ≤ 2.5kN"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.5.1",
+                testMethod = "32km/h 侧面撞击可变形障碍物，门侵入深度，ISOFIX 3点",
+                dummyType = "Q6（6岁，105-125cm）",
+                acceptanceCriteria = "头部偏移量≤150mm，头部加速度3ms≤80g，头部无接触车门"
             ),
             TestMatrixItem(
                 testName = "正面撞击测试（Q10 + 前向）",
-                standardClause = "ECE R129 §5.3.2",
-                testMethod = "50km/h 正面撞击刚性障碍物，ISOFIX 3点",
-                dummyType = "Q10（10岁）",
-                acceptanceCriteria = "HIC36 ≤ 324，胸部加速度 ≤ 55g"
+                standardClause = "ECE R129 Rev.4 §7.1.3, §6.6.4.3.1",
+                testMethod = "50km/h 正面撞击刚性障碍物，ΔV=52km/h，ISOFIX 3点",
+                dummyType = "Q10（10岁，125-150cm）",
+                acceptanceCriteria = "HPC≤800，头部加速度3ms≤80g，胸部加速度3ms≤55g，腹部压力≤1.2bar"
             ),
             TestMatrixItem(
                 testName = "ISOFIX强度测试",
