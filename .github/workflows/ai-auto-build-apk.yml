@@ -28,23 +28,20 @@ jobs:
     - name: 🤖 Set up Android SDK
       uses: android-actions/setup-android@v3
 
-    - name: 📦 Verify and regenerate Gradle Wrapper
+    - name: 📦 Verify Gradle Wrapper
       run: |
-        echo "=== Checking Gradle Wrapper ==="
+        echo "=== Verifying Gradle Wrapper ==="
+        echo "Gradle version: $(cat gradle/wrapper/gradle-wrapper.properties | grep distributionUrl)"
+        echo "Wrapper JAR exists: $([ -f "gradle/wrapper/gradle-wrapper.jar" ] && echo "YES" || echo "NO")"
         if [ ! -f "gradle/wrapper/gradle-wrapper.jar" ]; then
-          echo "Gradle wrapper JAR not found, generating..."
-          gradle wrapper --gradle-version 8.2
-        else
-          echo "Gradle wrapper JAR found, verifying..."
-          # Test if the JAR is valid by listing its contents
-          unzip -t gradle/wrapper/gradle-wrapper.jar > /dev/null 2>&1
-          if [ $? -ne 0 ]; then
-            echo "Gradle wrapper JAR is corrupted, regenerating..."
-            gradle wrapper --gradle-version 8.2
-          else
-            echo "Gradle wrapper JAR is valid"
-          fi
+          echo "❌ ERROR: gradle-wrapper.jar not found!"
+          exit 1
         fi
+        if [ ! -f "gradle/wrapper/gradle-wrapper.properties" ]; then
+          echo "❌ ERROR: gradle-wrapper.properties not found!"
+          exit 1
+        fi
+        echo "✅ Gradle wrapper files verified"
 
     - name: 🇨🇳 Configure Maven mirror (China)
       run: |
