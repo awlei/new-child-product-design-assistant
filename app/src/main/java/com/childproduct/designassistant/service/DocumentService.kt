@@ -235,6 +235,12 @@ $colors
 
     private fun getAgeGroupCharacteristics(ageGroup: AgeGroup): AgeCharacteristics {
         return when (ageGroup) {
+            AgeGroup.ALL -> AgeCharacteristics(
+                "全年龄段通用，需综合考虑各年龄段的特征",
+                "生长发育差异大，需可调节设计",
+                "需求多样化，需兼顾安全和舒适",
+                "适合多功能、可调节的产品设计"
+            )
             AgeGroup.INFANT -> AgeCharacteristics(
                 "主要通过感官探索世界，对颜色和声音敏感",
                 "抓握能力正在发展，大运动开始发展",
