@@ -1,6 +1,7 @@
 package com.childproduct.designassistant.service
 
 import com.childproduct.designassistant.data.BrandDatabase
+import com.childproduct.designassistant.data.HeightAgeGroupMapper
 import com.childproduct.designassistant.data.StandardDatabase
 import com.childproduct.designassistant.model.*
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ class TechnicalAnalysisEngine {
 
     private val standardDatabase = StandardDatabase
     private val brandDatabase = BrandDatabase
+    private val heightAgeGroupMapper = HeightAgeGroupMapper()
 
     suspend fun generateTechnicalRecommendation(
         heightRange: String,
@@ -23,21 +25,32 @@ class TechnicalAnalysisEngine {
         technicalQuestion: TechnicalQuestion
     ): TechnicalRecommendation = withContext(Dispatchers.IO) {
 
-        // 1. 匹配标准
+        // 1. 身高-年龄段-标准分组匹配（新增）
+        val heightSegmentMatch = heightAgeGroupMapper.matchHeightRange(heightRange, productType)
+        val isizeDummies = heightAgeGroupMapper.getISizeDummies(heightRange)
+
+        // 2. 匹配标准
         val standardCategory = mapProductTypeToStandardCategory(productType)
         val matchedStandards = matchStandards(heightRange, weightRange, standardCategory)
 
-        // 2. 品牌比较
+        // 3. 生成专业设计主题（新增）
+        val professionalDesignTheme = generateProfessionalDesignTheme(
+            productType,
+            matchedStandards,
+            heightSegmentMatch
+        )
+
+        // 4. 品牌比较
         val brandComparison = brandDatabase.getBrandComparison(heightRange, weightRange)
 
-        // 3. 生成建议规格
+        // 5. 生成建议规格
         val suggestedSpecs = generateSuggestedSpecifications(
             matchedStandards,
             brandComparison,
             productType
         )
 
-        // 4. 生成 DVP
+        // 6. 生成 DVP
         val dvp = generateDVP(
             productType,
             matchedStandards.map { it.standard.region },
@@ -45,11 +58,12 @@ class TechnicalAnalysisEngine {
             technicalQuestion
         )
 
-        // 5. 生成附加说明
+        // 7. 生成附加说明
         val additionalNotes = generateAdditionalNotes(
             matchedStandards,
             technicalQuestion,
-            suggestedSpecs
+            suggestedSpecs,
+            heightSegmentMatch  // 新增参数
         )
 
         TechnicalRecommendation(
@@ -449,46 +463,104 @@ ${group.envelopeClass?.let { "i-Size分类: $it" } ?: ""}
     private fun generateAdditionalNotes(
         matchedStandards: List<StandardMatch>,
         technicalQuestion: TechnicalQuestion,
-        suggestedSpecs: SuggestedSpecifications
+        suggestedSpecs: SuggestedSpecifications,
+        heightSegmentMatch: com.childproduct.designassistant.data.HeightSegmentMatch? = null
     ): List<String> {
         val notes = mutableListOf<String>()
 
-        // 标准相关说明
+        // ===== 新增：身高-年龄段-标准分组匹配信息 =====
+        if (heightSegmentMatch != null) {
+            notes.add("📊 身高匹配分析")
+            notes.add("   输入身高: ${heightSegmentMatch.minHeight}-${heightSegmentMatch.maxHeight} cm")
+            notes.add("   对应年龄: ${heightSegmentMatch.ageRange}")
+            if (heightSegmentMatch.matchedGroups.isNotEmpty()) {
+                notes.add("   标准分组: ${heightSegmentMatch.matchedGroups.joinToString(", ") { it.displayName }}")
+            }
+            if (heightSegmentMatch.isFullRange) {
+                notes.add("   覆盖范围: ✅ 全范围（40-150cm，0-12岁）")
+            }
+            notes.add("   推荐朝向: ${heightSegmentMatch.recommendedDirection}")
+            notes.add("")
+        }
+
+        // ===== 标准相关说明 =====
         if (matchedStandards.isNotEmpty()) {
             val topMatch = matchedStandards.first()
             notes.add("💡 主要参考标准: ${topMatch.standard.code}")
             notes.add("   匹配度: ${String.format("%.0f%%", topMatch.matchScore * 100)}")
+            notes.add("   适用分组: ${topMatch.matchingGroup.code}")
+            notes.add("")
         }
 
-        // 规格相关说明
-        notes.add("📐 建议尺寸基于主流品牌平均值 + 10% 安全余量")
+        // ===== 规格相关说明 =====
+        notes.add("📐 建议尺寸（基于主流品牌平均值 + 10% 安全余量）")
         notes.add("   内部宽度: ${String.format("%.1f", suggestedSpecs.internalDimensions.seatWidth)} cm")
         notes.add("   内部深度: ${String.format("%.1f", suggestedSpecs.internalDimensions.seatDepth)} cm")
+        notes.add("   外部宽度: ${String.format("%.1f", suggestedSpecs.externalDimensions.width)} cm")
+        notes.add("   外部高度: ${String.format("%.1f", suggestedSpecs.externalDimensions.height)} cm")
+        notes.add("")
 
-        // 技术问题相关说明
+        // ===== 技术问题相关说明 =====
         when (technicalQuestion.category) {
             QuestionCategory.HEADREST_ADJUSTMENT -> {
-                notes.add("🔧 头托调节建议: 建议8-12档位，调节范围10-35cm")
+                notes.add("🔧 头托调节建议")
+                notes.add("   建议8-12档位，调节范围10-35cm")
                 notes.add("   头托宽度建议: 座椅宽度的90%左右")
+                notes.add("   参考Britax Dualfix M i-Size设计")
             }
             QuestionCategory.IMPACT_TESTING -> {
-                notes.add("🛡️ 碰撞测试: 需同时满足正面和侧面碰撞要求")
+                notes.add("🛡️ 碰撞测试建议")
+                notes.add("   需同时满足正面和侧面碰撞要求")
                 notes.add("   建议进行超越标准10-20%的强化测试")
+                notes.add("   参考ECE R129 §5.3.2/§5.3.3")
             }
             QuestionCategory.INSTALLATION -> {
-                notes.add("🔌 安装方式: ISOFIX + 支撑腿/顶部系带双重固定")
+                notes.add("🔌 安装方式建议")
+                notes.add("   ISOFIX + 支撑腿/顶部系带双重固定")
                 notes.add("   建议增加安装错误指示系统")
+                notes.add("   参考GB 27887-2024 §5.5")
             }
             else -> {}
         }
+        notes.add("")
 
-        // 合规提醒
+        // ===== 合规提醒 =====
         if (suggestedSpecs.recommendedStandards.size > 1) {
-            notes.add("⚠️  多市场合规: 建议进行国际标准兼容性测试")
+            notes.add("⚠️  多市场合规提醒")
+            notes.add("   建议进行国际标准兼容性测试")
             notes.add("   推荐标准: ${suggestedSpecs.recommendedStandards.joinToString(", ")}")
         }
 
         return notes
+    }
+
+    /**
+     * 生成专业设计主题
+     */
+    private fun generateProfessionalDesignTheme(
+        productType: ProductType,
+        matchedStandards: List<StandardMatch>,
+        heightSegmentMatch: com.childproduct.designassistant.data.HeightSegmentMatch?
+    ): String {
+        return when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> {
+                val standardCode = matchedStandards.firstOrNull()?.standard?.code ?: "ECE R129"
+                if (heightSegmentMatch?.isFullRange == true) {
+                    "ECE R129全分组安全适配主题（40-150cm，Group 0+/1/2/3）"
+                } else {
+                    "ECE R129标准适配主题（$standardCode）"
+                }
+            }
+            ProductType.CHILD_STROLLER -> {
+                "EN 1888便携避震合规主题"
+            }
+            ProductType.CHILD_HIGH_CHAIR -> {
+                "ISO 8124-3进食安全适配主题"
+            }
+            ProductType.CHILD_HOUSEHOLD_GOODS -> {
+                "GB 6675安全标准适配主题"
+            }
+        }
     }
 
     /**
