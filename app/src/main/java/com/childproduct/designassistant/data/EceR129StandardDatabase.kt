@@ -43,6 +43,7 @@ data class TestMatrixItem(
 data class DimensionalThreshold(
     val dimensionType: String,       // 尺寸类型
     val limit: String,               // 限制值
+    val unit: String,                // 单位
     val standardClause: String,      // 标准条款
     val description: String          // 说明
 )

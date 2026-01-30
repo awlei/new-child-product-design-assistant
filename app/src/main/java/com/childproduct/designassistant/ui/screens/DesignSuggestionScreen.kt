@@ -181,8 +181,8 @@ fun DesignSuggestionProductDesignThemeCard() {
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            DesignSuggestionInfoRow("覆盖年龄段", "0-12岁")
-            DesignSuggestionInfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
+            DesignSuggestionDesignSuggestionInfoRow("覆盖年龄段", "0-12岁")
+            DesignSuggestionDesignSuggestionInfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
 
             Spacer(modifier = Modifier.height(8.dp))
 

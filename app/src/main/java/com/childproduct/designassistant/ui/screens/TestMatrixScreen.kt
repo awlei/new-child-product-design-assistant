@@ -190,13 +190,13 @@ fun TestMatrixScreenTestMatrixItemCard(testIndex: Int) {
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     modifier = Modifier.padding(vertical = 4.dp)
                 ) {
-                    ("脉冲类型", "FRONTAL")
-                    ("撞击类型", "FRONTAL_RIGID")
-                    ("假人类型", if (testIndex <= 3) "Q0（新生儿）" else if (testIndex <= 6) "Q1（1岁）" else "Q3（3岁）")
-                    ("座椅方向", if (testIndex <= 8) "REARWARD_FACING" else "FORWARD_FACING")
-                    ("安装方式", "ISOFIX_3_PTS")
-                    ("产品配置", "UPRIGHT")
-                    ("速度", "50 km/h")
+                    TestMatrixTestParameterRow("脉冲类型", "FRONTAL")
+                    TestMatrixTestParameterRow("撞击类型", "FRONTAL_RIGID")
+                    TestMatrixTestParameterRow("假人类型", if (testIndex <= 3) "Q0（新生儿）" else if (testIndex <= 6) "Q1（1岁）" else "Q3（3岁）")
+                    TestMatrixTestParameterRow("座椅方向", if (testIndex <= 8) "REARWARD_FACING" else "FORWARD_FACING")
+                    TestMatrixTestParameterRow("安装方式", "ISOFIX_3_PTS")
+                    TestMatrixTestParameterRow("产品配置", "UPRIGHT")
+                    TestMatrixTestParameterRow("速度", "50 km/h")
 
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -297,7 +297,7 @@ fun ParameterItem(name: String, description: String) {
  * 测试参数行组件
  */
 @Composable
-fun TestMatrixScreen(label: String, value: String) {
+fun TestMatrixTestParameterRow(label: String, value: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

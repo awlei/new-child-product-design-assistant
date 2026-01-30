@@ -404,11 +404,11 @@ fun HeightMatchAnalysisCard() {
             Divider()
             
             // 匹配信息
-            IntegratedReportInfoRow("输入身高", "40-150 cm")
-            IntegratedReportInfoRow("对应年龄", "0-12岁")
-            IntegratedReportInfoRow("标准分组", "Group 0+/1/2/3（全分组）")
-            IntegratedReportInfoRow("覆盖范围", "✅ 全范围（40-150cm，0-12岁）")
-            IntegratedReportInfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
+            IntegratedReportIntegratedReportInfoRow("输入身高", "40-150 cm")
+            IntegratedReportIntegratedReportInfoRow("对应年龄", "0-12岁")
+            IntegratedReportIntegratedReportInfoRow("标准分组", "Group 0+/1/2/3（全分组）")
+            IntegratedReportIntegratedReportInfoRow("覆盖范围", "✅ 全范围（40-150cm，0-12岁）")
+            IntegratedReportIntegratedReportInfoRow("推荐朝向", "后向（优先）→ 前向（根据身高切换）")
         }
     }
 }
@@ -612,13 +612,13 @@ fun IntegratedReportTestMatrixItemCard(testIndex: Int) {
             
             // 测试参数
 
-("撞击类型", "FRONTAL_RIGID")
-("假人类型", "Q0（新生儿）")
-("座椅方向", "REARWARD_FACING")
-("安装方式", "ISOFIX_3_PTS")
-("产品配置", "UPRIGHT")
-("速度", "50 km/h")
-            
+            IntegratedReportTestParameterRow("撞击类型", "FRONTAL_RIGID")
+            IntegratedReportTestParameterRow("假人类型", "Q0（新生儿）")
+            IntegratedReportTestParameterRow("座椅方向", "REARWARD_FACING")
+            IntegratedReportTestParameterRow("安装方式", "ISOFIX_3_PTS")
+            IntegratedReportTestParameterRow("产品配置", "UPRIGHT")
+            IntegratedReportTestParameterRow("速度", "50 km/h")
+
             Spacer(modifier = Modifier.height(4.dp))
             
             // 合格标准
