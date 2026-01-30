@@ -321,7 +321,6 @@ class EceR129StandardDatabase {
                 testMethod = "ICP-MS 检测",
                 dummyType = "无",
                 acceptanceCriteria = "符合GB 6675限值要求"
-            )
             ),
             TestMatrixItem(
                 testName = "材料燃烧性测试",
