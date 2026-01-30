@@ -196,7 +196,7 @@ class HeightAgeGroupMapper {
 
         return when {
             minAge == "新生儿" -> "$minAge-$maxAge"
-            else -> "$minAge岁-$maxAge岁"
+            else -> "${minAge}岁-${maxAge}岁"
         }
     }
 
