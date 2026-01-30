@@ -21,6 +21,11 @@ import com.childproduct.designassistant.ui.screens.SafetyScreen
 import com.childproduct.designassistant.ui.screens.TechnicalRecommendationScreen
 import com.childproduct.designassistant.ui.screens.DocumentLearningScreen
 import com.childproduct.designassistant.ui.screens.ChatQAScreen
+import com.childproduct.designassistant.ui.screens.OneClickGenerationScreen
+import com.childproduct.designassistant.ui.screens.IntegratedReportScreen
+import com.childproduct.designassistant.ui.screens.TestMatrixScreen
+import com.childproduct.designassistant.ui.screens.DesignSuggestionScreen
+import com.childproduct.designassistant.ui.screens.CompetitorReferenceScreen
 import com.childproduct.designassistant.ui.theme.ChildProductDesignAssistantTheme
 
 class MainActivity : ComponentActivity() {
@@ -77,36 +82,42 @@ fun MainScreen() {
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { viewModel.selectTab(0) },
-                    icon = { Icon(Icons.Default.Assignment, contentDescription = null) },
-                    label = { Text("方案生成") }
+                    icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
+                    label = { Text("一键生成") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { viewModel.selectTab(1) },
-                    icon = { Icon(Icons.Default.Science, contentDescription = null) },
-                    label = { Text("测试矩阵") }
+                    icon = { Icon(Icons.Default.Assignment, contentDescription = null) },
+                    label = { Text("方案整合") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { viewModel.selectTab(2) },
-                    icon = { Icon(Icons.Default.EditNote, contentDescription = null) },
-                    label = { Text("设计建议") }
+                    icon = { Icon(Icons.Default.Science, contentDescription = null) },
+                    label = { Text("测试矩阵") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 3,
                     onClick = { viewModel.selectTab(3) },
-                    icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
-                    label = { Text("竞品参考") }
+                    icon = { Icon(Icons.Default.EditNote, contentDescription = null) },
+                    label = { Text("设计建议") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 4,
                     onClick = { viewModel.selectTab(4) },
-                    icon = { Icon(Icons.Default.School, contentDescription = null) },
-                    label = { Text("文档学习") }
+                    icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
+                    label = { Text("竞品参考") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 5,
                     onClick = { viewModel.selectTab(5) },
+                    icon = { Icon(Icons.Default.School, contentDescription = null) },
+                    label = { Text("文档学习") }
+                )
+                NavigationBarItem(
+                    selected = selectedTab == 6,
+                    onClick = { viewModel.selectTab(6) },
                     icon = { Icon(Icons.Default.Chat, contentDescription = null) },
                     label = { Text("智能问答") }
                 )
@@ -122,12 +133,13 @@ fun MainScreen() {
                 .padding(paddingValues)
         ) {
             when (selectedTab) {
-                0 -> CreativeScreen(viewModel = viewModel)
-                1 -> SafetyScreen(viewModel = viewModel)
-                2 -> DocumentScreen(viewModel = viewModel)
-                3 -> TechnicalRecommendationScreen(viewModel = viewModel)
-                4 -> DocumentLearningScreen(viewModel = viewModel)
-                5 -> ChatQAScreen(viewModel = viewModel)
+                0 -> OneClickGenerationScreen(viewModel = viewModel)
+                1 -> IntegratedReportScreen(viewModel = viewModel)
+                2 -> TestMatrixScreen(viewModel = viewModel)
+                3 -> DesignSuggestionScreen(viewModel = viewModel)
+                4 -> CompetitorReferenceScreen(viewModel = viewModel)
+                5 -> DocumentLearningScreen(viewModel = viewModel)
+                6 -> ChatQAScreen(viewModel = viewModel)
             }
 
             // 显示状态消息

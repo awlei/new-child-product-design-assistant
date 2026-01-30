@@ -111,6 +111,53 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun generateIntegratedScheme(
+        heightRange: String,
+        productType: ProductType,
+        standard: String
+    ) {
+        viewModelScope.launch {
+            _uiState.value = UiState.Loading
+            try {
+                // 生成创意
+                val idea = creativeService.generateCreativeIdea(
+                    AgeGroup.ALL,
+                    productType,
+                    "ECE R129/GB 27887合规设计"
+                )
+                _creativeIdea.value = idea
+
+                // 生成安全检查
+                val check = safetyService.performSafetyCheck(
+                    productType.displayName,
+                    AgeGroup.ALL
+                )
+                _safetyCheck.value = check
+
+                // 生成技术建议
+                val recommendation = technicalAnalysisEngine.generateTechnicalRecommendation(
+                    heightRange,
+                    "根据身高范围自动确定",
+                    productType,
+                    TechnicalQuestion.STRUCTURAL_DESIGN
+                )
+                _technicalRecommendation.value = recommendation
+
+                // 生成设计文档
+                val document = documentService.generateDesignDocument(
+                    productType.displayName,
+                    idea,
+                    check
+                )
+                _designDocument.value = document
+
+                _uiState.value = UiState.Success("全维度方案生成成功！")
+            } catch (e: Exception) {
+                _uiState.value = UiState.Error("生成失败：${e.message}")
+            }
+        }
+    }
+
     fun resetState() {
         _uiState.value = UiState.Initial
     }
