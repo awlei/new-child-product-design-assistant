@@ -26,7 +26,8 @@ import com.childproduct.designassistant.ui.screens.IntegratedReportScreen
 import com.childproduct.designassistant.ui.screens.TestMatrixScreen
 import com.childproduct.designassistant.ui.screens.DesignSuggestionScreen
 import com.childproduct.designassistant.ui.screens.CompetitorReferenceScreen
-import com.childproduct.designassistant.ui.theme.ChildProductDesignAssistantTheme
+import com.childproduct.designassistant.ui.screens.ComplianceManagementScreen
+import com.childproduct.designassistant.theme.ChildProductDesignAssistantTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,6 +122,12 @@ fun MainScreen() {
                     icon = { Icon(Icons.Default.Chat, contentDescription = null) },
                     label = { Text("智能问答") }
                 )
+                NavigationBarItem(
+                    selected = selectedTab == 7,
+                    onClick = { viewModel.selectTab(7) },
+                    icon = { Icon(Icons.Default.Verified, contentDescription = null) },
+                    label = { Text("合规管理") }
+                )
             }
         },
         snackbarHost = {
@@ -140,6 +147,7 @@ fun MainScreen() {
                 4 -> CompetitorReferenceScreen(viewModel = viewModel)
                 5 -> DocumentLearningScreen(viewModel = viewModel)
                 6 -> ChatQAScreen(viewModel = viewModel)
+                7 -> ComplianceManagementScreen(viewModel = viewModel)
             }
 
             // 显示状态消息
@@ -198,10 +206,11 @@ fun MainScreen() {
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
-                    Text("• 标准匹配结果")
-                    Text("• 核心设计参数")
-                    Text("• 合规测试矩阵")
-                    Text("• 标准条款引用")
+                    Text(
+                        text = "• 创意生成\n• 安全检查\n• 技术建议\n• 设计文档",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
                 }
             },
             confirmButton = {
