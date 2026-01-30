@@ -611,13 +611,13 @@ fun IntegratedReportTestMatrixItemCard(testIndex: Int) {
             Divider()
             
             // 测试参数
-            TestParameterRow("脉冲类型", "FRONTAL")
-            TestParameterRow("撞击类型", "FRONTAL_RIGID")
-            TestParameterRow("假人类型", "Q0（新生儿）")
-            TestParameterRow("座椅方向", "REARWARD_FACING")
-            TestParameterRow("安装方式", "ISOFIX_3_PTS")
-            TestParameterRow("产品配置", "UPRIGHT")
-            TestParameterRow("速度", "50 km/h")
+
+("撞击类型", "FRONTAL_RIGID")
+("假人类型", "Q0（新生儿）")
+("座椅方向", "REARWARD_FACING")
+("安装方式", "ISOFIX_3_PTS")
+("产品配置", "UPRIGHT")
+("速度", "50 km/h")
             
             Spacer(modifier = Modifier.height(4.dp))
             
