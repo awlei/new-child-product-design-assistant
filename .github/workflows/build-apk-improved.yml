@@ -65,9 +65,20 @@ jobs:
       run: ./gradlew clean
 
     - name: 🚀 Build Debug APK
-      run: ./gradlew assembleDebug --stacktrace --no-daemon
+      run: |
+        ./gradlew assembleDebug --stacktrace --info --no-daemon 2>&1 | tee build-debug.log
       env:
         GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.caching=true"
+
+    - name: 🔍 Debug Build Failure
+      if: failure()
+      run: |
+        echo "=== Last 200 lines of build log ==="
+        tail -n 200 build-debug.log || echo "No build log found"
+        
+        echo ""
+        echo "=== Checking for common errors ==="
+        grep -i "error\|exception\|failed" build-debug.log | head -n 50 || echo "No errors found in log"
 
     - name: 🚀 Build Release APK
       run: ./gradlew assembleRelease --stacktrace --no-daemon
