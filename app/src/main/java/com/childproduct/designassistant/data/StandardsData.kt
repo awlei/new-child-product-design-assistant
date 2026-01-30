@@ -1,0 +1,385 @@
+package com.childproduct.designassistant.data
+
+import com.childproduct.designassistant.model.*
+
+/**
+ * ECE R129:2013 标准条款数据
+ */
+object ECE_R129_Clauses {
+    // 头托调节
+    val HEADREST_ADJUSTMENT = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§5.4.2",
+        clauseTitle = "头托适配性要求",
+        clauseContent = "头托应可调节，以适应不同身高儿童。头托调节范围应至少为154mm，每档调节步长不大于22mm，至少提供7档调节位置。",
+        clauseType = ClauseType.DIMENSIONAL_SPEC,
+        relatedSections = listOf("§5.4", "§5.4.1", "§5.4.3")
+    )
+
+    // 座椅调节角度（正向）
+    val SEAT_ANGLE_FORWARD = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§5.2.3",
+        clauseTitle = "坐姿稳定性要求",
+        clauseContent = "正向安装时，座椅应提供至少10°的固定调节角度，以确保儿童坐姿稳定性和安全性。",
+        clauseType = ClauseType.REQUIREMENT,
+        relatedSections = listOf("§5.2", "§5.2.1", "§5.2.2")
+    )
+
+    // 倾斜角度（后向）
+    val RECLINE_ANGLE_REAR = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§5.2.4",
+        clauseTitle = "脊柱保护要求",
+        clauseContent = "后向安装时，座椅应提供至少10°的倾斜角度调节，以保护儿童脊柱发育，特别是在长时间使用时。",
+        clauseType = ClauseType.REQUIREMENT,
+        relatedSections = listOf("§5.2", "§5.2.1")
+    )
+
+    // ISOFIX接口尺寸
+    val ISOFIX_INTERFACE = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§5.5.1",
+        clauseTitle = "接口尺寸规范",
+        clauseContent = "ISOFIX接口间距应为280mm±5mm，接口应能承受至少5000N的拉力，持续10秒无变形或断裂。",
+        clauseType = ClauseType.DIMENSIONAL_SPEC,
+        relatedSections = listOf("§5.5", "§5.5.2")
+    )
+
+    // 支撑腿
+    val SUPPORT_LEG = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§5.5.3",
+        clauseTitle = "支撑腿适配要求",
+        clauseContent = "支撑腿长度应可调，调节范围120-200mm。支撑腿应能承受15kg负重，静置30分钟无压缩失效，座椅无倾斜。",
+        clauseType = ClauseType.REQUIREMENT,
+        relatedSections = listOf("§5.5", "§5.5.2")
+    )
+
+    // 正向撞击测试
+    val FRONT_IMPACT_TEST = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.2",
+        clauseTitle = "正向碰撞测试要求",
+        clauseContent = "使用Q0、Q1.5、Q3假人进行正向碰撞测试，碰撞速度50km/h，加速度50g。合格标准：头部位移＜25cm；HIC＜700；胸部加速度＜55g。",
+        clauseType = ClauseType.TESTING_METHOD,
+        relatedSections = listOf("§6", "§6.1", "§6.3")
+    )
+
+    // 侧面撞击测试
+    val SIDE_IMPACT_TEST = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.3",
+        clauseTitle = "侧面碰撞测试要求",
+        clauseContent = "使用Q1.5假人进行侧面碰撞测试，侧撞台车速度32km/h。合格标准：侧面防护结构无破裂；安全带无松脱；头部位移≤15cm。",
+        clauseType = ClauseType.TESTING_METHOD,
+        relatedSections = listOf("§6", "§6.2")
+    )
+
+    // ISOFIX接口强度测试
+    val ISOFIX_STRENGTH_TEST = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.4.1",
+        clauseTitle = "ISOFIX接口强度测试",
+        clauseContent = "对ISOFIX接口施加5000N拉力，持续10秒。合格标准：接口无变形、无断裂，位移不超过2mm。",
+        clauseType = ClauseType.ACCEPTANCE_CRITERIA,
+        relatedSections = listOf("§6.4", "§6.4.2")
+    )
+
+    // 支撑腿稳定性测试
+    val SUPPORT_LEG_STABILITY_TEST = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§6.4.3",
+        clauseTitle = "支撑腿稳定性测试",
+        clauseContent = "支撑腿承载15kg负重，静置30分钟。合格标准：支撑腿无压缩失效；座椅无倾斜；支撑腿变形不超过1mm。",
+        clauseType = ClauseType.ACCEPTANCE_CRITERIA,
+        relatedSections = listOf("§6.4")
+    )
+
+    // 产品分类
+    val PRODUCT_CLASSIFICATION = StandardClause(
+        standardName = "ECE R129:2013",
+        clauseId = "§4.2.2",
+        clauseTitle = "产品分类定义",
+        clauseContent = "Forward facing – Class B1：适用于身高100-105cm的儿童，正向安装，需配备ISOFIX接口和支撑腿等安全装置。",
+        clauseType = ClauseType.REQUIREMENT,
+        relatedSections = listOf("§4", "§4.2")
+    )
+
+    fun getAllClauses(): List<StandardClause> {
+        return listOf(
+            HEADREST_ADJUSTMENT,
+            SEAT_ANGLE_FORWARD,
+            RECLINE_ANGLE_REAR,
+            ISOFIX_INTERFACE,
+            SUPPORT_LEG,
+            FRONT_IMPACT_TEST,
+            SIDE_IMPACT_TEST,
+            ISOFIX_STRENGTH_TEST,
+            SUPPORT_LEG_STABILITY_TEST,
+            PRODUCT_CLASSIFICATION
+        )
+    }
+}
+
+/**
+ * 儿童安全座椅产品配置项
+ */
+object ChildSafetySeatConfigurations {
+    val ISOFIX_INTERFACE = ProductConfiguration(
+        configId = "isofix_interface",
+        configName = "ISOFIX接口",
+        applicableProductTypes = listOf(ProductType.CHILD_SAFETY_SEAT),
+        isRequired = true,
+        relatedClauses = listOf(ECE_R129_Clauses.ISOFIX_INTERFACE),
+        description = "国际标准化固定接口，提供更稳固的安装方式"
+    )
+
+    val SUPPORT_LEG = ProductConfiguration(
+        configId = "support_leg",
+        configName = "支撑腿",
+        applicableProductTypes = listOf(ProductType.CHILD_SAFETY_SEAT),
+        isRequired = true,
+        relatedClauses = listOf(ECE_R129_Clauses.SUPPORT_LEG),
+        description = "防止座椅在碰撞中向前倾倒，提高稳定性"
+    )
+
+    val TOP_TETHER = ProductConfiguration(
+        configId = "top_tether",
+        configName = "顶部系带",
+        applicableProductTypes = listOf(ProductType.CHILD_SAFETY_SEAT),
+        isRequired = false,
+        relatedClauses = emptyList(),
+        description = "提供额外的固定点，适用于正向安装"
+    )
+
+    val SIDE_IMPACT_PROTECTION = ProductConfiguration(
+        configId = "side_impact_protection",
+        configName = "侧面碰撞保护",
+        applicableProductTypes = listOf(ProductType.CHILD_SAFETY_SEAT),
+        isRequired = true,
+        relatedClauses = listOf(ECE_R129_Clauses.SIDE_IMPACT_TEST),
+        description = "提供侧面碰撞时的额外保护"
+    )
+
+    val ADJUSTABLE_HEADREST = ProductConfiguration(
+        configId = "adjustable_headrest",
+        configName = "可调头托",
+        applicableProductTypes = listOf(ProductType.CHILD_SAFETY_SEAT),
+        isRequired = true,
+        relatedClauses = listOf(ECE_R129_Clauses.HEADREST_ADJUSTMENT),
+        description = "根据儿童身高调节头托高度，提供最佳保护"
+    )
+
+    fun getConfigurationsForProduct(productType: ProductType): List<ProductConfiguration> {
+        return when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> listOf(
+                ISOFIX_INTERFACE,
+                SUPPORT_LEG,
+                TOP_TETHER,
+                SIDE_IMPACT_PROTECTION,
+                ADJUSTABLE_HEADREST
+            )
+            else -> emptyList()
+        }
+    }
+}
+
+/**
+ * 标准匹配服务
+ */
+class StandardMatchingService {
+
+    /**
+     * 根据身高范围匹配标准
+     */
+    fun matchStandardByHeight(
+        minHeightCm: Int,
+        maxHeightCm: Int,
+        productType: ProductType
+    ): StandardMatchResult? {
+        return when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> matchChildSafetySeatStandard(minHeightCm, maxHeightCm)
+            else -> null
+        }
+    }
+
+    /**
+     * 匹配儿童安全座椅标准
+     */
+    private fun matchChildSafetySeatStandard(
+        minHeightCm: Int,
+        maxHeightCm: Int
+    ): StandardMatchResult {
+        val standardName = "ECE R129:2013"
+        var productClassification = ""
+        var ageRange = ""
+        var configurationRequirements = mutableListOf<String>()
+        val relevantClauses = mutableListOf<StandardClause>()
+
+        // 根据身高范围确定分组
+        if (minHeightCm < 75) {
+            productClassification = "Group 0+ / Group 1"
+            ageRange = "新生儿 - 18个月"
+            configurationRequirements.add("后向安装（ECE R129 §5.1）")
+            relevantClauses.add(ECE_R129_Clauses.RECLINE_ANGLE_REAR)
+        } else if (maxHeightCm <= 105) {
+            productClassification = "Forward facing – Class B1"
+            ageRange = "15个月 - 4岁"
+            configurationRequirements.add("ISOFIX接口（ECE R129 §5.5.1）")
+            configurationRequirements.add("支撑腿（ECE R129 §5.5.3）")
+            relevantClauses.addAll(listOf(
+                ECE_R129_Clauses.PRODUCT_CLASSIFICATION,
+                ECE_R129_Clauses.ISOFIX_INTERFACE,
+                ECE_R129_Clauses.SUPPORT_LEG
+            ))
+        } else {
+            productClassification = "Forward facing – Class B2"
+            ageRange = "4岁 - 12岁"
+            configurationRequirements.add("ISOFIX接口（ECE R129 §5.5.1）")
+            relevantClauses.add(ECE_R129_Clauses.ISOFIX_INTERFACE)
+        }
+
+        // 添加通用相关条款
+        relevantClauses.add(ECE_R129_Clauses.HEADREST_ADJUSTMENT)
+        relevantClauses.add(ECE_R129_Clauses.SEAT_ANGLE_FORWARD)
+
+        // 计算对应的重量范围（按标准公式）
+        val minWeightKg = (minHeightCm * 0.25).toInt()
+        val maxWeightKg = (maxHeightCm * 0.30).toInt()
+        val weightRange = "${minWeightKg}-${maxWeightKg} kg"
+
+        return StandardMatchResult(
+            standardName = standardName,
+            productClassification = productClassification,
+            ageRange = ageRange,
+            heightRange = "${minHeightCm}-${maxHeightCm} cm",
+            weightRange = weightRange,
+            relevantClauses = relevantClauses,
+            configurationRequirements = configurationRequirements
+        )
+    }
+
+    /**
+     * 根据选中的配置获取设计参数
+     */
+    fun getDesignParameters(
+        productType: ProductType,
+        selectedConfigs: List<ProductConfiguration>,
+        heightRange: HeightRangeInput
+    ): List<DesignParameter> {
+        val parameters = mutableListOf<DesignParameter>()
+
+        when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> {
+                // 头托调节范围（根据身高范围计算）
+                val adjustmentRange = 154
+                val steps = 7
+                parameters.add(DesignParameter(
+                    parameterName = "头托调节范围",
+                    specificParameter = "${adjustmentRange}mm（分度：每档22mm，共${steps}档）",
+                    relatedClause = ECE_R129_Clauses.HEADREST_ADJUSTMENT
+                ))
+
+                // 座椅调节角度
+                parameters.add(DesignParameter(
+                    parameterName = "座椅调节角度（正向）",
+                    specificParameter = "10°（固定调节档位）",
+                    relatedClause = ECE_R129_Clauses.SEAT_ANGLE_FORWARD
+                ))
+
+                // 倾斜角度（后向）
+                parameters.add(DesignParameter(
+                    parameterName = "倾斜角度（后向兼容）",
+                    specificParameter = "10°（后向安装时启用）",
+                    relatedClause = ECE_R129_Clauses.RECLINE_ANGLE_REAR
+                ))
+
+                // ISOFIX接口尺寸
+                if (selectedConfigs.any { it.configId == "isofix_interface" }) {
+                    parameters.add(DesignParameter(
+                        parameterName = "ISOFIX接口尺寸",
+                        specificParameter = "间距280mm±5mm",
+                        tolerance = "±5mm",
+                        relatedClause = ECE_R129_Clauses.ISOFIX_INTERFACE
+                    ))
+                }
+
+                // 支撑腿长度
+                if (selectedConfigs.any { it.configId == "support_leg" }) {
+                    parameters.add(DesignParameter(
+                        parameterName = "支撑腿有效长度",
+                        specificParameter = "可调范围：120-200mm",
+                        relatedClause = ECE_R129_Clauses.SUPPORT_LEG
+                    ))
+                }
+            }
+            else -> {}
+        }
+
+        return parameters
+    }
+
+    /**
+     * 获取合规测试矩阵
+     */
+    fun getComplianceTests(
+        productType: ProductType,
+        selectedConfigs: List<ProductConfiguration>
+    ): List<ComplianceTestItem> {
+        val tests = mutableListOf<ComplianceTestItem>()
+
+        when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> {
+                // 正向撞击测试
+                tests.add(ComplianceTestItem(
+                    testName = "正向撞击测试",
+                    testDummy = "Q0、Q1.5、Q3",
+                    testConditions = "碰撞速度50km/h，加速度50g",
+                    acceptanceCriteria = "头部位移＜25cm；HIC＜700",
+                    relatedClause = ECE_R129_Clauses.FRONT_IMPACT_TEST,
+                    testStandard = "ECE R129 §6.2"
+                ))
+
+                // 侧面撞击测试
+                if (selectedConfigs.any { it.configId == "side_impact_protection" }) {
+                    tests.add(ComplianceTestItem(
+                        testName = "侧面撞击测试",
+                        testDummy = "Q1.5",
+                        testConditions = "侧撞台车速度32km/h",
+                        acceptanceCriteria = "侧面防护结构无破裂；安全带无松脱",
+                        relatedClause = ECE_R129_Clauses.SIDE_IMPACT_TEST,
+                        testStandard = "ECE R129 §6.3"
+                    ))
+                }
+
+                // ISOFIX接口强度测试
+                if (selectedConfigs.any { it.configId == "isofix_interface" }) {
+                    tests.add(ComplianceTestItem(
+                        testName = "ISOFIX接口强度",
+                        testDummy = "-",
+                        testConditions = "施加5000N拉力，持续10s",
+                        acceptanceCriteria = "接口无变形、无断裂",
+                        relatedClause = ECE_R129_Clauses.ISOFIX_STRENGTH_TEST,
+                        testStandard = "ECE R129 §6.4.1"
+                    ))
+                }
+
+                // 支撑腿稳定性测试
+                if (selectedConfigs.any { it.configId == "support_leg" }) {
+                    tests.add(ComplianceTestItem(
+                        testName = "支撑腿稳定性",
+                        testDummy = "-",
+                        testConditions = "承载15kg负重，静置30min",
+                        acceptanceCriteria = "支撑腿无压缩失效；座椅无倾斜",
+                        relatedClause = ECE_R129_Clauses.SUPPORT_LEG_STABILITY_TEST,
+                        testStandard = "ECE R129 §6.4.3"
+                    ))
+                }
+            }
+            else -> {}
+        }
+
+        return tests
+    }
+}

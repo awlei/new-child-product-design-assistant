@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -11,13 +12,19 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.childproduct.designassistant.data.*
 import com.childproduct.designassistant.model.*
 import com.childproduct.designassistant.ui.MainViewModel
 import com.childproduct.designassistant.ui.UiState
+import com.childproduct.designassistant.ui.components.StandardClauseDialog
 
+/**
+ * 改进的技术建议界面
+ * 支持精准身高范围输入、产品配置选择、实时标准匹配、结构化合规设计方案输出
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TechnicalRecommendationScreen(
@@ -25,16 +32,61 @@ fun TechnicalRecommendationScreen(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsState()
-    val technicalRecommendation by viewModel.technicalRecommendation.collectAsState()
 
-    var heightRange by remember { mutableStateOf("") }
-    var weightRange by remember { mutableStateOf("") }
+    // 输入状态
+    var minHeight by remember { mutableStateOf("") }
+    var maxHeight by remember { mutableStateOf("") }
     var selectedProductType by remember { mutableStateOf(ProductType.CHILD_SAFETY_SEAT) }
-    var selectedQuestionCategory by remember { mutableStateOf(QuestionCategory.HEADREST_ADJUSTMENT) }
-    var questionInput by remember { mutableStateOf("") }
+    var selectedConfigurations by remember { mutableStateOf<Set<String>>(emptySet()) }
 
-    if (technicalRecommendation == null) {
-        // 没有结果时，使用可滚动的 Column
+    // 实时匹配结果
+    var standardMatchResult by remember { mutableStateOf<StandardMatchResult?>(null) }
+    var designParameters by remember { mutableStateOf<List<DesignParameter>>(emptyList()) }
+    var complianceTests by remember { mutableStateOf<List<ComplianceTestItem>>(emptyList()) }
+
+    // 条款对话框状态
+    var selectedClause by remember { mutableStateOf<StandardClause?>(null) }
+    var showClauseDialog by remember { mutableStateOf(false) }
+
+    // 标准匹配服务
+    val matchingService = remember { StandardMatchingService() }
+
+    // 实时标准匹配逻辑
+    LaunchedEffect(minHeight, maxHeight, selectedProductType) {
+        val minHeightInt = minHeight.toIntOrNull()
+        val maxHeightInt = maxHeight.toIntOrNull()
+
+        if (minHeightInt != null && maxHeightInt != null && minHeightInt <= maxHeightInt) {
+            standardMatchResult = matchingService.matchStandardByHeight(
+                minHeightInt,
+                maxHeightInt,
+                selectedProductType
+            )
+        } else {
+            standardMatchResult = null
+        }
+    }
+
+    // 当配置变化时更新设计参数和测试矩阵
+    LaunchedEffect(selectedProductType, selectedConfigurations, minHeight, maxHeight) {
+        val heightRange = HeightRangeInput(minHeight, maxHeight)
+        val configs = ChildSafetySeatConfigurations.getConfigurationsForProduct(selectedProductType)
+            .filter { selectedConfigurations.contains(it.configId) }
+
+        designParameters = matchingService.getDesignParameters(
+            selectedProductType,
+            configs,
+            heightRange
+        )
+
+        complianceTests = matchingService.getComplianceTests(
+            selectedProductType,
+            configs
+        )
+    }
+
+    if (designParameters.isEmpty()) {
+        // 无结果时，使用可滚动的 Column
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -42,7 +94,7 @@ fun TechnicalRecommendationScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "🔬 技术建议",
+                text = "🔬 合规设计方案生成",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -54,77 +106,108 @@ fun TechnicalRecommendationScreen(
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // 身高范围
-                    OutlinedTextField(
-                        value = heightRange,
-                        onValueChange = { heightRange = it },
-                        label = { Text("身高范围 (cm, 如: 60-120)") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        placeholder = { Text("例: 60-120") }
+                    // 身高范围输入（双栏）
+                    Text(
+                        text = "身高范围输入（cm）",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
 
-                    // 重量范围
-                    OutlinedTextField(
-                        value = weightRange,
-                        onValueChange = { weightRange = it },
-                        label = { Text("重量范围 (kg, 如: 9-36)") },
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        placeholder = { Text("例: 9-36") }
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = minHeight,
+                            onValueChange = {
+                                if (it.isEmpty() || it.all { char -> char.isDigit() }) {
+                                    minHeight = it
+                                }
+                            },
+                            label = { Text("最小身高") },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true,
+                            placeholder = { Text("如: 40") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+
+                        OutlinedTextField(
+                            value = maxHeight,
+                            onValueChange = {
+                                if (it.isEmpty() || it.all { char -> char.isDigit() }) {
+                                    maxHeight = it
+                                }
+                            },
+                            label = { Text("最大身高") },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true,
+                            placeholder = { Text("如: 105") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
+
+                    // 实时匹配结果显示
+                    standardMatchResult?.let { result ->
+                        StandardMatchResultCard(result = result)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // 产品类型选择
                     Text(
                         text = "产品类型",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
                     ProductTypeSelector(
                         selectedProductType = selectedProductType,
                         onProductTypeSelected = { selectedProductType = it }
                     )
 
-                    // 技术问题类别
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 产品专属配置
                     Text(
-                        text = "技术问题类别",
-                        style = MaterialTheme.typography.titleMedium
+                        text = "产品专属配置",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
-                    QuestionCategorySelector(
-                        selectedCategory = selectedQuestionCategory,
-                        onCategorySelected = { selectedQuestionCategory = it }
-                    )
-
-                    // 技术问题详情
-                    OutlinedTextField(
-                        value = questionInput,
-                        onValueChange = { questionInput = it },
-                        label = { Text("技术问题描述（可选）") },
-                        modifier = Modifier.fillMaxWidth(),
-                        minLines = 2,
-                        maxLines = 4
+                    ProductConfigurationSelector(
+                        productType = selectedProductType,
+                        selectedConfigurations = selectedConfigurations,
+                        onConfigurationSelected = { configId, isSelected ->
+                            selectedConfigurations = if (isSelected) {
+                                selectedConfigurations + configId
+                            } else {
+                                selectedConfigurations - configId
+                            }
+                        }
                     )
 
-                    // 生成建议按钮
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 生成方案按钮
                     Button(
                         onClick = {
                             val question = TechnicalQuestion(
-                                category = selectedQuestionCategory,
-                                question = questionInput.ifEmpty { selectedQuestionCategory.name },
+                                category = QuestionCategory.STRUCTURAL_DESIGN,
+                                question = "生成$selectedProductType的合规设计方案",
                                 context = null
                             )
                             viewModel.generateTechnicalRecommendation(
-                                heightRange,
-                                weightRange,
+                                "${minHeight}-${maxHeight}",
+                                "0-0", // 重量范围暂不需要
                                 selectedProductType,
                                 question
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = uiState !is UiState.Loading &&
-                                  heightRange.isNotBlank() &&
-                                  weightRange.isNotBlank()
+                                  minHeight.isNotBlank() &&
+                                  maxHeight.isNotBlank() &&
+                                  standardMatchResult != null
                     ) {
                         if (uiState is UiState.Loading) {
                             CircularProgressIndicator(
@@ -133,11 +216,11 @@ fun TechnicalRecommendationScreen(
                             )
                         } else {
                             Icon(
-                                imageVector = Icons.Default.Analytics,
+                                imageVector = Icons.Default.Assignment,
                                 contentDescription = null,
                                 modifier = Modifier.padding(end = 8.dp)
                             )
-                            Text("生成技术建议")
+                            Text("生成合规设计方案")
                         }
                     }
                 }
@@ -151,7 +234,7 @@ fun TechnicalRecommendationScreen(
                 .padding(16.dp)
         ) {
             Text(
-                text = "🔬 技术建议",
+                text = "🔬 合规设计方案生成",
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -163,77 +246,108 @@ fun TechnicalRecommendationScreen(
             ) {
                 Column(
                     modifier = Modifier.padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // 身高范围
-                    OutlinedTextField(
-                        value = heightRange,
-                        onValueChange = { heightRange = it },
-                        label = { Text("身高范围 (cm, 如: 60-120)") },
-                        modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        placeholder = { Text("例: 60-120") }
+                    // 身高范围输入（双栏）
+                    Text(
+                        text = "身高范围输入（cm）",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
 
-                    // 重量范围
-                    OutlinedTextField(
-                        value = weightRange,
-                        onValueChange = { weightRange = it },
-                        label = { Text("重量范围 (kg, 如: 9-36)") },
+                    Row(
                         modifier = Modifier.fillMaxWidth(),
-                        singleLine = true,
-                        placeholder = { Text("例: 9-36") }
-                    )
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        OutlinedTextField(
+                            value = minHeight,
+                            onValueChange = {
+                                if (it.isEmpty() || it.all { char -> char.isDigit() }) {
+                                    minHeight = it
+                                }
+                            },
+                            label = { Text("最小身高") },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true,
+                            placeholder = { Text("如: 40") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+
+                        OutlinedTextField(
+                            value = maxHeight,
+                            onValueChange = {
+                                if (it.isEmpty() || it.all { char -> char.isDigit() }) {
+                                    maxHeight = it
+                                }
+                            },
+                            label = { Text("最大身高") },
+                            modifier = Modifier.weight(1f),
+                            singleLine = true,
+                            placeholder = { Text("如: 105") },
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                        )
+                    }
+
+                    // 实时匹配结果显示
+                    standardMatchResult?.let { result ->
+                        StandardMatchResultCard(result = result)
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
 
                     // 产品类型选择
                     Text(
                         text = "产品类型",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
                     ProductTypeSelector(
                         selectedProductType = selectedProductType,
                         onProductTypeSelected = { selectedProductType = it }
                     )
 
-                    // 技术问题类别
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // 产品专属配置
                     Text(
-                        text = "技术问题类别",
-                        style = MaterialTheme.typography.titleMedium
+                        text = "产品专属配置",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
                     )
-                    QuestionCategorySelector(
-                        selectedCategory = selectedQuestionCategory,
-                        onCategorySelected = { selectedQuestionCategory = it }
-                    )
-
-                    // 技术问题详情
-                    OutlinedTextField(
-                        value = questionInput,
-                        onValueChange = { questionInput = it },
-                        label = { Text("技术问题描述（可选）") },
-                        modifier = Modifier.fillMaxWidth(),
-                        minLines = 2,
-                        maxLines = 4
+                    ProductConfigurationSelector(
+                        productType = selectedProductType,
+                        selectedConfigurations = selectedConfigurations,
+                        onConfigurationSelected = { configId, isSelected ->
+                            selectedConfigurations = if (isSelected) {
+                                selectedConfigurations + configId
+                            } else {
+                                selectedConfigurations - configId
+                            }
+                        }
                     )
 
-                    // 生成建议按钮
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    // 生成方案按钮
                     Button(
                         onClick = {
                             val question = TechnicalQuestion(
-                                category = selectedQuestionCategory,
-                                question = questionInput.ifEmpty { selectedQuestionCategory.name },
+                                category = QuestionCategory.STRUCTURAL_DESIGN,
+                                question = "生成$selectedProductType的合规设计方案",
                                 context = null
                             )
                             viewModel.generateTechnicalRecommendation(
-                                heightRange,
-                                weightRange,
+                                "${minHeight}-${maxHeight}",
+                                "0-0",
                                 selectedProductType,
                                 question
                             )
                         },
                         modifier = Modifier.fillMaxWidth(),
                         enabled = uiState !is UiState.Loading &&
-                                  heightRange.isNotBlank() &&
-                                  weightRange.isNotBlank()
+                                  minHeight.isNotBlank() &&
+                                  maxHeight.isNotBlank() &&
+                                  standardMatchResult != null
                     ) {
                         if (uiState is UiState.Loading) {
                             CircularProgressIndicator(
@@ -242,11 +356,11 @@ fun TechnicalRecommendationScreen(
                             )
                         } else {
                             Icon(
-                                imageVector = Icons.Default.Analytics,
+                                imageVector = Icons.Default.Assignment,
                                 contentDescription = null,
                                 modifier = Modifier.padding(end = 8.dp)
                             )
-                            Text("生成技术建议")
+                            Text("生成合规设计方案")
                         }
                     }
                 }
@@ -254,82 +368,47 @@ fun TechnicalRecommendationScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 显示技术建议结果
-            technicalRecommendation?.let { recommendation ->
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier.weight(1f)
-                ) {
-                    // 输入参数摘要
-                    item {
-                        InputParametersCard(recommendation.inputParameters)
-                    }
+            // 结构化合规设计方案
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                // 标准匹配结果模块
+                item {
+                    StandardMatchModuleCard(standardMatchResult)
+                }
 
-                    // 标准匹配结果
-                    item {
-                        StandardMatchCard(recommendation.matchedStandards)
-                    }
+                // 核心设计参数模块
+                item {
+                    DesignParametersTableCard(designParameters)
+                }
 
-                    // 品牌比较
-                    item {
-                        BrandComparisonCard(recommendation.brandComparison)
-                    }
-
-                    // 建议规格
-                    item {
-                        SuggestedSpecsCard(recommendation.suggestedSpecifications)
-                    }
-
-                    // DVP 测试矩阵
-                    item {
-                        DVPCard(recommendation.dvp)
-                    }
-
-                    // 附加说明
-                    if (recommendation.additionalNotes.isNotEmpty()) {
-                        item {
-                            AdditionalNotesCard(recommendation.additionalNotes)
-                        }
-                    }
+                // 合规测试矩阵模块
+                item {
+                    ComplianceTestMatrixCard(complianceTests)
                 }
             }
         }
     }
-}
 
-@Composable
-fun QuestionCategorySelector(
-    selectedCategory: QuestionCategory,
-    onCategorySelected: (QuestionCategory) -> Unit
-) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        QuestionCategory.values().forEach { category ->
-            FilterChip(
-                selected = selectedCategory == category,
-                onClick = { onCategorySelected(category) },
-                label = { Text(getQuestionCategoryName(category)) }
-            )
-        }
+    // 条款详情对话框
+    if (showClauseDialog && selectedClause != null) {
+        StandardClauseDialog(
+            clause = selectedClause!!,
+            onDismiss = {
+                showClauseDialog = false
+                selectedClause = null
+            }
+        )
     }
 }
 
-private fun getQuestionCategoryName(category: QuestionCategory): String {
-    return when (category) {
-        QuestionCategory.HEADREST_ADJUSTMENT -> "头托调节设计"
-        QuestionCategory.IMPACT_TESTING -> "碰撞测试要求"
-        QuestionCategory.INSTALLATION -> "安装要求"
-        QuestionCategory.MATERIAL_SELECTION -> "材料选择"
-        QuestionCategory.STRUCTURAL_DESIGN -> "结构设计"
-        QuestionCategory.SAFETY_FEATURES -> "安全特性"
-        QuestionCategory.REGULATORY_COMPLIANCE -> "法规合规"
-    }
-}
-
+/**
+ * 实时标准匹配结果卡片
+ */
 @Composable
-fun InputParametersCard(
-    input: InputParameters,
+fun StandardMatchResultCard(
+    result: StandardMatchResult,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -340,50 +419,241 @@ fun InputParametersCard(
         )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = "📋 输入参数",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text("身高范围: ${input.heightRange}")
-            Text("重量范围: ${input.weightRange}")
-            Text("产品类型: ${input.productType.displayName}")
-            Text("技术问题: ${input.technicalQuestion.question}")
-        }
-    }
-}
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "已匹配标准",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
 
-@Composable
-fun StandardMatchCard(
-    matchedStandards: List<StandardMatch>,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
+            Divider(modifier = Modifier.padding(vertical = 4.dp))
+
             Text(
-                text = "📚 标准匹配",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
+                text = "${result.standardName}: ${result.productClassification}",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
             )
-            matchedStandards.forEach { standard ->
-                StandardItem(standard = standard)
+            Text(
+                text = "年龄区间: ${result.ageRange}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            Text(
+                text = "身高范围: ${result.heightRange}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            if (result.configurationRequirements.isNotEmpty()) {
+                Text(
+                    text = result.getComplianceDescription(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                )
             }
         }
     }
 }
 
+/**
+ * 产品配置选择器
+ */
 @Composable
-fun StandardItem(
-    standard: StandardMatch
+fun ProductConfigurationSelector(
+    productType: ProductType,
+    selectedConfigurations: Set<String>,
+    onConfigurationSelected: (String, Boolean) -> Unit
+) {
+    val configurations = ChildSafetySeatConfigurations.getConfigurationsForProduct(productType)
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        configurations.forEach { config ->
+            val isSelected = selectedConfigurations.contains(config.configId)
+
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = if (isSelected) 4.dp else 1.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (isSelected) {
+                        MaterialTheme.colorScheme.secondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    }
+                )
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = config.configName,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            if (config.isRequired) {
+                                Text(
+                                    text = "*",
+                                    color = MaterialTheme.colorScheme.error,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.padding(start = 4.dp)
+                                )
+                            }
+                        }
+                        Text(
+                            text = config.description,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        )
+                        if (config.relatedClauses.isNotEmpty()) {
+                            Text(
+                                text = "符合 ${config.relatedClauses.first().getFullReference()} 要求",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+
+                    Checkbox(
+                        checked = isSelected,
+                        onCheckedChange = { onConfigurationSelected(config.configId, it) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 标准匹配模块卡片
+ */
+@Composable
+fun StandardMatchModuleCard(
+    result: StandardMatchResult?,
+    modifier: Modifier = Modifier
+) {
+    result ?: return
+
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.LibraryBooks,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "标准匹配结果",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Divider()
+
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                InfoRow("匹配标准", result.standardName)
+                InfoRow("产品分类", result.productClassification)
+                InfoRow("年龄区间", result.ageRange)
+                InfoRow("身高范围", result.heightRange)
+                InfoRow("重量范围", result.weightRange)
+
+                if (result.configurationRequirements.isNotEmpty()) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "配置合规性：",
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                    result.configurationRequirements.forEach { requirement ->
+                        Text(
+                            text = "• $requirement",
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.padding(start = 8.dp)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 设计参数表格卡片
+ */
+@Composable
+fun DesignParametersTableCard(
+    parameters: List<DesignParameter>,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Tune,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+                Text(
+                    text = "核心设计参数",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            Divider()
+
+            parameters.forEach { parameter ->
+                DesignParameterItem(parameter = parameter)
+            }
+        }
+    }
+}
+
+/**
+ * 设计参数项
+ */
+@Composable
+fun DesignParameterItem(
+    parameter: DesignParameter
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -393,275 +663,120 @@ fun StandardItem(
         )
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // 设计项和参数
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = standard.standardName,
-                    style = MaterialTheme.typography.titleSmall,
+                    text = parameter.parameterName,
+                    style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = if (standard.isApplicable) "✓ 适用" else "✗ 不适用",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = if (standard.isApplicable) Color(0xFF4CAF50) else Color(0xFFF44336)
+                    text = parameter.specificParameter,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
-            if (standard.relevantSections.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
+
+            // 公差
+            parameter.tolerance?.let { tolerance ->
                 Text(
-                    text = "相关条款: ${standard.relevantSections.joinToString(", ")}",
+                    text = "公差: $tolerance",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             }
-            if (standard.complianceNotes.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "合规备注: ${standard.complianceNotes}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                )
+
+            // 条款溯源
+            parameter.relatedClause?.let { clause ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "对应条款: ${clause.getFullReference()}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(end = 4.dp)
+                    )
+                    // 条款直达按钮
+                    TextButton(
+                        onClick = {
+                            parameter.relatedClause?.let { clause ->
+                                selectedClause = clause
+                                showClauseDialog = true
+                            }
+                        },
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Text(
+                            text = "查看原文",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Icon(
+                            imageVector = Icons.Default.OpenInNew,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(start = 4.dp)
+                        )
+                    }
+                }
             }
         }
     }
 }
 
+/**
+ * 合规测试矩阵卡片
+ */
 @Composable
-fun BrandComparisonCard(
-    brandComparison: BrandComparison,
+fun ComplianceTestMatrixCard(
+    tests: List<ComplianceTestItem>,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "🔍 品牌对比",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-            brandComparison.competitors.forEach { competitor ->
-                BrandItem(competitor = competitor)
-            }
-        }
-    }
-}
-
-@Composable
-fun BrandItem(
-    competitor: CompetitorInfo
-) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant
-        )
-    ) {
-        Column(
-            modifier = Modifier.padding(12.dp)
-        ) {
-            Text(
-                text = competitor.brandName,
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-            if (competitor.modelName.isNotEmpty()) {
-                Text(
-                    text = "型号: ${competitor.modelName}",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(top = 4.dp)
-                )
-            }
-            if (competitor.keyFeatures.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "关键特性:",
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold
-                )
-                competitor.keyFeatures.forEach { feature ->
-                    Text(
-                        text = "• $feature",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-            if (competitor.advantages.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(4.dp))
-                Text(
-                    text = "优势:",
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.Bold
-                )
-                competitor.advantages.forEach { advantage ->
-                    Text(
-                        text = "• $advantage",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun SuggestedSpecsCard(
-    specs: SuggestedSpecifications,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "📏 建议规格",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 12.dp)
-            )
-
-            if (specs.adjustableHeightRanges.isNotEmpty()) {
-                Text(
-                    text = "可调节高度范围:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                specs.adjustableHeightRanges.forEach { range ->
-                    Text(
-                        text = "• $range",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-
-            if (specs.weightCapacity.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "重量容量:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = specs.weightCapacity,
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-
-            if (specs.materialRecommendations.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "材料建议:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                specs.materialRecommendations.forEach { material ->
-                    Text(
-                        text = "• $material",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-
-            if (specs.performanceMetrics.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "性能指标:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                specs.performanceMetrics.forEach { metric ->
-                    Text(
-                        text = "• $metric",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-
-            if (specs.safetyFeatures.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "安全特性:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                specs.safetyFeatures.forEach { feature ->
-                    Text(
-                        text = "• $feature",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-fun DVPCard(
-    dvp: DVPTestMatrix,
-    modifier: Modifier = Modifier
-) {
-    var expanded by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                Icon(
+                    imageVector = Icons.Default.Science,
+                    contentDescription = null,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
                 Text(
-                    text = "🧪 DVP测试矩阵",
+                    text = "合规测试矩阵",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
-                IconButton(onClick = { expanded = !expanded }) {
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) "收起" else "展开"
-                    )
-                }
             }
 
-            if (expanded) {
-                Spacer(modifier = Modifier.height(12.dp))
-                dvp.testCases.forEach { testCase ->
-                    DVPTestCaseItem(testCase = testCase)
-                }
+            Divider()
+
+            tests.forEach { test ->
+                ComplianceTestItemCard(test = test)
             }
         }
     }
 }
 
+/**
+ * 合规测试项卡片
+ */
 @Composable
-fun DVPTestCaseItem(
-    testCase: DVPTestCase
+fun ComplianceTestItemCard(
+    test: ComplianceTestItem
 ) {
-    var expanded by remember { mutableStateOf(false) }
-
     Card(
         modifier = Modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
@@ -670,91 +785,86 @@ fun DVPTestCaseItem(
         )
     ) {
         Column(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // 测试项名称
+            Text(
+                text = test.testName,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
+
+            // 测试详情表格
+            Column(
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                InfoRow("测试假人", test.testDummy)
+                InfoRow("测试条件", test.testConditions)
+                InfoRow("合格阈值", test.acceptanceCriteria)
+            }
+
+            // 条款溯源
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = testCase.testId,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.Bold
+                    text = "测试标准: ${test.testStandard}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(end = 4.dp)
                 )
-                IconButton(
-                    onClick = { expanded = !expanded },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                        contentDescription = if (expanded) "收起" else "展开",
-                        modifier = Modifier.size(16.dp)
-                    )
-                }
-            }
-
-            Text(
-                text = testCase.testName,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(top = 4.dp)
-            )
-
-            if (expanded) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "测试标准: ${testCase.testStandard}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Text(
-                        text = "测试方法: ${testCase.testMethod}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Text(
-                        text = "验收标准: ${testCase.acceptanceCriteria}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                    Text(
-                        text = "测试阶段: ${testCase.testingStage}",
-                        style = MaterialTheme.typography.bodySmall
-                    )
+                // 条款直达按钮
+                if (test.relatedClause != null) {
+                    TextButton(
+                        onClick = {
+                            test.relatedClause?.let { clause ->
+                                selectedClause = clause
+                                showClauseDialog = true
+                            }
+                        },
+                        modifier = Modifier.height(24.dp)
+                    ) {
+                        Text(
+                            text = "查看原文",
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                        Icon(
+                            imageVector = Icons.Default.OpenInNew,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .padding(start = 4.dp)
+                        )
+                    }
                 }
             }
         }
     }
 }
 
+/**
+ * 信息行组件
+ */
 @Composable
-fun AdditionalNotesCard(
-    notes: List<String>,
-    modifier: Modifier = Modifier
+fun InfoRow(
+    label: String,
+    value: String
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiaryContainer
-        )
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "📝 附加说明",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            notes.forEach { note ->
-                Text(
-                    text = "• $note",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-            }
-        }
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.weight(1.5f)
+        )
     }
 }
