@@ -1,15 +1,11 @@
 package com.childproduct.designassistant.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.RemoveCircle
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,8 +18,8 @@ import com.childproduct.designassistant.ui.MainViewModel
 import com.childproduct.designassistant.ui.UiState
 
 /**
- * 改进的安全检查界面
- * 使用身高范围精准输入替代年龄段选择
+ * 改进的安全检查界面（测试矩阵）
+ * 标题：安全测试矩阵
  */
 @Composable
 fun SafetyScreen(
@@ -44,11 +40,30 @@ fun SafetyScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "🛡️ 安全检查",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        // 页面标题
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Science,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Icon(
+                imageVector = Icons.Default.LibraryBooks,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = "安全测试矩阵",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -70,7 +85,8 @@ fun SafetyScreen(
                 // 身高范围输入（双栏）
                 Text(
                     text = "目标身高范围（cm）",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Row(
@@ -138,7 +154,12 @@ fun SafetyScreen(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-                        Text("开始安全检查")
+                        Icon(
+                            imageVector = Icons.Default.Science,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text("生成测试矩阵")
                     }
                 }
             }

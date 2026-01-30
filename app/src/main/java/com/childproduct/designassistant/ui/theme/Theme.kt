@@ -12,28 +12,49 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+// 专业导向型深色主题配色
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryBlue,
+    secondary = SecondaryBlue,
+    tertiary = InfoBlue,
+    background = DarkBackground,
+    surface = DarkSurface,
+    error = ErrorRed,
+    onPrimary = White,
+    onSecondary = White,
+    onTertiary = White,
+    onBackground = LightGray,
+    onSurface = LightGray,
+    onError = White,
+    primaryContainer = DarkGray,
+    onPrimaryContainer = LightGray,
+    secondaryContainer = MediumGray,
+    onSecondaryContainer = LightGray
 )
 
+// 专业导向型浅色主题配色
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40,
-    background = Background,
-    surface = Surface,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onTertiary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
+    primary = PrimaryBlue,
+    secondary = SecondaryBlue,
+    tertiary = InfoBlue,
+    background = LightGray,
+    surface = White,
+    error = ErrorRed,
+    onPrimary = White,
+    onSecondary = White,
+    onTertiary = White,
+    onBackground = DarkGray,
+    onSurface = DarkGray,
+    onError = White,
+    primaryContainer = PrimaryBlue.copy(alpha = 0.1f),
+    onPrimaryContainer = DarkGray,
+    secondaryContainer = SecondaryBlue.copy(alpha = 0.1f),
+    onSecondaryContainer = DarkGray
 )
 
 @Composable
 fun ChildProductDesignAssistantTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,  // 默认使用深色主题，符合专业工具定位
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -45,7 +66,7 @@ fun ChildProductDesignAssistantTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
         }
     }
 

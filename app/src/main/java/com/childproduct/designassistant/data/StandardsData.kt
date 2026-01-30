@@ -383,3 +383,251 @@ class StandardMatchingService {
         return tests
     }
 }
+
+/**
+ * 标准核心参数预览数据
+ */
+data class StandardParameterPreview(
+    val paramName: String,
+    val paramValue: String,
+    val standardSource: String,
+    val description: String
+)
+
+/**
+ * 标准关键词联想
+ */
+data class StandardKeywordSuggestion(
+    val keyword: String,
+    val displayText: String,
+    val clause: StandardClause
+)
+
+/**
+ * 标准参数预览服务
+ */
+class StandardParameterPreviewService {
+
+    /**
+     * 获取标准核心参数预览
+     */
+    fun getParameterPreview(
+        productType: ProductType,
+        minHeight: Int,
+        maxHeight: Int
+    ): List<StandardParameterPreview> {
+        return when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> getChildSafetySeatParameters(minHeight, maxHeight)
+            ProductType.BABY_STROLLER -> getStrollerParameters(minHeight, maxHeight)
+            ProductType.CHILD_HOUSEHOLD_GOODS -> getHouseholdGoodsParameters(minHeight, maxHeight)
+            ProductType.CHILD_HIGH_CHAIR -> getHighChairParameters(minHeight, maxHeight)
+        }
+    }
+
+    /**
+     * 儿童安全座椅核心参数
+     */
+    private fun getChildSafetySeatParameters(minHeight: Int, maxHeight: Int): List<StandardParameterPreview> {
+        val params = mutableListOf<StandardParameterPreview>()
+
+        // 外尺寸上限（Envelope要求）
+        params.add(StandardParameterPreview(
+            paramName = "外尺寸上限",
+            paramValue = "宽≤44cm、长≤75cm",
+            standardSource = "ECE R129 Envelope",
+            description = "确保座椅在车辆安装空间内"
+        ))
+
+        // 头托调节范围
+        val headrestRange = when {
+            maxHeight <= 95 -> "10-25cm"
+            maxHeight <= 105 -> "20-35cm"
+            maxHeight <= 125 -> "30-50cm"
+            else -> "40-60cm"
+        }
+        params.add(StandardParameterPreview(
+            paramName = "头托调节范围",
+            paramValue = headrestRange,
+            standardSource = "ECE R129 §5.4.2",
+            description = "适配身高${minHeight}-${maxHeight}cm"
+        ))
+
+        // ISOFIX接口
+        params.add(StandardParameterPreview(
+            paramName = "ISOFIX接口间距",
+            paramValue = "280mm±5mm",
+            standardSource = "ECE R129 §5.5.1",
+            description = "国际标准化固定接口尺寸"
+        ))
+
+        // 支撑腿长度
+        params.add(StandardParameterPreview(
+            paramName = "支撑腿可调范围",
+            paramValue = "120-200mm",
+            standardSource = "ECE R129 §5.5.3",
+            description = "防止座椅向前倾倒"
+        ))
+
+        // 侧撞防护
+        params.add(StandardParameterPreview(
+            paramName = "侧撞防护结构",
+            paramValue = "需含EPS吸能结构",
+            standardSource = "GB 27887-2024 §6.4",
+            description = "侧面碰撞保护要求"
+        ))
+
+        // 座椅角度
+        params.add(StandardParameterPreview(
+            paramName = "座椅调节角度",
+            paramValue = "≥10°固定档位",
+            standardSource = "ECE R129 §5.2.3",
+            description = "坐姿稳定性要求"
+        ))
+
+        return params
+    }
+
+    /**
+     * 婴儿推车核心参数
+     */
+    private fun getStrollerParameters(minHeight: Int, maxHeight: Int): List<StandardParameterPreview> {
+        val params = mutableListOf<StandardParameterPreview>()
+
+        params.add(StandardParameterPreview(
+            paramName = "折叠后尺寸",
+            paramValue = "长×宽×高≤ 100×60×30cm",
+            standardSource = "GB 14748-2020",
+            description = "便于收纳和携带"
+        ))
+
+        params.add(StandardParameterPreview(
+            paramName = "刹车距离",
+            paramValue = "≤ 1.0m（10°斜坡）",
+            standardSource = "EN 1888",
+            description = "刹车性能要求"
+        ))
+
+        params.add(StandardParameterPreview(
+            paramName = "座椅角度",
+            paramValue = "可调范围135°-175°",
+            standardSource = "GB 14748-2020 §4.3",
+            description = "保护婴儿脊柱"
+        ))
+
+        return params
+    }
+
+    /**
+     * 儿童家庭用品核心参数
+     */
+    private fun getHouseholdGoodsParameters(minHeight: Int, maxHeight: Int): List<StandardParameterPreview> {
+        return listOf(
+            StandardParameterPreview(
+                paramName = "材料安全",
+                paramValue = "无有害物质释放",
+                standardSource = "ISO 8124-3",
+                description = "重金属和塑化剂限制"
+            ),
+            StandardParameterPreview(
+                paramName = "结构强度",
+                paramValue = "承受1.5倍额定载荷",
+                standardSource = "GB 28007-2011",
+                description = "使用安全性"
+            )
+        )
+    }
+
+    /**
+     * 儿童高脚椅核心参数
+     */
+    private fun getHighChairParameters(minHeight: Int, maxHeight: Int): List<StandardParameterPreview> {
+        return listOf(
+            StandardParameterPreview(
+                paramName = "座面高度",
+                paramValue = "可调范围60-90cm",
+                standardSource = "ISO 8124-3",
+                description = "适配不同餐桌高度"
+            ),
+            StandardParameterPreview(
+                paramName = "安全带",
+                paramValue = "五点式安全带",
+                standardSource = "GB 28007-2011 §5.2",
+                description = "防止儿童跌落"
+            ),
+            StandardParameterPreview(
+                paramName = "稳定性",
+                paramValue = "15°倾斜不翻倒",
+                standardSource = "ISO 8124-3 §4.4",
+                description = "抗倾倒要求"
+            )
+        )
+    }
+}
+
+/**
+ * 标准关键词联想服务
+ */
+class StandardKeywordSuggestionService {
+
+    fun getSuggestions(input: String): List<StandardKeywordSuggestion> {
+        if (input.length < 2) return emptyList()
+
+        val suggestions = mutableListOf<StandardKeywordSuggestion>()
+
+        // Envelope相关
+        if (input.contains("env", ignoreCase = true)) {
+            suggestions.add(StandardKeywordSuggestion(
+                keyword = "Envelope",
+                displayText = "ECE R129 §5.2.1 Envelope尺寸要求：宽≤44cm",
+                clause = ECE_R129_Clauses.SEAT_ANGLE_FORWARD
+            ))
+        }
+
+        // 侧撞防护相关
+        if (input.contains("侧", ignoreCase = true) || input.contains("side", ignoreCase = true)) {
+            suggestions.add(StandardKeywordSuggestion(
+                keyword = "侧撞防护",
+                displayText = "GB 27887-2024 §6.4 侧撞防护：需含EPS吸能结构",
+                clause = ECE_R129_Clauses.SIDE_IMPACT_TEST
+            ))
+        }
+
+        // 头托相关
+        if (input.contains("头托", ignoreCase = true) || input.contains("head", ignoreCase = true)) {
+            suggestions.add(StandardKeywordSuggestion(
+                keyword = "头托调节",
+                displayText = "ECE R129 §5.4.2 头托调节范围≥154mm",
+                clause = ECE_R129_Clauses.HEADREST_ADJUSTMENT
+            ))
+        }
+
+        // ISOFIX相关
+        if (input.contains("isofix", ignoreCase = true)) {
+            suggestions.add(StandardKeywordSuggestion(
+                keyword = "ISOFIX",
+                displayText = "ECE R129 §5.5.1 ISOFIX接口间距280mm±5mm",
+                clause = ECE_R129_Clauses.ISOFIX_INTERFACE
+            ))
+        }
+
+        // 支撑腿相关
+        if (input.contains("支撑", ignoreCase = true) || input.contains("leg", ignoreCase = true)) {
+            suggestions.add(StandardKeywordSuggestion(
+                keyword = "支撑腿",
+                displayText = "ECE R129 §5.5.3 支撑腿可调范围120-200mm",
+                clause = ECE_R129_Clauses.SUPPORT_LEG
+            ))
+        }
+
+        // 碰撞测试相关
+        if (input.contains("碰撞", ignoreCase = true) || input.contains("test", ignoreCase = true)) {
+            suggestions.add(StandardKeywordSuggestion(
+                keyword = "正向碰撞测试",
+                displayText = "ECE R129 §6.2 正向碰撞：头部位移＜25cm；HIC＜700",
+                clause = ECE_R129_Clauses.FRONT_IMPACT_TEST
+            ))
+        }
+
+        return suggestions
+    }
+}

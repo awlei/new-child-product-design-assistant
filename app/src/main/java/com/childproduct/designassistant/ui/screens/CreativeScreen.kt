@@ -4,10 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.*
@@ -15,8 +18,8 @@ import com.childproduct.designassistant.ui.MainViewModel
 import com.childproduct.designassistant.ui.UiState
 
 /**
- * 改进的创意生成界面
- * 使用身高范围精准输入替代年龄段选择
+ * 改进的创意生成界面（方案生成）
+ * 标题：标准适配设计
  */
 @Composable
 fun CreativeScreen(
@@ -38,11 +41,30 @@ fun CreativeScreen(
             .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "🎨 创意生成",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 24.dp)
-        )
+        // 页面标题（标尺+标准文档图标）
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(bottom = 16.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Straighten,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Icon(
+                imageVector = Icons.Default.LibraryBooks,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(end = 8.dp)
+            )
+            Text(
+                text = "标准适配设计",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
+            )
+        }
 
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -55,7 +77,8 @@ fun CreativeScreen(
                 // 身高范围输入（双栏）
                 Text(
                     text = "目标身高范围（cm）",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
                 )
 
                 Row(
@@ -103,15 +126,24 @@ fun CreativeScreen(
                     }
                 }
 
-                // 产品类型选择
+                // 产品类型选择（带标准信息）
                 Text(
-                    text = "选择产品类型",
-                    style = MaterialTheme.typography.titleMedium
+                    text = "产品类型（含核心强制标准）",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
                 )
-                ProductTypeSelector(
+                ProductTypeWithStandardSelector(
                     selectedProductType = selectedProductType,
                     onProductTypeSelected = { selectedProductType = it }
                 )
+
+                // 标准适配提示
+                if (minHeight.isNotBlank() && maxHeight.isNotBlank()) {
+                    StandardComplianceHintCard(
+                        productType = selectedProductType,
+                        ageRange = getAgeRangeHint(minHeight.toIntOrNull() ?: 0, maxHeight.toIntOrNull() ?: 0) ?: ""
+                    )
+                }
 
                 // 设计主题
                 OutlinedTextField(
@@ -139,7 +171,7 @@ fun CreativeScreen(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-                        Text("生成创意")
+                        Text("生成设计方案")
                     }
                 }
             }
@@ -181,30 +213,10 @@ private fun inferAgeGroup(minHeight: Int, maxHeight: Int): AgeGroup {
 }
 
 /**
- * 年龄段选择器（保留用于其他场景）
+ * 产品类型选择器（带标准信息）
  */
 @Composable
-fun AgeGroupSelector(
-    selectedAgeGroup: AgeGroup,
-    onAgeGroupSelected: (AgeGroup) -> Unit
-) {
-    Column {
-        AgeGroup.values().forEach { ageGroup ->
-            FilterChip(
-                selected = selectedAgeGroup == ageGroup,
-                onClick = { onAgeGroupSelected(ageGroup) },
-                label = { Text(ageGroup.displayName) },
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
-    }
-}
-
-/**
- * 产品类型选择器
- */
-@Composable
-fun ProductTypeSelector(
+fun ProductTypeWithStandardSelector(
     selectedProductType: ProductType,
     onProductTypeSelected: (ProductType) -> Unit
 ) {
@@ -212,12 +224,100 @@ fun ProductTypeSelector(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         ProductType.values().forEach { productType ->
-            FilterChip(
-                selected = selectedProductType == productType,
-                onClick = { onProductTypeSelected(productType) },
-                label = { Text(productType.displayName) },
-                modifier = Modifier.fillMaxWidth()
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = if (selectedProductType == productType) 4.dp else 1.dp
+                ),
+                colors = CardDefaults.cardColors(
+                    containerColor = if (selectedProductType == productType) {
+                        MaterialTheme.colorScheme.primaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surface
+                    }
+                ),
+                onClick = { onProductTypeSelected(productType) }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        // 标准缩写标签
+                        SuggestionChip(
+                            onClick = {},
+                            label = { Text(productType.standardAbbr) }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Column {
+                            Text(
+                                text = productType.displayName,
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = productType.mainStandards,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                            )
+                        }
+                    }
+
+                    RadioButton(
+                        selected = selectedProductType == productType,
+                        onClick = { onProductTypeSelected(productType) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 标准适配提示卡片
+ */
+@Composable
+fun StandardComplianceHintCard(
+    productType: ProductType,
+    ageRange: String
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiaryContainer
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                imageVector = Icons.Default.Verified,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary
             )
+            Column {
+                Text(
+                    text = "当前合规组合",
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "$productType + $ageRange → 适用标准：${productType.mainStandards}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
+                )
+            }
         }
     }
 }
@@ -298,6 +398,48 @@ fun CreativeIdeaCard(
                     )
                 }
             }
+        }
+    }
+}
+
+/**
+ * 年龄段选择器（保留用于其他场景）
+ */
+@Composable
+fun AgeGroupSelector(
+    selectedAgeGroup: AgeGroup,
+    onAgeGroupSelected: (AgeGroup) -> Unit
+) {
+    Column {
+        AgeGroup.values().forEach { ageGroup ->
+            FilterChip(
+                selected = selectedAgeGroup == ageGroup,
+                onClick = { onAgeGroupSelected(ageGroup) },
+                label = { Text(ageGroup.displayName) },
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
+    }
+}
+
+/**
+ * 产品类型选择器（简化版）
+ */
+@Composable
+fun ProductTypeSelector(
+    selectedProductType: ProductType,
+    onProductTypeSelected: (ProductType) -> Unit
+) {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        ProductType.values().forEach { productType ->
+            FilterChip(
+                selected = selectedProductType == productType,
+                onClick = { onProductTypeSelected(productType) },
+                label = { Text(productType.displayName) },
+                modifier = Modifier.fillMaxWidth()
+            )
         }
     }
 }

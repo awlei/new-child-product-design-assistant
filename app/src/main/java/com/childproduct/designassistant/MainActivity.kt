@@ -39,32 +39,62 @@ fun MainScreen() {
     val selectedTab by viewModel.selectedTab.collectAsState()
     val uiState by viewModel.uiState.collectAsState()
 
+    var showExportDialog by remember { mutableStateOf(false) }
+
     Scaffold(
+        topBar = {
+            SmallTopAppBar(
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Engineering,
+                            contentDescription = null,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        Text(
+                            text = "儿童产品设计助手",
+                            style = MaterialTheme.typography.titleLarge
+                        )
+                    }
+                },
+                actions = {
+                    // 一键输出入口
+                    IconButton(onClick = { showExportDialog = true }) {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "一键输出"
+                        )
+                    }
+                }
+            )
+        },
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { viewModel.selectTab(0) },
-                    icon = { Icon(Icons.Default.Palette, contentDescription = null) },
-                    label = { Text("创意生成") }
+                    icon = { Icon(Icons.Default.Assignment, contentDescription = null) },
+                    label = { Text("方案生成") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { viewModel.selectTab(1) },
-                    icon = { Icon(Icons.Default.Security, contentDescription = null) },
-                    label = { Text("安全检查") }
+                    icon = { Icon(Icons.Default.Science, contentDescription = null) },
+                    label = { Text("测试矩阵") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 2,
                     onClick = { viewModel.selectTab(2) },
-                    icon = { Icon(Icons.Default.Description, contentDescription = null) },
-                    label = { Text("设计文档") }
+                    icon = { Icon(Icons.Default.EditNote, contentDescription = null) },
+                    label = { Text("设计建议") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 3,
                     onClick = { viewModel.selectTab(3) },
                     icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
-                    label = { Text("技术建议") }
+                    label = { Text("竞品参考") }
                 )
             }
         },
@@ -102,5 +132,55 @@ fun MainScreen() {
                 else -> {}
             }
         }
+    }
+
+    // 一键输出对话框
+    if (showExportDialog) {
+        AlertDialog(
+            onDismissRequest = { showExportDialog = false },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Download,
+                        contentDescription = null,
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    Text("导出设计建议")
+                }
+            },
+            text = {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text("请选择导出格式：")
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(onClick = { /* TODO: 导出PDF */ }) {
+                            Text("PDF文档")
+                        }
+                        Button(onClick = { /* TODO: 导出Excel */ }) {
+                            Text("Excel表格")
+                        }
+                    }
+                    Text(
+                        text = "导出内容将包含：",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                    )
+                    Text("• 标准匹配结果")
+                    Text("• 核心设计参数")
+                    Text("• 合规测试矩阵")
+                    Text("• 标准条款引用")
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showExportDialog = false }) {
+                    Text("取消")
+                }
+            }
+        )
     }
 }
