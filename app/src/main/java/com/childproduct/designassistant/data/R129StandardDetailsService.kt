@@ -21,7 +21,7 @@ class R129StandardDetailsService {
      * 获取所有假人规格
      */
     fun getAllDummySpecs(): List<DummySpec> {
-        return R129r4eStandardDatabase.DUMMY_SPECS
+        return R129r4eStandardDatabase.getDummySpecsList()
     }
 
     /**
@@ -44,7 +44,7 @@ class R129StandardDetailsService {
     fun getInjuryCriteriaComparison(): Map<String, Map<String, Any>> {
         val comparison = mutableMapOf<String, Map<String, Any>>()
 
-        R129r4eStandardDatabase.DUMMY_SPECS.forEach { dummy ->
+        R129r4eStandardDatabase.getDummySpecsList().forEach { dummy ->
             val criteriaMap = mapOf(
                 "dummyType" to dummy.dummyType,
                 "headAcceleration3ms_low" to dummy.injuryCriteria.headAcceleration3ms.lowThreshold,
@@ -75,7 +75,7 @@ class R129StandardDetailsService {
      * 获取所有防旋转装置类型及规格
      */
     fun getAllAntiRotationDeviceSpecs(): Map<AntiRotationDeviceType, AntiRotationDeviceSpec> {
-        return R129r4eStandardDatabase.ANTI_ROTATION_DEVICES
+        return R129r4eStandardDatabase.getAntiRotationDevicesMap()
     }
 
     /**
@@ -89,28 +89,28 @@ class R129StandardDetailsService {
      * 获取所有碰撞测试曲线
      */
     fun getAllImpactTestCurves(): List<ImpactTestCurve> {
-        return R129r4eStandardDatabase.IMPACT_TEST_CURVES
+        return R129r4eStandardDatabase.getImpactTestCurvesList()
     }
 
     /**
      * 获取材料标准要求
      */
     fun getMaterialStandards(): List<MaterialStandardRequirement> {
-        return R129r4eStandardDatabase.MATERIAL_STANDARDS
+        return R129r4eStandardDatabase.getMaterialStandardsList()
     }
 
     /**
      * 根据材料类型获取标准要求
      */
     fun getMaterialStandardByType(materialType: MaterialType): List<MaterialStandardRequirement> {
-        return R129r4eStandardDatabase.MATERIAL_STANDARDS.filter { it.materialType == materialType }
+        return R129r4eStandardDatabase.getMaterialStandardsList().filter { it.materialType == materialType }
     }
 
     /**
      * 获取卡扣要求
      */
     fun getBuckleRequirement(): BuckleRequirement {
-        return R129r4eStandardDatabase.BUCKLE_REQUIREMENT
+        return R129r4eStandardDatabase.getBuckleRequirement()
     }
 
     /**
@@ -118,8 +118,8 @@ class R129StandardDetailsService {
      */
     fun getRetractorRequirement(retractorType: RetractorType): RetractorRequirement {
         return when (retractorType) {
-            RetractorType.AUTO_LOCKING -> R129r4eStandardDatabase.AUTO_LOCKING_RETRACTOR
-            RetractorType.EMERGENCY_LOCKING -> R129r4eStandardDatabase.EMERGENCY_LOCKING_RETRACTOR
+            RetractorType.AUTO_LOCKING -> R129r4eStandardDatabase.getAutoLockingRetractor()
+            RetractorType.EMERGENCY_LOCKING -> R129r4eStandardDatabase.getEmergencyLockingRetractor()
         }
     }
 
@@ -127,35 +127,35 @@ class R129StandardDetailsService {
      * 获取认证申请材料清单
      */
     fun getApplicationDocuments(): ApplicationDocuments {
-        return R129r4eStandardDatabase.APPLICATION_DOCUMENTS
+        return R129r4eStandardDatabase.getApplicationDocuments()
     }
 
     /**
      * 获取标识要求
      */
     fun getMarkingRequirements(): List<MarkingRequirement> {
-        return R129r4eStandardDatabase.MARKING_REQUIREMENTS
+        return R129r4eStandardDatabase.getMarkingRequirementsList()
     }
 
     /**
      * 获取生产一致性控制要求
      */
     fun getProductionConformity(): ProductionConformityControl {
-        return R129r4eStandardDatabase.PRODUCTION_CONFORMITY
+        return R129r4eStandardDatabase.getProductionConformity()
     }
 
     /**
      * 获取用户说明书要求
      */
     fun getUserManualRequirements(): UserManualRequirements {
-        return R129r4eStandardDatabase.USER_MANUAL_REQUIREMENTS
+        return R129r4eStandardDatabase.getUserManualRequirements()
     }
 
     /**
      * 获取测试台车规格
      */
     fun getTestTrolleySpec(): TestTrolleySpec {
-        return R129r4eStandardDatabase.TEST_TROLLEY_SPEC
+        return R129r4eStandardDatabase.getTestTrolleySpec()
     }
 
     /**
@@ -169,14 +169,14 @@ class R129StandardDetailsService {
      * 获取测试安装预紧力要求
      */
     fun getInstallationPreload(): Map<String, Int> {
-        return R129r4eStandardDatabase.INSTALLATION_PRELOAD
+        return R129r4eStandardDatabase.getInstallationPreloadMap()
     }
 
     /**
      * 获取外部尺寸ISO包络
      */
     fun getExternalEnvelopes(): Map<String, EnvelopeDimensions> {
-        return R129r4eStandardDatabase.EXTERNAL_ENVELOPES
+        return R129r4eStandardDatabase.getExternalEnvelopesMap()
     }
 
     /**
@@ -189,35 +189,35 @@ class R129StandardDetailsService {
             "iSizeBooster" -> "iSizeBooster"
             else -> null
         }
-        return envelopeKey?.let { R129r4eStandardDatabase.EXTERNAL_ENVELOPES[it] }
+        return envelopeKey?.let { R129r4eStandardDatabase.getExternalEnvelopesMap()[it] }
     }
 
     /**
      * 获取关键术语定义
      */
     fun getKeyTerms(): List<Pair<String, String>> {
-        return R129r4eStandardDatabase.KEY_TERMS
+        return R129r4eStandardDatabase.getKeyTermsList()
     }
 
     /**
      * 搜索术语定义
      */
     fun searchTerm(keyword: String): Pair<String, String>? {
-        return R129r4eStandardDatabase.KEY_TERMS.find { it.first.contains(keyword, ignoreCase = true) }
+        return R129r4eStandardDatabase.getKeyTermsList().find { it.first.contains(keyword, ignoreCase = true) }
     }
 
     /**
      * 获取ECRS分类信息
      */
     fun getEcrsClassifications(): List<ECRSClassification> {
-        return R129r4eStandardDatabase.ECRS_CLASSIFICATIONS
+        return R129r4eStandardDatabase.getECRSClassificationsList()
     }
 
     /**
      * 获取R129r4e关键阈值
      */
     fun getR129r4eThresholds(): R129r4eThresholds {
-        return R129r4eStandardDatabase.THRESHOLDS
+        return R129r4eStandardDatabase.getThresholds()
     }
 
     /**
@@ -225,7 +225,7 @@ class R129StandardDetailsService {
      */
     fun determineOrientationRequirement(heightRange: String): String {
         val (minHeight, maxHeight) = parseHeightRange(heightRange)
-        val thresholds = R129r4eStandardDatabase.THRESHOLDS
+        val thresholds = R129r4eStandardDatabase.getThresholds()
 
         return when {
             maxHeight <= thresholds.maxRearwardHeight -> "强制后向(≤${thresholds.mandatoryRearwardMonths}个月)"

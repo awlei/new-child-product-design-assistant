@@ -62,58 +62,55 @@ fun MainScreen() {
             )
         },
         bottomBar = {
+            val tabLabels = listOf("创意生成", "安全检查", "技术建议", "文档生成", "更多")
             NavigationBar {
                 NavigationBarItem(
-                    selected = selectedTab == "创意生成",
-                    onClick = { viewModel.selectTab("创意生成") },
+                    selected = selectedTab == 0,
+                    onClick = { viewModel.selectTab(0) },
                     icon = { Icon(Icons.Default.Lightbulb, "创意生成") },
-                    label = { Text("创意生成") }
+                    label = { Text(tabLabels[0]) }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == "安全检查",
-                    onClick = { viewModel.selectTab("安全检查") },
+                    selected = selectedTab == 1,
+                    onClick = { viewModel.selectTab(1) },
                     icon = { Icon(Icons.Default.Security, "安全检查") },
-                    label = { Text("安全检查") }
+                    label = { Text(tabLabels[1]) }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == "技术建议",
-                    onClick = { viewModel.selectTab("技术建议") },
+                    selected = selectedTab == 2,
+                    onClick = { viewModel.selectTab(2) },
                     icon = { Icon(Icons.Default.Build, "技术建议") },
-                    label = { Text("技术建议") }
+                    label = { Text(tabLabels[2]) }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == "文档生成",
-                    onClick = { viewModel.selectTab("文档生成") },
+                    selected = selectedTab == 3,
+                    onClick = { viewModel.selectTab(3) },
                     icon = { Icon(Icons.Default.Description, "文档生成") },
-                    label = { Text("文档生成") }
+                    label = { Text(tabLabels[3]) }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == "更多",
-                    onClick = { viewModel.selectTab("更多") },
+                    selected = selectedTab == 4,
+                    onClick = { viewModel.selectTab(4) },
                     icon = { Icon(Icons.Default.MoreVert, "更多") },
-                    label = { Text("更多") }
+                    label = { Text(tabLabels[4]) }
                 )
             }
         }
     ) { paddingValues ->
         when (selectedTab) {
-            "创意生成" -> CreativeScreen(
-                uiState = uiState,
-                onGenerate = { /* TODO */ }
+            0 -> CreativeScreen(
+                viewModel = viewModel
             )
-            "安全检查" -> SafetyScreen(
-                uiState = uiState,
-                onCheck = { /* TODO */ }
+            1 -> SafetyScreen(
+                viewModel = viewModel
             )
-            "技术建议" -> TechnicalRecommendationScreen(
-                uiState = uiState,
-                onRequest = { /* TODO */ }
+            2 -> TechnicalRecommendationScreen(
+                viewModel = viewModel
             )
-            "文档生成" -> DocumentScreen(
-                uiState = uiState,
-                onGenerate = { /* TODO */ }
+            3 -> DocumentScreen(
+                viewModel = viewModel
             )
-            "更多" -> MoreScreen(
+            4 -> MoreScreen(
                 onNavigate = { screen -> selectedModule = screen }
             )
         }
@@ -143,8 +140,7 @@ fun MoreScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onNavigate(name) },
-                onClick = { onNavigate(name) }
+                    .clickable { onNavigate(name) }
             ) {
                 Row(
                     modifier = Modifier

@@ -650,6 +650,91 @@ class R129r4eStandardDatabase {
     }
 
     /**
+     * 实例方法：获取假人规格列表
+     */
+    fun getDummySpecsList(): List<DummySpec> = DUMMY_SPECS
+
+    /**
+     * 实例方法：获取防旋转装置规格
+     */
+    fun getAntiRotationDevicesMap(): Map<AntiRotationDeviceType, AntiRotationDeviceSpec> = ANTI_ROTATION_DEVICES
+
+    /**
+     * 实例方法：获取碰撞测试曲线
+     */
+    fun getImpactTestCurvesList(): List<ImpactTestCurve> = IMPACT_TEST_CURVES
+
+    /**
+     * 实例方法：获取材料标准
+     */
+    fun getMaterialStandardsList(): List<MaterialStandardRequirement> = MATERIAL_STANDARDS
+
+    /**
+     * 实例方法：获取卡扣要求
+     */
+    fun getBuckleRequirement(): BuckleRequirement = BUCKLE_REQUIREMENT
+
+    /**
+     * 实例方法：获取自动锁紧卷收器要求
+     */
+    fun getAutoLockingRetractor(): RetractorRequirement = AUTO_LOCKING_RETRACTOR
+
+    /**
+     * 实例方法：获取紧急锁紧卷收器要求
+     */
+    fun getEmergencyLockingRetractor(): RetractorRequirement = EMERGENCY_LOCKING_RETRACTOR
+
+    /**
+     * 实例方法：获取申请文件要求
+     */
+    fun getApplicationDocumentsList(): List<ApplicationDocumentRequirement> = APPLICATION_DOCUMENTS
+
+    /**
+     * 实例方法：获取标识要求
+     */
+    fun getMarkingRequirementsList(): List<MarkingRequirement> = MARKING_REQUIREMENTS
+
+    /**
+     * 实例方法：获取生产一致性要求
+     */
+    fun getProductionConformityList(): List<ProductionConformityRequirement> = PRODUCTION_CONFORMITY
+
+    /**
+     * 实例方法：获取用户手册要求
+     */
+    fun getUserManualRequirementsList(): List<UserManualRequirement> = USER_MANUAL_REQUIREMENTS
+
+    /**
+     * 实例方法：获取测试滑车规格
+     */
+    fun getTestTrolleySpec(): TestTrolleySpec = TEST_TROLLEY_SPEC
+
+    /**
+     * 实例方法：获取安装预载要求
+     */
+    fun getInstallationPreload(): InstallationPreload = INSTALLATION_PRELOAD
+
+    /**
+     * 实例方法：获取外部包络
+     */
+    fun getExternalEnvelopesList(): List<ExternalEnvelope> = EXTERNAL_ENVELOPES
+
+    /**
+     * 实例方法：获取关键术语
+     */
+    fun getKeyTermsList(): List<Pair<String, String>> = KEY_TERMS
+
+    /**
+     * 实例方法：获取阈值
+     */
+    fun getThresholds(): R129r4eThresholds = THRESHOLDS
+
+    /**
+     * 实例方法：获取ECRS分类
+     */
+    fun getECRSClassificationsList(): List<ECRSClassification> = ECRS_CLASSIFICATIONS
+
+    /**
      * 根据假人类型获取假人规格
      */
     fun getDummySpec(dummyType: String): DummySpec? {
