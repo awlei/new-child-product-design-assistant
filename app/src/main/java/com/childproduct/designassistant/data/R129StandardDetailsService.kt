@@ -55,8 +55,8 @@ class R129StandardDetailsService {
                 "abdominalPressure" to (dummy.injuryCriteria.abdominalPressure?.let {
                     "${it.q1_5Threshold}/${it.q3_q6Threshold}/${it.q10Threshold}"
                 } ?: "N/A"),
-                "neckTension" to dummy.injuryCriteria.neckForces?.tensionLimit,
-                "neckCompression" to dummy.injuryCriteria.neckForces?.compressionLimit
+                "neckTension" to (dummy.injuryCriteria.neckForces?.tensionLimit ?: 0.0),
+                "neckCompression" to (dummy.injuryCriteria.neckForces?.compressionLimit ?: 0.0)
             )
             comparison[dummy.dummyType] = criteriaMap
         }
