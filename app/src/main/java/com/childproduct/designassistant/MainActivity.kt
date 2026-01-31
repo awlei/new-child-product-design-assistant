@@ -27,7 +27,7 @@ import com.childproduct.designassistant.ui.screens.TestMatrixScreen
 import com.childproduct.designassistant.ui.screens.DesignSuggestionScreen
 import com.childproduct.designassistant.ui.screens.CompetitorReferenceScreen
 import com.childproduct.designassistant.ui.screens.ComplianceManagementScreen
-import com.childproduct.designassistant.theme.ChildProductDesignAssistantTheme
+import com.childproduct.designassistant.ui.theme.ChildProductDesignAssistantTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
