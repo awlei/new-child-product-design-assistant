@@ -610,7 +610,7 @@ class NHTSAComplianceService {
         
         testSuppliers.forEach { (component, supplier) ->
             if (productionSuppliers[component] != supplier) {
-                issues.add("组件$component供应商不一致：测试样品$supplier，量产样品${productionSuppliers[component]}")
+                issues.add("组件" + component + "供应商不一致：测试样品" + supplier + "，量产样品" + (productionSuppliers[component] ?: ""))
                 isConsistent = false
             }
         }

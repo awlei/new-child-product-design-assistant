@@ -737,7 +737,7 @@ class StandardDynamicAdaptationService {
         guide.appendLine()
         
         if (stateReqs.isEmpty()) {
-            guide.appendLine("未找到$stateCode的额外要求")
+            guide.appendLine("未找到" + stateCode + "的额外要求")
             guide.appendLine("仅需满足联邦标准（FMVSS）")
         } else {
             guide.appendLine("发现${stateReqs.size}项额外要求：")
