@@ -687,7 +687,12 @@ class R129r4eStandardDatabase {
     /**
      * 实例方法：获取申请文件要求
      */
-    fun getApplicationDocumentsList(): List<ApplicationDocumentRequirement> = APPLICATION_DOCUMENTS
+    fun getApplicationDocumentsList(): List<ApplicationDocumentRequirement> = APPLICATION_DOCUMENTS.documents
+
+    /**
+     * 实例方法：获取申请文件（完整对象）
+     */
+    fun getApplicationDocuments(): ApplicationDocuments = APPLICATION_DOCUMENTS
 
     /**
      * 实例方法：获取标识要求
@@ -697,12 +702,22 @@ class R129r4eStandardDatabase {
     /**
      * 实例方法：获取生产一致性要求
      */
-    fun getProductionConformityList(): List<ProductionConformityRequirement> = PRODUCTION_CONFORMITY
+    fun getProductionConformityList(): List<ProductionConformityRequirement> = PRODUCTION_CONFORMITY.requirements
+
+    /**
+     * 实例方法：获取生产一致性控制（完整对象）
+     */
+    fun getProductionConformity(): ProductionConformityControl = PRODUCTION_CONFORMITY
 
     /**
      * 实例方法：获取用户手册要求
      */
-    fun getUserManualRequirementsList(): List<UserManualRequirement> = USER_MANUAL_REQUIREMENTS
+    fun getUserManualRequirementsList(): List<UserManualRequirement> = USER_MANUAL_REQUIREMENTS.requirements
+
+    /**
+     * 实例方法：获取用户手册要求（完整对象）
+     */
+    fun getUserManualRequirements(): UserManualRequirements = USER_MANUAL_REQUIREMENTS
 
     /**
      * 实例方法：获取测试滑车规格
@@ -715,9 +730,19 @@ class R129r4eStandardDatabase {
     fun getInstallationPreload(): InstallationPreload = INSTALLATION_PRELOAD
 
     /**
+     * 实例方法：获取安装预载要求（Map格式）
+     */
+    fun getInstallationPreloadMap(): Map<String, Int> = INSTALLATION_PRELOAD.preloadValues
+
+    /**
      * 实例方法：获取外部包络
      */
-    fun getExternalEnvelopesList(): List<ExternalEnvelope> = EXTERNAL_ENVELOPES
+    fun getExternalEnvelopesList(): List<ExternalEnvelope> = emptyList()
+
+    /**
+     * 实例方法：获取外部包络（Map格式）
+     */
+    fun getExternalEnvelopesMap(): Map<String, EnvelopeDimensions> = EXTERNAL_ENVELOPES
 
     /**
      * 实例方法：获取关键术语
