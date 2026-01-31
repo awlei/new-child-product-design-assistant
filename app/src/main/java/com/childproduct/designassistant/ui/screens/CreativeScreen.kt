@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,14 @@ fun CreativeScreen(
     var maxHeight by remember { mutableStateOf("") }
     var selectedProductType by remember { mutableStateOf(ProductType.CHILD_SAFETY_SEAT) }
     var theme by remember { mutableStateOf("") }
+    
+    // 生成按钮点击动画状态
+    var buttonPressed by remember { mutableStateOf(false) }
+    
+    // 计算按钮是否可用
+    val isButtonEnabled = minHeight.isNotBlank() && 
+                           maxHeight.isNotBlank() &&
+                           uiState !is UiState.Loading
 
     Column(
         modifier = modifier
@@ -145,25 +154,41 @@ fun CreativeScreen(
                     )
                 }
 
-                // 设计主题
+                // 设计主题（增加示例提示）
                 OutlinedTextField(
                     value = theme,
                     onValueChange = { theme = it },
                     label = { Text("设计主题（可选）") },
+                    placeholder = { Text("示例：符合UN R129的6-9岁儿童安全座椅") },
+                    supportingText = { 
+                        Text(
+                            text = "输入特定设计需求，如材质风格、功能偏好等",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                        )
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true
                 )
 
-                // 生成按钮
+                // 生成按钮（增加点击反馈）
                 Button(
                     onClick = {
+                        buttonPressed = true
                         val ageGroup = inferAgeGroup(minHeight.toIntOrNull() ?: 0, maxHeight.toIntOrNull() ?: 0)
                         viewModel.generateCreativeIdea(ageGroup, selectedProductType, theme)
                     },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = uiState !is UiState.Loading &&
-                              minHeight.isNotBlank() &&
-                              maxHeight.isNotBlank()
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .scale(if (buttonPressed) 0.97f else 1f),
+                    enabled = isButtonEnabled,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = if (isButtonEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        }
+                    )
                 ) {
                     if (uiState is UiState.Loading) {
                         CircularProgressIndicator(
@@ -171,7 +196,10 @@ fun CreativeScreen(
                             color = MaterialTheme.colorScheme.onPrimary
                         )
                     } else {
-                        Text("生成设计方案")
+                        Text(
+                            "生成设计方案",
+                            style = MaterialTheme.typography.titleMedium
+                        )
                     }
                 }
             }
@@ -323,82 +351,494 @@ fun StandardComplianceHintCard(
 }
 
 /**
- * 创意展示卡片
+ * 创意展示卡片 - 儿童安全座椅专用
+ * 结构：基本信息 + 合规参数 + 功能特性 + 推荐材料 + 标准关联
  */
 @Composable
 fun CreativeIdeaCard(
     idea: CreativeIdea,
     modifier: Modifier = Modifier
 ) {
+    var expandedBasicInfo by remember { mutableStateOf(false) }
+    var expandedCompliance by remember { mutableStateOf(false) }
+    var expandedFeatures by remember { mutableStateOf(false) }
+    var expandedMaterials by remember { mutableStateOf(false) }
+    var expandedStandards by remember { mutableStateOf(false) }
+
     Card(
         modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // 标题
             Text(
                 text = idea.title,
                 style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(bottom = 8.dp)
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.primary
             )
 
             Text(
                 text = idea.description,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 12.dp)
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f)
             )
 
-            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
-            Text(
-                text = "设计主题: ${idea.theme}",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
+            // ============ 基本信息 ============
+            ExpandableSection(
+                title = "基本信息",
+                icon = Icons.Default.Info,
+                expanded = expandedBasicInfo,
+                onExpandedChange = { expandedBasicInfo = it }
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    InfoRow("设计主题", idea.theme)
+                    InfoRow("年龄段", idea.ageGroup.displayName)
+                    InfoRow("产品类型", idea.productType.displayName)
+                    InfoRow("标准编码", idea.productType.standardAbbr)
+                }
+            }
 
-            Text(
-                text = "年龄段: ${idea.ageGroup.displayName}",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            Text(
-                text = "产品类型: ${idea.productType.displayName}",
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Text(
-                text = "功能特性:",
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-
-            idea.features.forEach { feature ->
-                Text(
-                    text = "• $feature",
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
+            // ============ 合规参数（新增） ============
+            ExpandableSection(
+                title = "合规参数",
+                icon = Icons.Default.Verified,
+                expanded = expandedCompliance,
+                onExpandedChange = { expandedCompliance = it },
+                badgeText = "专业"
+            ) {
+                ComplianceParametersSection(
+                    ageGroup = idea.ageGroup,
+                    productType = idea.productType
                 )
             }
 
-            if (idea.materials.isNotEmpty()) {
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = "推荐材料:",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(bottom = 4.dp)
+            // ============ 功能特性 ============
+            ExpandableSection(
+                title = "功能特性",
+                icon = Icons.Default.Build,
+                expanded = expandedFeatures,
+                onExpandedChange = { expandedFeatures = it }
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    idea.features.forEach { feature ->
+                        FeatureItem(feature = feature)
+                    }
+                }
+            }
+
+            // ============ 推荐材料（优化） ============
+            ExpandableSection(
+                title = "推荐材料",
+                icon = Icons.Default.Category,
+                expanded = expandedMaterials,
+                onExpandedChange = { expandedMaterials = it }
+            ) {
+                MaterialsSection(
+                    productType = idea.productType,
+                    customMaterials = idea.materials
                 )
-                idea.materials.forEach { material ->
+            }
+
+            // ============ 标准关联（新增） ============
+            ExpandableSection(
+                title = "标准关联",
+                icon = Icons.Default.Gavel,
+                expanded = expandedStandards,
+                onExpandedChange = { expandedStandards = it },
+                badgeText = "重点"
+            ) {
+                StandardsReferenceSection(
+                    productType = idea.productType,
+                    ageGroup = idea.ageGroup
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 可展开区域组件
+ */
+@Composable
+fun ExpandableSection(
+    title: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    expanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit,
+    badgeText: String? = null,
+    content: @Composable () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (expanded) {
+                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // 标题行
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = if (expanded) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
                     Text(
-                        text = "• $material",
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp, bottom = 2.dp)
+                        text = title,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.Bold,
+                        color = if (expanded) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
+                    )
+                    badgeText?.let {
+                        SuggestionChip(
+                            onClick = {},
+                            label = { Text(it, style = MaterialTheme.typography.labelSmall) },
+                            colors = SuggestionChipDefaults.suggestionChipColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary
+                            )
+                        )
+                    }
+                }
+                IconButton(
+                    onClick = { onExpandedChange(!expanded) },
+                    modifier = Modifier.size(32.dp)
+                ) {
+                    Icon(
+                        imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
+                        contentDescription = if (expanded) "折叠" else "展开",
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
+
+            if (expanded) {
+                HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+                content()
+            }
         }
+    }
+}
+
+/**
+ * 信息行组件
+ */
+@Composable
+fun InfoRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = "$label：",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+            modifier = Modifier.width(80.dp)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Medium,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+/**
+ * 合规参数部分
+ */
+@Composable
+fun ComplianceParametersSection(
+    ageGroup: AgeGroup,
+    productType: ProductType
+) {
+    val (hic, chest, neckTension, neckCompression) = when (ageGroup) {
+        AgeGroup.INFANT -> Triple("≤720", "≤55g", "≤2.5kN", "≤1.8kN")
+        AgeGroup.PRESCHOOL -> Triple("≤1000", "≤55g", "≤3.0kN", "≤2.0kN")
+        AgeGroup.SCHOOL_AGE -> Triple("≤1000", "≤55g", "≤4.0kN", "≤2.5kN")
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            text = "损伤判据（${ageGroup.displayName}）",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+        
+        ComplianceParamRow("HIC（头部损伤判据）", hic)
+        ComplianceParamRow("胸部加速度", chest)
+        ComplianceParamRow("颈部张力极限", neckTension)
+        ComplianceParamRow("颈部压缩极限", neckCompression)
+
+        HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+
+        Text(
+            text = "物理参数",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary
+        )
+
+        when (ageGroup) {
+            AgeGroup.INFANT -> {
+                ComplianceParamRow("适用假人", "Q0, Q1, Q1.5")
+                ComplianceParamRow("肩宽范围", "248-264mm")
+                ComplianceParamRow("髋宽范围", "120-130mm")
+            }
+            AgeGroup.PRESCHOOL -> {
+                ComplianceParamRow("适用假人", "Q3, Q6")
+                ComplianceParamRow("肩宽范围", "276-310mm")
+                ComplianceParamRow("髋宽范围", "140-155mm")
+            }
+            AgeGroup.SCHOOL_AGE -> {
+                ComplianceParamRow("适用假人", "Q10")
+                ComplianceParamRow("肩宽范围", "340-380mm")
+                ComplianceParamRow("髋宽范围", "170-190mm")
+            }
+        }
+    }
+}
+
+/**
+ * 合规参数行
+ */
+@Composable
+fun ComplianceParamRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            modifier = Modifier.weight(1f)
+        )
+        Text(
+            text = value,
+            style = MaterialTheme.typography.bodySmall,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.width(80.dp)
+        )
+    }
+}
+
+/**
+ * 功能特性项
+ */
+@Composable
+fun FeatureItem(feature: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.Top
+    ) {
+        Icon(
+            imageVector = Icons.Default.CheckCircle,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.primary,
+            modifier = Modifier
+                .size(16.dp)
+                .padding(top = 2.dp)
+        )
+        Text(
+            text = feature,
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+/**
+ * 推荐材料部分（优化）
+ */
+@Composable
+fun MaterialsSection(
+    productType: ProductType,
+    customMaterials: List<String>
+) {
+    val standardMaterials = when (productType) {
+        ProductType.CHILD_SAFETY_SEAT -> listOf(
+            Triple("阻燃面料", "符合FMVSS 302燃烧性能标准", "美标专用"),
+            Triple("ISOFIX金属组件", "高强度镀锌钢材", "GB 15083要求"),
+            Triple("PP塑料", "高强度聚丙烯", "GB 6675.4-2014"),
+            Triple("EPS吸能材料", "发泡聚苯乙烯", "GB/T 10801.1-2021"),
+            Triple("尼龙织带", "高强度安全带织带", "GB 6095-2021，断裂强度≥11000N")
+        )
+        else -> customMaterials.map { Triple(it, "", "") }
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        standardMaterials.forEach { (name, standard, note) ->
+            MaterialItem(name = name, standard = standard, note = note)
+        }
+
+        // 显示自定义材料（如果有）
+        if (customMaterials.isNotEmpty() && productType == ProductType.CHILD_SAFETY_SEAT) {
+            HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
+            Text(
+                text = "自定义材料",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+            customMaterials.forEach { material ->
+                MaterialItem(name = material, standard = "", note = "")
+            }
+        }
+    }
+}
+
+/**
+ * 材料项组件
+ */
+@Composable
+fun MaterialItem(name: String, standard: String, note: String) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(12.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    imageVector = Icons.Default.FiberManualRecord,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(8.dp)
+                )
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.bodySmall,
+                    fontWeight = FontWeight.Medium
+                )
+                if (note.isNotEmpty()) {
+                    SuggestionChip(
+                        onClick = {},
+                        label = { Text(note, style = MaterialTheme.typography.labelSmall) },
+                        colors = SuggestionChipDefaults.suggestionChipColors(
+                            containerColor = MaterialTheme.colorScheme.secondaryContainer
+                        )
+                    )
+                }
+            }
+            if (standard.isNotEmpty()) {
+                Text(
+                    text = "标准：$standard",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+        }
+    }
+}
+
+/**
+ * 标准关联部分（新增）
+ */
+@Composable
+fun StandardsReferenceSection(
+    productType: ProductType,
+    ageGroup: AgeGroup
+) {
+    val standards = when (productType) {
+        ProductType.CHILD_SAFETY_SEAT -> listOf(
+            "UN R129 §5.3.3 - 侧撞防护要求",
+            "UN R129 §5.5 - 头部损伤判据（HIC≤1000）",
+            "UN R129 §5.6 - 胸部加速度（≤55g）",
+            "FMVSS 302 - 燃烧性能（阻燃面料）",
+            "FMVSS 213 - 儿童约束系统标准",
+            "GB 27887-2011 - 儿童安全座椅国家标准",
+            "GB 6095-2021 - 安全带织带标准（断裂强度≥11000N）",
+            "GB 6675.4-2014 - 玩具安全标准"
+        )
+        else -> listOf(productType.mainStandards)
+    }
+
+    Column(
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(
+            text = "适用标准体系",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+        )
+
+        standards.forEach { standard ->
+            StandardItem(standard = standard)
+        }
+    }
+}
+
+/**
+ * 标准项组件
+ */
+@Composable
+fun StandardItem(standard: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = Icons.Default.Gavel,
+            contentDescription = null,
+            tint = MaterialTheme.colorScheme.secondary,
+            modifier = Modifier.size(14.dp)
+        )
+        Text(
+            text = standard,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 

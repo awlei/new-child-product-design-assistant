@@ -3,6 +3,8 @@ package com.childproduct.designassistant
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -11,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -64,56 +67,91 @@ fun MainScreen() {
         },
         bottomBar = {
             val tabLabels = listOf("创意生成", "安全检查", "技术建议", "文档生成", "更多")
-            NavigationBar {
-                NavigationBarItem(
-                    selected = selectedTab == 0,
-                    onClick = { viewModel.selectTab(0) },
-                    icon = { Icon(Icons.Default.Lightbulb, "创意生成") },
-                    label = { Text(tabLabels[0]) }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 1,
-                    onClick = { viewModel.selectTab(1) },
-                    icon = { Icon(Icons.Default.Security, "安全检查") },
-                    label = { Text(tabLabels[1]) }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 2,
-                    onClick = { viewModel.selectTab(2) },
-                    icon = { Icon(Icons.Default.Build, "技术建议") },
-                    label = { Text(tabLabels[2]) }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 3,
-                    onClick = { viewModel.selectTab(3) },
-                    icon = { Icon(Icons.Default.Description, "文档生成") },
-                    label = { Text(tabLabels[3]) }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 4,
-                    onClick = { viewModel.selectTab(4) },
-                    icon = { Icon(Icons.Default.MoreVert, "更多") },
-                    label = { Text(tabLabels[4]) }
-                )
+            val tabIcons = listOf(
+                Icons.Default.Lightbulb,
+                Icons.Default.Security,
+                Icons.Default.Build,
+                Icons.Default.Description,
+                Icons.Default.MoreVert
+            )
+            
+            NavigationBar(
+                modifier = Modifier.height(80.dp) // 确保足够高度
+            ) {
+                tabLabels.forEachIndexed { index, label ->
+                    NavigationBarItem(
+                        selected = selectedTab == index,
+                        onClick = { viewModel.selectTab(index) },
+                        icon = {
+                            // 选中状态添加动画效果
+                            AnimatedContent(
+                                targetState = selectedTab == index,
+                                label = "icon_animation",
+                                transitionSpec = {
+                                    fadeIn(
+                                        animationSpec = tween(300)
+                                    ) togetherWith fadeOut(
+                                        animationSpec = tween(300)
+                                    )
+                                }
+                            ) { isSelected ->
+                                if (isSelected) {
+                                    Icon(
+                                        tabIcons[index],
+                                        label,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.scale(1.1f) // 选中时放大
+                                    )
+                                } else {
+                                    Icon(
+                                        tabIcons[index],
+                                        label,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        },
+                        label = {
+                            Text(
+                                text = label,
+                                style = MaterialTheme.typography.labelSmall,
+                                maxLines = 1
+                            )
+                        },
+                        modifier = Modifier.height(64.dp) // 单个点击区域≥64dp（超过要求的48dp）
+                    )
+                }
             }
         }
     ) { paddingValues ->
-        when (selectedTab) {
-            0 -> CreativeScreen(
-                viewModel = viewModel
-            )
-            1 -> SafetyScreen(
-                viewModel = viewModel
-            )
-            2 -> TechnicalRecommendationScreen(
-                viewModel = viewModel
-            )
-            3 -> DocumentScreen(
-                viewModel = viewModel
-            )
-            4 -> MoreScreen(
-                onNavigate = { screen -> selectedModule = screen }
-            )
+        AnimatedContent(
+            targetState = selectedTab,
+            label = "screen_transition",
+            transitionSpec = {
+                fadeIn(
+                    animationSpec = tween(300)
+                ) togetherWith fadeOut(
+                    animationSpec = tween(300)
+                )
+            }
+        ) { targetTab ->
+            when (targetTab) {
+                0 -> CreativeScreen(
+                    viewModel = viewModel
+                )
+                1 -> SafetyScreen(
+                    viewModel = viewModel
+                )
+                2 -> TechnicalRecommendationScreen(
+                    viewModel = viewModel
+                )
+                3 -> DocumentScreen(
+                    viewModel = viewModel
+                )
+                4 -> MoreScreen(
+                    onNavigate = { screen -> selectedModule = screen }
+                )
+            }
         }
     }
 }

@@ -54,6 +54,15 @@ class CreativeService {
         val description = generateDescription(ageGroup, productType, finalTheme, selectedFeatures)
         val safetyNotes = generateSafetyNotes(ageGroup, productType)
 
+        // 生成专业合规参数（自动关联标准）
+        val complianceParameters = ComplianceParameters.getDefaultForAgeGroup(ageGroup)
+
+        // 生成标准关联（根据产品类型）
+        val standardsReference = StandardsReference.getDefaultForProductType(productType)
+
+        // 生成材质规格（根据产品类型）
+        val materialSpecs = MaterialSpecs.getDefaultForProductType(productType)
+
         CreativeIdea(
             id = UUID.randomUUID().toString(),
             title = title,
@@ -64,7 +73,10 @@ class CreativeService {
             features = selectedFeatures,
             materials = materials,
             colorPalette = selectedColors,
-            safetyNotes = safetyNotes
+            safetyNotes = safetyNotes,
+            complianceParameters = complianceParameters,
+            standardsReference = standardsReference,
+            materialSpecs = materialSpecs
         )
     }
 
@@ -85,9 +97,29 @@ class CreativeService {
         theme: String,
         features: List<String>
     ): String {
-        return "专为${ageGroup.displayName}儿童设计的${productType.displayName}，" +
-                "融入${theme}设计理念。主要特点包括：${features.joinToString("、")}。 " +
-                "产品设计充分考虑儿童发展特点，注重安全性、教育性和趣味性。"
+        val baseDescription = "专为${ageGroup.displayName}儿童设计的${productType.displayName}，" +
+                "融入${theme}设计理念。主要特点包括：${features.joinToString("、")}。"
+
+        // 根据产品类型添加专业性描述
+        val professionalDescription = when (productType) {
+            ProductType.CHILD_SAFETY_SEAT -> {
+                val complianceText = when (ageGroup) {
+                    AgeGroup.INFANT -> "符合UN R129 i-Size婴儿标准，HIC极限值≤ 390，"
+                    AgeGroup.TODDLER -> "符合UN R129 i-Size幼儿标准，HIC极限值≤ 570，"
+                    AgeGroup.PRESCHOOL -> "符合UN R129 i-Size儿童标准，HIC极限值≤ 1000，"
+                    else -> ""
+                }
+                "$baseDescription $complianceText 满足FMVSS 302燃烧性能要求，通过ISOFIX连接实现快速安装。"
+            }
+            ProductType.BABY_STROLLER -> {
+                "$baseDescription 符合EN 1888 + GB 14748-2020标准，制动系统可靠，折叠机构安全防夹，危险点圆角处理R≥ 2.5mm。"
+            }
+            else -> {
+                "$baseDescription 产品设计充分考虑儿童发展特点，注重安全性、教育性和趣味性。"
+            }
+        }
+
+        return professionalDescription
     }
 
     private fun generateSafetyNotes(ageGroup: AgeGroup, productType: ProductType): List<String> {
