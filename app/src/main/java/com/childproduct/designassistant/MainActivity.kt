@@ -48,32 +48,15 @@ fun MainScreen() {
     val uiState by viewModel.uiState.collectAsState()
 
     var showExportDialog by remember { mutableStateOf(false) }
+    var selectedModule by remember { mutableStateOf<String?>(null) }
 
     Scaffold(
         topBar = {
-            SmallTopAppBar(
-                title = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Engineering,
-                            contentDescription = null,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = "儿童产品设计助手",
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                },
+            TopAppBar(
+                title = { Text("儿童产品设计助手") },
                 actions = {
-                    // 一键输出入口
                     IconButton(onClick = { showExportDialog = true }) {
-                        Icon(
-                            imageVector = Icons.Default.Download,
-                            contentDescription = "一键输出"
-                        )
+                        Icon(Icons.Default.Share, "导出")
                     }
                 }
             )
@@ -81,143 +64,103 @@ fun MainScreen() {
         bottomBar = {
             NavigationBar {
                 NavigationBarItem(
-                    selected = selectedTab == 0,
-                    onClick = { viewModel.selectTab(0) },
-                    icon = { Icon(Icons.Default.AutoAwesome, contentDescription = null) },
-                    label = { Text("一键生成") }
+                    selected = selectedTab == "创意生成",
+                    onClick = { viewModel.selectTab("创意生成") },
+                    icon = { Icon(Icons.Default.Lightbulb, "创意生成") },
+                    label = { Text("创意生成") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 1,
-                    onClick = { viewModel.selectTab(1) },
-                    icon = { Icon(Icons.Default.Assignment, contentDescription = null) },
-                    label = { Text("方案整合") }
+                    selected = selectedTab == "安全检查",
+                    onClick = { viewModel.selectTab("安全检查") },
+                    icon = { Icon(Icons.Default.Security, "安全检查") },
+                    label = { Text("安全检查") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 2,
-                    onClick = { viewModel.selectTab(2) },
-                    icon = { Icon(Icons.Default.Science, contentDescription = null) },
-                    label = { Text("测试矩阵") }
+                    selected = selectedTab == "技术建议",
+                    onClick = { viewModel.selectTab("技术建议") },
+                    icon = { Icon(Icons.Default.Build, "技术建议") },
+                    label = { Text("技术建议") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 3,
-                    onClick = { viewModel.selectTab(3) },
-                    icon = { Icon(Icons.Default.EditNote, contentDescription = null) },
-                    label = { Text("设计建议") }
+                    selected = selectedTab == "文档生成",
+                    onClick = { viewModel.selectTab("文档生成") },
+                    icon = { Icon(Icons.Default.Description, "文档生成") },
+                    label = { Text("文档生成") }
                 )
                 NavigationBarItem(
-                    selected = selectedTab == 4,
-                    onClick = { viewModel.selectTab(4) },
-                    icon = { Icon(Icons.Default.Analytics, contentDescription = null) },
-                    label = { Text("竞品参考") }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 5,
-                    onClick = { viewModel.selectTab(5) },
-                    icon = { Icon(Icons.Default.School, contentDescription = null) },
-                    label = { Text("文档学习") }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 6,
-                    onClick = { viewModel.selectTab(6) },
-                    icon = { Icon(Icons.Default.Chat, contentDescription = null) },
-                    label = { Text("智能问答") }
-                )
-                NavigationBarItem(
-                    selected = selectedTab == 7,
-                    onClick = { viewModel.selectTab(7) },
-                    icon = { Icon(Icons.Default.Verified, contentDescription = null) },
-                    label = { Text("合规管理") }
+                    selected = selectedTab == "更多",
+                    onClick = { viewModel.selectTab("更多") },
+                    icon = { Icon(Icons.Default.MoreVert, "更多") },
+                    label = { Text("更多") }
                 )
             }
-        },
-        snackbarHost = {
-            SnackbarHost(hostState = remember { SnackbarHostState() })
         }
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-        ) {
-            when (selectedTab) {
-                0 -> OneClickGenerationScreen(viewModel = viewModel)
-                1 -> IntegratedReportScreen(viewModel = viewModel)
-                2 -> TestMatrixScreen(viewModel = viewModel)
-                3 -> DesignSuggestionScreen(viewModel = viewModel)
-                4 -> CompetitorReferenceScreen(viewModel = viewModel)
-                5 -> DocumentLearningScreen(viewModel = viewModel)
-                6 -> ChatQAScreen(viewModel = viewModel)
-                7 -> ComplianceManagementScreen(viewModel = viewModel)
-            }
-
-            // 显示状态消息
-            when (uiState) {
-                is UiState.Loading -> {
-                    CircularProgressIndicator(
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(16.dp)
-                    )
-                }
-                is UiState.Success -> {
-                    LaunchedEffect(Unit) {
-                        kotlinx.coroutines.delay(2000)
-                        viewModel.resetState()
-                    }
-                }
-                else -> {}
-            }
+        when (selectedTab) {
+            "创意生成" -> CreativeScreen(
+                uiState = uiState,
+                onGenerate = { /* TODO */ }
+            )
+            "安全检查" -> SafetyScreen(
+                uiState = uiState,
+                onCheck = { /* TODO */ }
+            )
+            "技术建议" -> TechnicalRecommendationScreen(
+                uiState = uiState,
+                onRequest = { /* TODO */ }
+            )
+            "文档生成" -> DocumentScreen(
+                uiState = uiState,
+                onGenerate = { /* TODO */ }
+            )
+            "更多" -> MoreScreen(
+                onNavigate = { screen -> selectedModule = screen }
+            )
         }
     }
+}
 
-    // 一键输出对话框
-    if (showExportDialog) {
-        AlertDialog(
-            onDismissRequest = { showExportDialog = false },
-            title = {
+@Composable
+fun MoreScreen(
+    onNavigate: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        listOf(
+            "文档学习" to Icons.Default.School,
+            "智能问答" to Icons.Default.QuestionAnswer,
+            "一键生成" to Icons.Default.AutoAwesome,
+            "综合报告" to Icons.Default.Assessment,
+            "测试矩阵" to Icons.Default.GridOn,
+            "设计建议" to Icons.Default.Recommend,
+            "竞品参考" to Icons.Default.CompareArrows,
+            "合规管理" to Icons.Default.Gavel
+        ).forEach { (name, icon) ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigate(name) },
+                onClick = { onNavigate(name) }
+            ) {
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Download,
-                        contentDescription = null,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-                    Text("导出设计建议")
-                }
-            },
-            text = {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Text("请选择导出格式：")
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Button(onClick = { /* TODO: 导出PDF */ }) {
-                            Text("PDF文档")
-                        }
-                        Button(onClick = { /* TODO: 导出Excel */ }) {
-                            Text("Excel表格")
-                        }
-                    }
+                    Icon(icon, name)
                     Text(
-                        text = "导出内容将包含：",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
+                        text = name,
+                        modifier = Modifier.weight(1f)
                     )
-                    Text(
-                        text = "• 创意生成\n• 安全检查\n• 技术建议\n• 设计文档",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
-                    )
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { showExportDialog = false }) {
-                    Text("取消")
+                    Icon(Icons.Default.ChevronRight, null)
                 }
             }
-        )
+        }
     }
 }
