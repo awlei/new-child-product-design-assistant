@@ -60,9 +60,9 @@ data class StandardsReference(
                     ),
                     complianceRequirements = listOf(
                         "阻燃面料燃烧速度< 4英寸/分钟",
-                        "ISOFIX连接件静态强度≥ 8kN",
-                        "HIC值≤ 1000 (Q3s假人)",
-                        "胸部加速度≤ 55g"
+                        "ISOFIX连接件静态强度>= 8kN",
+                        "HIC值<= 1000 (Q3s假人)",
+                        "胸部加速度<= 55g"
                     )
                 )
                 ProductType.BABY_STROLLER -> StandardsReference(
@@ -74,7 +74,7 @@ data class StandardsReference(
                     complianceRequirements = listOf(
                         "制动系统锁定可靠性",
                         "折叠机构安全防夹",
-                        "危险点圆角R≥ 2.5mm"
+                        "危险点圆角R>= 2.5mm"
                     )
                 )
                 else -> StandardsReference(
@@ -93,7 +93,7 @@ data class StandardsReference(
  */
 data class MaterialSpecs(
     val flameRetardantFabric: String = "通过FMVSS 302认证的阻燃面料",
-    val isoFixComponents: String = "高强度钢材ISOFIX连接件，抗拉强度≥ 450MPa",
+    val isoFixComponents: String = "高强度钢材ISOFIX连接件，抗拉强度>= 450MPa",
     val impactAbsorber: String = "EPP/EPS吸能材料",
     val additionalSpecs: List<String> = emptyList()
 ) {
@@ -103,10 +103,10 @@ data class MaterialSpecs(
             return when (productType) {
                 ProductType.CHILD_SAFETY_SEAT -> MaterialSpecs(
                     flameRetardantFabric = "通过FMVSS 302认证的阻燃面料，燃烧速度< 4英寸/分钟",
-                    isoFixComponents = "高强度钢材ISOFIX连接件，抗拉强度≥ 450MPa",
+                    isoFixComponents = "高强度钢材ISOFIX连接件，抗拉强度>= 450MPa",
                     impactAbsorber = "三层复合EPP/EPS吸能材料，密度30-50kg/m³",
                     additionalSpecs = listOf(
-                        "五点式安全带：聚酯纤维，抗拉强度≥ 2000N",
+                        "五点式安全带：聚酯纤维，抗拉强度>= 2000N",
                         "调节机构：锌合金材质，防锈处理",
                         "靠背骨架：高强度PP+玻璃纤维"
                     )

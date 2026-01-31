@@ -77,7 +77,7 @@ data class HeightRange(
             minHeight <= 0 -> "最小身高必须大于0"
             maxHeight <= minHeight -> "最小身高必须小于最大身高"
             maxHeight > 150 -> "身高范围超出常规范围（40-150cm）"
-            minHeight < 40 -> "身高建议≥40cm（符合新生儿标准）"
+            minHeight < 40 -> "身高建议>=40cm（符合新生儿标准）"
             else -> null
         }
     }
