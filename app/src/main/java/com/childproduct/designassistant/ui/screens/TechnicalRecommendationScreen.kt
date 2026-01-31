@@ -21,6 +21,8 @@ import com.childproduct.designassistant.model.*
 import com.childproduct.designassistant.ui.MainViewModel
 import com.childproduct.designassistant.ui.UiState
 import com.childproduct.designassistant.ui.components.StandardClauseDialog
+import com.childproduct.designassistant.ui.components.common.InfoRow
+import com.childproduct.designassistant.ui.components.common.InfoRowVariant
 
 /**
  * 专业导向型技术建议界面
@@ -784,11 +786,11 @@ fun StandardMatchModuleCard(
             Column(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                InfoRow("匹配标准", result.standardName)
-                InfoRow("产品分类", result.productClassification)
-                InfoRow("年龄区间", result.ageRange)
-                InfoRow("身高范围", result.heightRange)
-                InfoRow("重量范围", result.weightRange)
+                InfoRow("匹配标准", result.standardName, variant = InfoRowVariant.DEFAULT)
+                InfoRow("产品分类", result.productClassification, variant = InfoRowVariant.DEFAULT)
+                InfoRow("年龄区间", result.ageRange, variant = InfoRowVariant.DEFAULT)
+                InfoRow("身高范围", result.heightRange, variant = InfoRowVariant.DEFAULT)
+                InfoRow("重量范围", result.weightRange, variant = InfoRowVariant.DEFAULT)
 
                 if (result.configurationRequirements.isNotEmpty()) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -1009,9 +1011,9 @@ fun ComplianceTestItemCard(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                InfoRow("测试假人", test.testDummy)
-                InfoRow("测试条件", test.testConditions)
-                InfoRow("合格阈值", test.acceptanceCriteria)
+                InfoRow("测试假人", test.testDummy, variant = InfoRowVariant.DEFAULT)
+                InfoRow("测试条件", test.testConditions, variant = InfoRowVariant.DEFAULT)
+                InfoRow("合格阈值", test.acceptanceCriteria, variant = InfoRowVariant.DEFAULT)
             }
 
             Row(
@@ -1057,32 +1059,6 @@ fun ComplianceTestItemCard(
                 showDialog = false
                 selectedClause = null
             }
-        )
-    }
-}
-
-/**
- * 信息行组件
- */
-@Composable
-fun InfoRow(
-    label: String,
-    value: String
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = label,
-            style = MaterialTheme.typography.bodyMedium,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.weight(1f)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodyMedium,
-            modifier = Modifier.weight(1.5f)
         )
     }
 }

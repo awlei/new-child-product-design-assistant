@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import com.childproduct.designassistant.model.*
 import com.childproduct.designassistant.ui.MainViewModel
 import com.childproduct.designassistant.ui.UiState
+import com.childproduct.designassistant.ui.components.common.InfoRow
+import com.childproduct.designassistant.ui.components.common.InfoRowVariant
 
 /**
  * 改进的创意生成界面（方案生成）
@@ -399,10 +401,10 @@ fun CreativeIdeaCard(
                 Column(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    InfoRow("设计主题", idea.theme)
-                    InfoRow("年龄段", idea.ageGroup.displayName)
-                    InfoRow("产品类型", idea.productType.displayName)
-                    InfoRow("标准编码", idea.productType.standardAbbr)
+                    InfoRow("设计主题", idea.theme, variant = InfoRowVariant.COMPACT)
+                    InfoRow("年龄段", idea.ageGroup.displayName, variant = InfoRowVariant.COMPACT)
+                    InfoRow("产品类型", idea.productType.displayName, variant = InfoRowVariant.COMPACT)
+                    InfoRow("标准编码", idea.productType.standardAbbr, variant = InfoRowVariant.COMPACT)
                 }
             }
 
@@ -553,31 +555,6 @@ fun ExpandableSection(
 }
 
 /**
- * 信息行组件
- */
-@Composable
-fun InfoRow(label: String, value: String) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        Text(
-            text = "$label：",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-            modifier = Modifier.width(80.dp)
-        )
-        Text(
-            text = value,
-            style = MaterialTheme.typography.bodySmall,
-            fontWeight = FontWeight.Medium,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.weight(1f)
-        )
-    }
-}
-
-/**
  * 合规参数部分
  */
 @Composable
@@ -585,10 +562,21 @@ fun ComplianceParametersSection(
     ageGroup: AgeGroup,
     productType: ProductType
 ) {
-    val (hic, chest, neckTension, neckCompression) = when (ageGroup) {
-        AgeGroup.INFANT -> Triple("≤720", "≤55g", "≤2.5kN", "≤1.8kN")
-        AgeGroup.PRESCHOOL -> Triple("≤1000", "≤55g", "≤3.0kN", "≤2.0kN")
-        AgeGroup.SCHOOL_AGE -> Triple("≤1000", "≤55g", "≤4.0kN", "≤2.5kN")
+    // 定义损伤判据数据类
+    data class InjuryCriteria(
+        val hic: String,
+        val chest: String,
+        val neckTension: String,
+        val neckCompression: String
+    )
+
+    val criteria = when (ageGroup) {
+        AgeGroup.INFANT -> InjuryCriteria("<=720", "<=55g", "<=2.5kN", "<=1.8kN")
+        AgeGroup.TODDLER -> InjuryCriteria("<=720", "<=55g", "<=2.5kN", "<=1.8kN")
+        AgeGroup.PRESCHOOL -> InjuryCriteria("<=1000", "<=55g", "<=3.0kN", "<=2.0kN")
+        AgeGroup.SCHOOL_AGE -> InjuryCriteria("<=1000", "<=55g", "<=4.0kN", "<=2.5kN")
+        AgeGroup.TEEN -> InjuryCriteria("<=1000", "<=55g", "<=4.0kN", "<=2.5kN")
+        AgeGroup.ALL -> InjuryCriteria("<=1000", "<=55g", "<=4.0kN", "<=2.5kN")
     }
 
     Column(
@@ -601,10 +589,10 @@ fun ComplianceParametersSection(
             color = MaterialTheme.colorScheme.primary
         )
         
-        ComplianceParamRow("HIC（头部损伤判据）", hic)
-        ComplianceParamRow("胸部加速度", chest)
-        ComplianceParamRow("颈部张力极限", neckTension)
-        ComplianceParamRow("颈部压缩极限", neckCompression)
+        ComplianceParamRow("HIC（头部损伤判据）", criteria.hic)
+        ComplianceParamRow("胸部加速度", criteria.chest)
+        ComplianceParamRow("颈部张力极限", criteria.neckTension)
+        ComplianceParamRow("颈部压缩极限", criteria.neckCompression)
 
         HorizontalDivider(modifier = Modifier.padding(vertical = 4.dp))
 
@@ -621,6 +609,11 @@ fun ComplianceParametersSection(
                 ComplianceParamRow("肩宽范围", "248-264mm")
                 ComplianceParamRow("髋宽范围", "120-130mm")
             }
+            AgeGroup.TODDLER -> {
+                ComplianceParamRow("适用假人", "Q1.5")
+                ComplianceParamRow("肩宽范围", "260-280mm")
+                ComplianceParamRow("髋宽范围", "125-140mm")
+            }
             AgeGroup.PRESCHOOL -> {
                 ComplianceParamRow("适用假人", "Q3, Q6")
                 ComplianceParamRow("肩宽范围", "276-310mm")
@@ -630,6 +623,16 @@ fun ComplianceParametersSection(
                 ComplianceParamRow("适用假人", "Q10")
                 ComplianceParamRow("肩宽范围", "340-380mm")
                 ComplianceParamRow("髋宽范围", "170-190mm")
+            }
+            AgeGroup.TEEN -> {
+                ComplianceParamRow("适用假人", "Q10")
+                ComplianceParamRow("肩宽范围", "380-420mm")
+                ComplianceParamRow("髋宽范围", "200-220mm")
+            }
+            AgeGroup.ALL -> {
+                ComplianceParamRow("适用假人", "全年龄段")
+                ComplianceParamRow("肩宽范围", "248-420mm")
+                ComplianceParamRow("髋宽范围", "120-220mm")
             }
         }
     }
