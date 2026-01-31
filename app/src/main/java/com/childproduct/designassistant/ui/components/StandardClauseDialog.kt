@@ -171,5 +171,10 @@ private fun getClauseTypeName(type: com.childproduct.designassistant.model.Claus
         com.childproduct.designassistant.model.ClauseType.TESTING_METHOD -> "测试方法"
         com.childproduct.designassistant.model.ClauseType.ACCEPTANCE_CRITERIA -> "验收标准"
         com.childproduct.designassistant.model.ClauseType.DIMENSIONAL_SPEC -> "尺寸规格"
+        com.childproduct.designassistant.model.ClauseType.MATERIAL_SPEC -> "材料标准"
+        com.childproduct.designassistant.model.ClauseType.QUALITY_CONTROL -> "质量控制"
+        com.childproduct.designassistant.model.ClauseType.USER_INFORMATION -> "用户信息"
+        com.childproduct.designassistant.model.ClauseType.CERTIFICATION -> "认证要求"
+        com.childproduct.designassistant.model.ClauseType.INSTALLATION -> "安装要求"
     }
 }

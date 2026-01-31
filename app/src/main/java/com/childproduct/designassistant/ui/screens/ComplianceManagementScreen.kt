@@ -332,7 +332,7 @@ enum class ComplianceModule(
         standards = listOf("FMVSS 213 S5.4.3.5", "NHTSA测试要求")
     ),
     SUPPLY_CHAIN(
-        name = "供应链合规",
+        displayName = "供应链合规",
         description = "溯源性、一致性控制",
         icon = Icons.Default.LocalShipping,
         color = Color(0xFFF57C00),
