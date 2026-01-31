@@ -45,7 +45,7 @@ class R129StandardDetailsService {
         val comparison = mutableMapOf<String, Map<String, Any>>()
 
         R129r4eStandardDatabase.getDummySpecsList().forEach { dummy ->
-            val criteriaMap = mapOf(
+            val criteriaMap: Map<String, Any> = mapOf(
                 "dummyType" to dummy.dummyType,
                 "headAcceleration3ms_low" to dummy.injuryCriteria.headAcceleration3ms.lowThreshold,
                 "headAcceleration3ms_high" to dummy.injuryCriteria.headAcceleration3ms.highThreshold,
