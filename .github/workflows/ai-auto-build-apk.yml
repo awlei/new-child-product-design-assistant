@@ -43,15 +43,19 @@ jobs:
         fi
         echo "✅ Gradle wrapper files verified"
 
-    - name: 🇨🇳 Configure Maven mirror (China)
+    - name: 🇨🇳 Configure Maven repositories
       run: |
         mkdir -p ~/.gradle
         cat > ~/.gradle/init.gradle <<EOF
         allprojects {
           repositories {
+            // Aliyun mirrors (fast)
             maven { url 'https://maven.aliyun.com/repository/google' }
-            maven { url 'https://maven.aliyun.com/repository/jcenter' }
             maven { url 'https://maven.aliyun.com/repository/central' }
+            // Fallback to official repositories
+            google()
+            mavenCentral()
+            maven { url 'https://jitpack.io' }
           }
         }
         EOF
