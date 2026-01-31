@@ -344,14 +344,6 @@ object ECE_R129_Clauses {
         )
     }
 }
-            FRONT_IMPACT_TEST,
-            SIDE_IMPACT_TEST,
-            ISOFIX_STRENGTH_TEST,
-            SUPPORT_LEG_STABILITY_TEST,
-            PRODUCT_CLASSIFICATION
-        )
-    }
-}
 
 /**
  * 儿童安全座椅产品配置项

@@ -173,7 +173,7 @@ fun ComplianceModuleCard(
                 modifier = Modifier.weight(1f)
             ) {
                 Text(
-                    text = module.name,
+                    text = module.displayName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -217,7 +217,7 @@ fun ComplianceModuleDetailDialog(
         },
         title = {
             Text(
-                text = module.name,
+                text = module.displayName,
                 style = MaterialTheme.typography.titleLarge
             )
         },
@@ -298,7 +298,7 @@ fun ComplianceModuleDetailDialog(
  * 合规模块枚举
  */
 enum class ComplianceModule(
-    val name: String,
+    val displayName: String,
     val description: String,
     val icon: ImageVector,
     val color: Color,
@@ -306,7 +306,7 @@ enum class ComplianceModule(
     val standards: List<String>
 ) {
     NHTSA_CERTIFICATION(
-        name = "NHTSA认证",
+        displayName = "NHTSA认证",
         description = "认证申请、实验室资质、样品一致性管理",
         icon = Icons.Default.Gavel,
         color = Color(0xFF1976D2),
@@ -319,7 +319,7 @@ enum class ComplianceModule(
         standards = listOf("FMVSS 213", "NHTSA认证要求")
     ),
     MISUSE_PROTECTION(
-        name = "误用防护",
+        displayName = "误用防护",
         description = "安装防错、儿童操作限制设计",
         icon = Icons.Default.Shield,
         color = Color(0xFF388E3C),
@@ -345,7 +345,7 @@ enum class ComplianceModule(
         standards = listOf("ISO 9001", "供应商合规要求")
     ),
     AFTER_SALES(
-        name = "售后召回",
+        displayName = "售后召回",
         description = "注册系统、使用寿命、追溯",
         icon = Icons.Default.SupportAgent,
         color = Color(0xFF7B1FA2),
@@ -358,7 +358,7 @@ enum class ComplianceModule(
         standards = listOf("FMVSS 213 S5.8", "49 CFR Part 573")
     ),
     STANDARD_ADAPTATION(
-        name = "标准适配",
+        displayName = "标准适配",
         description = "标准修订、州级要求、进口合规",
         icon = Icons.Default.Update,
         color = Color(0xFF0288D1),
@@ -371,9 +371,9 @@ enum class ComplianceModule(
         standards = listOf("49 CFR Part 567", "49 CFR Part 571")
     ),
     ERGONOMICS(
-        name = "人机工程学",
+        displayName = "人机工程学",
         description = "安装便捷性、极端环境适配",
-        icon = Icons.Default.ComfyChair,
+        icon = Icons.Default.Chair,
         color = Color(0xFF00897B),
         features = listOf(
             "车辆适配评估",
@@ -384,7 +384,7 @@ enum class ComplianceModule(
         standards = listOf("FMVSS 213 S4.4.1.2", "FMVSS 302")
     ),
     COMPETITOR_RISK(
-        name = "竞品风险",
+        displayName = "竞品风险",
         description = "案例分析、专利合规",
         icon = Icons.Default.CompareArrows,
         color = Color(0xFFD32F2F),
@@ -397,7 +397,7 @@ enum class ComplianceModule(
         standards = listOf("专利法", "竞品分析")
     ),
     RISK_MANAGEMENT(
-        name = "风险管理",
+        displayName = "风险管理",
         description = "风险评估、预警机制",
         icon = Icons.Default.Warning,
         color = Color(0xFFC2185B),

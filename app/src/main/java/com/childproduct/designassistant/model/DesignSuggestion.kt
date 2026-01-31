@@ -257,7 +257,8 @@ enum class ComplianceStatus(val displayName: String) {
     FULLY_COMPLIANT("完全合规"),
     PARTIALLY_COMPLIANT("部分合规"),
     NON_COMPLIANT("不合规"),
-    PENDING_REVIEW("待审核")
+    PENDING_REVIEW("待审核"),
+    NOT_APPLICABLE("不适用")
 }
 
 /**
